@@ -1347,6 +1347,7 @@ class ProductsController extends BaseController
         $item['brand'] = $Product['brand'] ? $Product['brand']->name : 'N/D';
         $item['price'] = $Product->price;
         $item['cost'] = $Product->cost;
+        $item['listingType'] = $Product->listing_type;
         $item['stock_alert'] = $Product->stock_alert;
         $item['taxe'] = $Product->TaxNet;
         $item['tax_method'] = $Product->tax_method == '1' ? 'Exclusive' : 'Inclusive';
