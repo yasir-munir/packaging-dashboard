@@ -201,8 +201,6 @@ class ProductsController extends BaseController
 
                         // check for duplicate codes in variants array
                         $variants = json_decode($request->variants, true);
-                        // check for duplicate codes in variants array
-                        // $listingType = json_decode($request->listingtype, true);
 
                         if ($variants) {
                             if ($request['listingtype']=='is_reel'){
@@ -737,31 +735,98 @@ class ProductsController extends BaseController
 
 
                         if ($variants) {
-                            foreach ($variants as $variant) {
-                                if (!array_key_exists('text', $variant) || empty($variant['text'])) {
-                                    $fail('Variant Name cannot be empty.');
-                                    return;
-                                } else if (!array_key_exists('code', $variant) || empty($variant['code'])) {
-                                    $fail('Variant code cannot be empty.');
-                                    return;
-                                } else if (!array_key_exists('width', $variant) || empty($variant['width'])) {
-                                    $fail('Variant width cannot be empty.');
-                                    return;
-                                } else if (!array_key_exists('weight', $variant) || empty($variant['weight'])) {
-                                    $fail('Variant weight cannot be empty.');
-                                    return;
-                                } else if (!array_key_exists('paperGram', $variant) || empty($variant['paperGram'])) {
-                                    $fail('Variant paper grams cannot be empty.');
-                                    return;
-                                } else if (!array_key_exists('paperType', $variant) || empty($variant['paperType'])) {
-                                    $fail('Variant paper type cannot be empty.');
-                                    return;
-                                } else if (!array_key_exists('cost', $variant) || empty($variant['cost'])) {
-                                    $fail('Variant cost cannot be empty.');
-                                    return;
-                                } else if (!array_key_exists('price', $variant) || empty($variant['price'])) {
-                                    $fail('Variant price cannot be empty.');
-                                    return;
+                            if ($request['listingtype']=='is_reel'){
+                                foreach ($variants as $variant) {
+                                    if (!array_key_exists('text', $variant) || empty($variant['text'])) {
+                                        $fail('Variant Name cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('code', $variant) || empty($variant['code'])) {
+                                        $fail('Variant code cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('width', $variant) || empty($variant['width'])) {
+                                        $fail('Variant width cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('weight', $variant) || empty($variant['weight'])) {
+                                        $fail('Variant weight cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('paperGram', $variant) || empty($variant['paperGram'])) {
+                                        $fail('Variant paper grams cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('paperType', $variant) || empty($variant['paperType'])) {
+                                        $fail('Variant paper type cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('paperShade', $variant) || empty($variant['paperShade'])) {
+                                        $fail('Variant paper shade cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('cost', $variant) || empty($variant['cost'])) {
+                                        $fail('Variant cost cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('price', $variant) || empty($variant['price'])) {
+                                        $fail('Variant price cannot be empty.');
+                                        return;
+                                    }
+                                }
+                            } else if ($request['listingtype']=='is_roll'){
+                                foreach ($variants as $variant) {
+                                    if (!array_key_exists('text', $variant) || empty($variant['text'])) {
+                                        $fail('Variant Name cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('code', $variant) || empty($variant['code'])) {
+                                        $fail('Variant code cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('width', $variant) || empty($variant['width'])) {
+                                        $fail('Variant width cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('crafting', $variant) || empty($variant['crafting'])) {
+                                        $fail('Variant crafting cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('paperGram', $variant) || empty($variant['paperGram'])) {
+                                        $fail('Variant paper grams cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('paperType', $variant) || empty($variant['paperType'])) {
+                                        $fail('Variant paper type cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('paperShade', $variant) || empty($variant['paperShade'])) {
+                                        $fail('Variant paper shade cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('cost', $variant) || empty($variant['cost'])) {
+                                        $fail('Variant cost cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('price', $variant) || empty($variant['price'])) {
+                                        $fail('Variant price cannot be empty.');
+                                        return;
+                                    }
+                                }
+                            } else if ($request['listingtype']=='is_carton'){
+                                foreach ($variants as $variant) {
+                                    if (!array_key_exists('text', $variant) || empty($variant['text'])) {
+                                        $fail('Variant Name cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('code', $variant) || empty($variant['code'])) {
+                                        $fail('Variant code cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('dimension', $variant) || empty($variant['dimension'])) {
+                                        $fail('Variant dimension cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('ply', $variant) || empty($variant['ply'])) {
+                                        $fail('Variant ply cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('paperGram', $variant) || empty($variant['paperGram'])) {
+                                        $fail('Variant paper grams cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('paperType', $variant) || empty($variant['paperType'])) {
+                                        $fail('Variant paper type cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('paperShade', $variant) || empty($variant['paperShade'])) {
+                                        $fail('Variant paper shade cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('cost', $variant) || empty($variant['cost'])) {
+                                        $fail('Variant cost cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('price', $variant) || empty($variant['price'])) {
+                                        $fail('Variant price cannot be empty.');
+                                        return;
+                                    }
                                 }
                             }
                         } else {
@@ -825,32 +890,77 @@ class ProductsController extends BaseController
                             return;
                         }
 
-                        //check if width empty
-                        $all_width = array_column($variants, 'width');
-                        if ($all_width) {
-                            foreach ($all_width as $width) {
-                                if (empty($width)) {
-                                    $fail('Variant width cannot be empty.');
-                                    return;
+                        if ($request['listingtype'] == 'is_reel' || $request['listingtype'] == 'is_roll'){
+                            $all_width = array_column($variants, 'width');
+                            if ($all_width) {
+                                foreach ($all_width as $width) {
+                                    if (empty($width)) {
+                                        $fail('Variant width cannot be empty.');
+                                        return;
+                                    }
                                 }
+                            } else {
+                                $fail('Variant width cannot be empty.');
+                                return;
                             }
-                        } else {
-                            $fail('Variant width cannot be empty.');
-                            return;
                         }
 
-                        //check if weight empty
-                        $all_weight = array_column($variants, 'weight');
-                        if ($all_weight) {
-                            foreach ($all_weight as $weight) {
-                                if (empty($weight)) {
-                                    $fail('Variant weight cannot be empty.');
-                                    return;
+                        if ($request['listingtype'] == 'is_reel'){
+                            $all_weight = array_column($variants, 'weight');
+                            if ($all_weight) {
+                                foreach ($all_weight as $weight) {
+                                    if (empty($weight)) {
+                                        $fail('Variant weight cannot be empty.');
+                                        return;
+                                    }
                                 }
+                            } else {
+                                $fail('Variant weight cannot be empty.');
+                                return;
                             }
-                        } else {
-                            $fail('Variant weight cannot be empty.');
-                            return;
+                        }
+
+                        if ($request['listingtype'] == 'is_roll'){
+                            $all_crafting = array_column($variants, 'crafting');
+                            if ($all_crafting) {
+                                foreach ($all_crafting as $crafting) {
+                                    if (empty($crafting)) {
+                                        $fail('Variant crafting cannot be empty.');
+                                        return;
+                                    }
+                                }
+                            } else {
+                                $fail('Variant crafting cannot be empty.');
+                                return;
+                            }
+                        }
+
+                        if ($request['listingtype'] == 'is_carton'){
+                            $all_dimension = array_column($variants, 'dimension');
+                            if ($all_dimension) {
+                                foreach ($all_dimension as $dimension) {
+                                    if (empty($dimension)) {
+                                        $fail('Variant dimension cannot be empty.');
+                                        return;
+                                    }
+                                }
+                            } else {
+                                $fail('Variant dimension cannot be empty.');
+                                return;
+                            }
+
+                            $all_ply = array_column($variants, 'ply');
+                            if ($all_ply) {
+                                foreach ($all_ply as $ply) {
+                                    if (empty($ply)) {
+                                        $fail('Variant ply cannot be empty.');
+                                        return;
+                                    }
+                                }
+                            } else {
+                                $fail('Variant ply cannot be empty.');
+                                return;
+                            }
                         }
 
                         //check if Paper Grams empty
@@ -928,8 +1038,6 @@ class ProductsController extends BaseController
                     },
                 ];
             }
-
-
 
             // validate the request data
             $validatedData = $request->validate($productRules, [
@@ -1042,84 +1150,241 @@ class ProductsController extends BaseController
                             }
                         }
 
-                        foreach ($request['variants'] as $key => $variant) {
-                            if (array_key_exists($var, $variant)) {
+                        if ($request['listingtype']=='is_reel'){
+                            foreach ($request['variants'] as $key => $variant) {
+                                if (array_key_exists($var, $variant)) {
 
-                                $ProductVariantDT = new ProductVariant;
-                                //-- Field Required
-                                $ProductVariantDT->product_id = $variant['product_id'];
-                                $ProductVariantDT->name = $variant['text'];
-                                $ProductVariantDT->price = $variant['price'];
-                                $ProductVariantDT->width = $variant['width'];
-                                $ProductVariantDT->weight = $variant['weight'];
-                                $ProductVariantDT->paper_grams = $variant['paperGram'];
-                                $ProductVariantDT->paper_type = $variant['paperType'];
-                                $ProductVariantDT->paper_shade = $variant['paperShade'];
-                                $ProductVariantDT->cost = $variant['cost'];
-                                $ProductVariantDT->code = $variant['code'];
+                                    $ProductVariantDT = new ProductVariant;
+                                    //-- Field Required
+                                    $ProductVariantDT->product_id = $variant['product_id'];
+                                    $ProductVariantDT->name = $variant['text'];
+                                    $ProductVariantDT->price = $variant['price'];
+                                    $ProductVariantDT->width = $variant['width'];
+                                    $ProductVariantDT->weight = $variant['weight'];
+                                    $ProductVariantDT->paper_grams = $variant['paperGram'];
+                                    $ProductVariantDT->paper_type = $variant['paperType'];
+                                    $ProductVariantDT->paper_shade = $variant['paperShade'];
+                                    $ProductVariantDT->cost = $variant['cost'];
+                                    $ProductVariantDT->code = $variant['code'];
 
-                                $ProductVariantUP['product_id'] = $variant['product_id'];
-                                $ProductVariantUP['code'] = $variant['code'];
-                                $ProductVariantUP['name'] = $variant['text'];
-                                $ProductVariantUP['width'] = $variant['width'];
-                                $ProductVariantUP['weight'] = $variant['weight'];
-                                $ProductVariantUP['paper_grams'] = $variant['paperGram'];
-                                $ProductVariantUP['paper_type'] = $variant['paperType'];
-                                $ProductVariantUP['paper_shade'] = $variant['paperShade'];
-                                $ProductVariantUP['price'] = $variant['price'];
-                                $ProductVariantUP['cost'] = $variant['cost'];
+                                    $ProductVariantUP['product_id'] = $variant['product_id'];
+                                    $ProductVariantUP['code'] = $variant['code'];
+                                    $ProductVariantUP['name'] = $variant['text'];
+                                    $ProductVariantUP['width'] = $variant['width'];
+                                    $ProductVariantUP['weight'] = $variant['weight'];
+                                    $ProductVariantUP['paper_grams'] = $variant['paperGram'];
+                                    $ProductVariantUP['paper_type'] = $variant['paperType'];
+                                    $ProductVariantUP['paper_shade'] = $variant['paperShade'];
+                                    $ProductVariantUP['price'] = $variant['price'];
+                                    $ProductVariantUP['cost'] = $variant['cost'];
 
-                            } else {
-                                $ProductVariantDT = new ProductVariant;
+                                } else {
+                                    $ProductVariantDT = new ProductVariant;
 
-                                //-- Field Required
-                                $ProductVariantDT->product_id = $id;
-                                $ProductVariantDT->code = $variant['code'];
-                                $ProductVariantDT->name = $variant['text'];
-                                $ProductVariantDT->width = $variant['width'];
-                                $ProductVariantDT->weight = $variant['weight'];
-                                $ProductVariantDT->paper_grams = $variant['paperGram'];
-                                $ProductVariantDT->paper_type = $variant['paperType'];
-                                $ProductVariantDT->paper_shade = $variant['paperShade'];
-                                $ProductVariantDT->price = $variant['price'];
-                                $ProductVariantDT->cost = $variant['cost'];
+                                    //-- Field Required
+                                    $ProductVariantDT->product_id = $id;
+                                    $ProductVariantDT->code = $variant['code'];
+                                    $ProductVariantDT->name = $variant['text'];
+                                    $ProductVariantDT->width = $variant['width'];
+                                    $ProductVariantDT->weight = $variant['weight'];
+                                    $ProductVariantDT->paper_grams = $variant['paperGram'];
+                                    $ProductVariantDT->paper_type = $variant['paperType'];
+                                    $ProductVariantDT->paper_shade = $variant['paperShade'];
+                                    $ProductVariantDT->price = $variant['price'];
+                                    $ProductVariantDT->cost = $variant['cost'];
 
-                                $ProductVariantUP['product_id'] = $id;
-                                $ProductVariantUP['code'] = $variant['code'];
-                                $ProductVariantUP['name'] = $variant['text'];
-                                $ProductVariantUP['width'] = $variant['width'];
-                                $ProductVariantUP['weight'] = $variant['weight'];
-                                $ProductVariantUP['paper_grams'] = $variant['paperGram'];
-                                $ProductVariantUP['paper_type'] = $variant['paperType'];
-                                $ProductVariantUP['paper_shade'] = $variant['paperShade'];
-                                $ProductVariantUP['price'] = $variant['price'];
-                                $ProductVariantUP['cost'] = $variant['cost'];
-                                $ProductVariantUP['qty'] = 0.00;
-                            }
-
-                            if (!in_array($new_variants_id[$key], $old_variants_id)) {
-                                $ProductVariantDT->save();
-
-                                //--Store Product warehouse
-                                if ($warehouses) {
-                                    $product_warehouse = [];
-                                    foreach ($warehouses as $warehouse) {
-
-                                        $product_warehouse[] = [
-                                            'product_id' => $id,
-                                            'warehouse_id' => $warehouse,
-                                            'product_variant_id' => $ProductVariantDT->id,
-                                            'manage_stock' => $manage_stock,
-                                        ];
-
-                                    }
-                                    product_warehouse::insert($product_warehouse);
+                                    $ProductVariantUP['product_id'] = $id;
+                                    $ProductVariantUP['code'] = $variant['code'];
+                                    $ProductVariantUP['name'] = $variant['text'];
+                                    $ProductVariantUP['width'] = $variant['width'];
+                                    $ProductVariantUP['weight'] = $variant['weight'];
+                                    $ProductVariantUP['paper_grams'] = $variant['paperGram'];
+                                    $ProductVariantUP['paper_type'] = $variant['paperType'];
+                                    $ProductVariantUP['paper_shade'] = $variant['paperShade'];
+                                    $ProductVariantUP['price'] = $variant['price'];
+                                    $ProductVariantUP['cost'] = $variant['cost'];
+                                    $ProductVariantUP['qty'] = 0.00;
                                 }
-                            } else {
-                                ProductVariant::where('id', $variant['id'])->update($ProductVariantUP);
+
+                                if (!in_array($new_variants_id[$key], $old_variants_id)) {
+                                    $ProductVariantDT->save();
+
+                                    //--Store Product warehouse
+                                    if ($warehouses) {
+                                        $product_warehouse = [];
+                                        foreach ($warehouses as $warehouse) {
+
+                                            $product_warehouse[] = [
+                                                'product_id' => $id,
+                                                'warehouse_id' => $warehouse,
+                                                'product_variant_id' => $ProductVariantDT->id,
+                                                'manage_stock' => $manage_stock,
+                                            ];
+
+                                        }
+                                        product_warehouse::insert($product_warehouse);
+                                    }
+                                } else {
+                                    ProductVariant::where('id', $variant['id'])->update($ProductVariantUP);
+                                }
+                            }
+                        } else if ($request['listingType']=='is_roll'){
+                            foreach ($request['variants'] as $key => $variant) {
+                                if (array_key_exists($var, $variant)) {
+
+                                    $ProductVariantDT = new ProductVariant;
+                                    //-- Field Required
+                                    $ProductVariantDT->product_id = $variant['product_id'];
+                                    $ProductVariantDT->name = $variant['text'];
+                                    $ProductVariantDT->price = $variant['price'];
+                                    $ProductVariantDT->dimension = $variant['width'];
+                                    $ProductVariantDT->crafting = $variant['crafting'];
+                                    $ProductVariantDT->paper_grams = $variant['paperGram'];
+                                    $ProductVariantDT->paper_type = $variant['paperType'];
+                                    $ProductVariantDT->paper_shade = $variant['paperShade'];
+                                    $ProductVariantDT->cost = $variant['cost'];
+                                    $ProductVariantDT->code = $variant['code'];
+
+                                    $ProductVariantUP['product_id'] = $variant['product_id'];
+                                    $ProductVariantUP['code'] = $variant['code'];
+                                    $ProductVariantUP['name'] = $variant['text'];
+                                    $ProductVariantUP['width'] = $variant['width'];
+                                    $ProductVariantUP['crafting'] = $variant['crafting'];
+                                    $ProductVariantUP['paper_grams'] = $variant['paperGram'];
+                                    $ProductVariantUP['paper_type'] = $variant['paperType'];
+                                    $ProductVariantUP['paper_shade'] = $variant['paperShade'];
+                                    $ProductVariantUP['price'] = $variant['price'];
+                                    $ProductVariantUP['cost'] = $variant['cost'];
+
+                                } else {
+                                    $ProductVariantDT = new ProductVariant;
+
+                                    //-- Field Required
+                                    $ProductVariantDT->product_id = $id;
+                                    $ProductVariantDT->code = $variant['code'];
+                                    $ProductVariantDT->name = $variant['text'];
+                                    $ProductVariantDT->width = $variant['width'];
+                                    $ProductVariantDT->crafting = $variant['crafting'];
+                                    $ProductVariantDT->paper_grams = $variant['paperGram'];
+                                    $ProductVariantDT->paper_type = $variant['paperType'];
+                                    $ProductVariantDT->paper_shade = $variant['paperShade'];
+                                    $ProductVariantDT->price = $variant['price'];
+                                    $ProductVariantDT->cost = $variant['cost'];
+
+                                    $ProductVariantUP['product_id'] = $id;
+                                    $ProductVariantUP['code'] = $variant['code'];
+                                    $ProductVariantUP['name'] = $variant['text'];
+                                    $ProductVariantUP['width'] = $variant['width'];
+                                    $ProductVariantUP['crafting'] = $variant['crafting'];
+                                    $ProductVariantUP['paper_grams'] = $variant['paperGram'];
+                                    $ProductVariantUP['paper_type'] = $variant['paperType'];
+                                    $ProductVariantUP['paper_shade'] = $variant['paperShade'];
+                                    $ProductVariantUP['price'] = $variant['price'];
+                                    $ProductVariantUP['cost'] = $variant['cost'];
+                                    $ProductVariantUP['qty'] = 0.00;
+                                }
+
+                                if (!in_array($new_variants_id[$key], $old_variants_id)) {
+                                    $ProductVariantDT->save();
+
+                                    //--Store Product warehouse
+                                    if ($warehouses) {
+                                        $product_warehouse = [];
+                                        foreach ($warehouses as $warehouse) {
+
+                                            $product_warehouse[] = [
+                                                'product_id' => $id,
+                                                'warehouse_id' => $warehouse,
+                                                'product_variant_id' => $ProductVariantDT->id,
+                                                'manage_stock' => $manage_stock,
+                                            ];
+
+                                        }
+                                        product_warehouse::insert($product_warehouse);
+                                    }
+                                } else {
+                                    ProductVariant::where('id', $variant['id'])->update($ProductVariantUP);
+                                }
+                            }
+                        } else if (($request['listingType']=='is_carton')) {
+                            foreach ($request['variants'] as $key => $variant) {
+                                if (array_key_exists($var, $variant)) {
+
+                                    $ProductVariantDT = new ProductVariant;
+                                    //-- Field Required
+                                    $ProductVariantDT->product_id = $variant['product_id'];
+                                    $ProductVariantDT->name = $variant['text'];
+                                    $ProductVariantDT->price = $variant['price'];
+                                    $ProductVariantDT->dimension = $variant['dimension'];
+                                    $ProductVariantDT->ply = $variant['ply'];
+                                    $ProductVariantDT->paper_grams = $variant['paperGram'];
+                                    $ProductVariantDT->paper_type = $variant['paperType'];
+                                    $ProductVariantDT->paper_shade = $variant['paperShade'];
+                                    $ProductVariantDT->cost = $variant['cost'];
+                                    $ProductVariantDT->code = $variant['code'];
+
+                                    $ProductVariantUP['product_id'] = $variant['product_id'];
+                                    $ProductVariantUP['code'] = $variant['code'];
+                                    $ProductVariantUP['name'] = $variant['text'];
+                                    $ProductVariantUP['dimension'] = $variant['dimension'];
+                                    $ProductVariantUP['ply'] = $variant['ply'];
+                                    $ProductVariantUP['paper_grams'] = $variant['paperGram'];
+                                    $ProductVariantUP['paper_type'] = $variant['paperType'];
+                                    $ProductVariantUP['paper_shade'] = $variant['paperShade'];
+                                    $ProductVariantUP['price'] = $variant['price'];
+                                    $ProductVariantUP['cost'] = $variant['cost'];
+
+                                } else {
+                                    $ProductVariantDT = new ProductVariant;
+
+                                    //-- Field Required
+                                    $ProductVariantDT->product_id = $id;
+                                    $ProductVariantDT->code = $variant['code'];
+                                    $ProductVariantDT->name = $variant['text'];
+                                    $ProductVariantDT->dimension = $variant['dimension'];
+                                    $ProductVariantDT->ply = $variant['ply'];
+                                    $ProductVariantDT->paper_grams = $variant['paperGram'];
+                                    $ProductVariantDT->paper_type = $variant['paperType'];
+                                    $ProductVariantDT->paper_shade = $variant['paperShade'];
+                                    $ProductVariantDT->price = $variant['price'];
+                                    $ProductVariantDT->cost = $variant['cost'];
+
+                                    $ProductVariantUP['product_id'] = $id;
+                                    $ProductVariantUP['code'] = $variant['code'];
+                                    $ProductVariantUP['name'] = $variant['text'];
+                                    $ProductVariantUP['dimension'] = $variant['dimension'];
+                                    $ProductVariantUP['ply'] = $variant['ply'];
+                                    $ProductVariantUP['paper_grams'] = $variant['paperGram'];
+                                    $ProductVariantUP['paper_type'] = $variant['paperType'];
+                                    $ProductVariantUP['paper_shade'] = $variant['paperShade'];
+                                    $ProductVariantUP['price'] = $variant['price'];
+                                    $ProductVariantUP['cost'] = $variant['cost'];
+                                    $ProductVariantUP['qty'] = 0.00;
+                                }
+
+                                if (!in_array($new_variants_id[$key], $old_variants_id)) {
+                                    $ProductVariantDT->save();
+
+                                    //--Store Product warehouse
+                                    if ($warehouses) {
+                                        $product_warehouse = [];
+                                        foreach ($warehouses as $warehouse) {
+
+                                            $product_warehouse[] = [
+                                                'product_id' => $id,
+                                                'warehouse_id' => $warehouse,
+                                                'product_variant_id' => $ProductVariantDT->id,
+                                                'manage_stock' => $manage_stock,
+                                            ];
+
+                                        }
+                                        product_warehouse::insert($product_warehouse);
+                                    }
+                                } else {
+                                    ProductVariant::where('id', $variant['id'])->update($ProductVariantUP);
+                                }
                             }
                         }
-
                     } else {
                         $ProducttWarehouse = product_warehouse::where('product_id', $id)
                             ->update([
@@ -1143,7 +1408,6 @@ class ProductsController extends BaseController
                             $ProductVarDT->price = $variant['price'];
                             $ProductVarDT->save();
 
-
                             //-- Store Product warehouse
                             if ($warehouses) {
                                 foreach ($warehouses as $warehouse) {
@@ -1159,7 +1423,6 @@ class ProductsController extends BaseController
                                 product_warehouse::insert($product_warehouse_DT);
                             }
                         }
-
                     }
                 } else {
                     if ($oldVariants->isNotEmpty()) {
@@ -1355,15 +1618,12 @@ class ProductsController extends BaseController
         if ($Product->type == 'is_single') {
             $item['type_name'] = 'Single';
             $item['unit'] = $Product['unit']->ShortName;
-
         } elseif ($Product->type == 'is_variant') {
             $item['type_name'] = 'Variable';
             $item['unit'] = $Product['unit']->ShortName;
-
         } else {
             $item['type_name'] = 'Service';
             $item['unit'] = '----';
-
         }
 
         if ($Product->is_variant) {
@@ -1376,6 +1636,9 @@ class ProductsController extends BaseController
                 $ProductVariant['name'] = $variant->name;
                 $ProductVariant['width'] = $variant->width;
                 $ProductVariant['weight'] = $variant->weight;
+                $ProductVariant['dimension'] = $variant->dimension;
+                $ProductVariant['ply'] = $variant->ply;
+                $ProductVariant['crafting'] = $variant->crafting;
                 $ProductVariant['paperGram'] = $variant->paper_grams;
                 $ProductVariant['paperType'] = $variant->paper_type;
                 $ProductVariant['paperShade'] = $variant->paper_shade;
@@ -1858,6 +2121,7 @@ class ProductsController extends BaseController
         $item['cost'] = $Product->cost;
         $item['stock_alert'] = $Product->stock_alert;
         $item['TaxNet'] = $Product->TaxNet;
+        $item['listingType'] = $Product->listing_type;
         $item['note'] = $Product->note ? $Product->note : '';
         $item['images'] = [];
         if ($Product->image != '' && $Product->image != 'no-image.png') {
@@ -1890,6 +2154,9 @@ class ProductsController extends BaseController
                 $variant_item['code'] = $variant->code;
                 $variant_item['width'] = $variant->width;
                 $variant_item['weight'] = $variant->weight;
+                $variant_item['dimension'] = $variant->dimension;
+                $variant_item['ply'] = $variant->ply;
+                $variant_item['crafting'] = $variant->crafting;
                 $variant_item['paperGram'] = $variant->paper_grams;
                 $variant_item['paperType'] = $variant->paper_type;
                 $variant_item['paperShade'] = $variant->paper_shade;

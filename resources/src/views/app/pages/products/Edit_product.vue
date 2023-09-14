@@ -507,7 +507,7 @@
                   </div>
                 </div>
 
-                <div class="col-md-12 mb-2" v-if="product.type == 'is_variant'">
+                <div class="col-md-12 mb-2" v-if="product.type == 'is_variant' && product.listingType == 'is_reel'">
                   <div class="table-responsive">
                     <table class="table table-hover table-sm">
                       <thead class="bg-gray-300">
@@ -607,6 +607,206 @@
                     </table>
                   </div>
                 </div>
+                <div class="col-md-12 mb-2" v-if="product.type == 'is_variant' && product.listingType == 'is_roll'">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-sm">
+                        <thead class="bg-gray-300">
+                          <tr>
+                            <th scope="col">{{ $t("Variant_code") }}</th>
+                            <th scope="col">{{ $t("Variant_Name") }}</th>
+                            <th scope="col">{{ $t("Variant_Width") }}</th>
+                            <th scope="col">{{ $t("Variant_crafting") }}</th>
+                            <th scope="col">{{ $t("Variant_Paper_Grams") }}</th>
+                            <th scope="col">{{ $t("Variant_Paper_Type") }}</th>
+                            <th scope="col">{{ $t("Variant_Paper_Shade") }}</th>
+                            <th scope="col">{{ $t("Variant_cost") }}</th>
+                            <th scope="col">{{ $t("Variant_price") }}</th>
+                            <th scope="col"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-if="variants.length <= 0">
+                            <td colspan="3">{{ $t("NodataAvailable") }}</td>
+                          </tr>
+                          <tr v-for="variant in variants">
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.code"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.text"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.width"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.crafting"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.paperGram"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.paperType"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.paperShade"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.cost"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.price"
+                              />
+                            </td>
+                            <td>
+                              <a
+                                style="color: #ffff"
+                                @click="delete_variant(variant.var_id)"
+                                class="btn btn-sm btn-danger"
+                                title="Delete"
+                              >
+                                <i class="i-Close-Window"></i>
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="col-md-12 mb-2" v-if="product.type == 'is_variant' && product.listingType == 'is_carton'">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-sm">
+                        <thead class="bg-gray-300">
+                          <tr>
+                            <th scope="col">{{ $t("Variant_code") }}</th>
+                            <th scope="col">{{ $t("Variant_Name") }}</th>
+                            <th scope="col">{{ $t("Variant_dimension") }}</th>
+                            <th scope="col">{{ $t("Variant_ply") }}</th>
+                            <th scope="col">{{ $t("Variant_Paper_Grams") }}</th>
+                            <th scope="col">{{ $t("Variant_Paper_Type") }}</th>
+                            <th scope="col">{{ $t("Variant_Paper_Shade") }}</th>
+                            <th scope="col">{{ $t("Variant_cost") }}</th>
+                            <th scope="col">{{ $t("Variant_price") }}</th>
+                            <th scope="col"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-if="variants.length <= 0">
+                            <td colspan="3">{{ $t("NodataAvailable") }}</td>
+                          </tr>
+                          <tr v-for="variant in variants">
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.code"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.text"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.dimension"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.ply"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.paperGram"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.paperType"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.paperShade"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.cost"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                required
+                                class="form-control"
+                                v-model="variant.price"
+                              />
+                            </td>
+                            <td>
+                              <a
+                                style="color: #ffff"
+                                @click="delete_variant(variant.var_id)"
+                                class="btn btn-sm btn-danger"
+                                title="Delete"
+                              >
+                                <i class="i-Close-Window"></i>
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
               </b-row>
             </b-card>
 

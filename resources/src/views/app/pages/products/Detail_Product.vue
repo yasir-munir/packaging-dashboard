@@ -99,7 +99,7 @@
           </b-col>
 
           <!-- product variant -->
-          <b-col md="8" class="mt-4" v-if="product.type == 'is_variant'">
+          <b-col md="8" class="mt-4" v-if="product.type == 'is_variant' && product.listingType == 'is_reel'">
             <table class="table table-hover table-sm">
               <thead>
                 <tr>
@@ -130,6 +130,67 @@
             </table>
           </b-col>
 
+          <b-col md="8" class="mt-4" v-if="product.type == 'is_variant' && product.listingType == 'is_roll'">
+            <table class="table table-hover table-sm">
+              <thead>
+                <tr>
+                  <th>{{$t('Variant_code')}}</th>
+                  <th>{{$t('Variant_Name')}}</th>
+                  <th>{{$t('Variant_Width')}}</th>
+                  <th>{{$t('Variant_crafting')}}</th>
+                  <th>{{$t('Variant_Paper_Grams')}}</th>
+                  <th>{{$t('Variant_Paper_Type')}}</th>
+                  <th>{{$t('Variant_Paper_Shade')}}</th>
+                  <th>{{$t('Variant_cost')}}</th>
+                  <th>{{$t('Variant_price')}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="product_variant_data in product.products_variants_data">
+                  <td>{{product_variant_data.code}}</td>
+                  <td>{{product_variant_data.name}}</td>
+                  <td>{{product_variant_data.width}}</td>
+                  <td>{{product_variant_data.crafting}}</td>
+                  <td>{{product_variant_data.paperGram}}</td>
+                  <td>{{product_variant_data.paperType}}</td>
+                  <td>{{product_variant_data.paperType}}</td>
+                  <td>{{currentUser.currency}} {{product_variant_data.cost}}</td>
+                  <td>{{currentUser.currency}} {{product_variant_data.price}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </b-col>
+
+          <b-col md="8" class="mt-4" v-if="product.type == 'is_variant' && product.listingType == 'is_carton'">
+            <table class="table table-hover table-sm">
+              <thead>
+                <tr>
+                  <th>{{$t('Variant_code')}}</th>
+                  <th>{{$t('Variant_Name')}}</th>
+                  <th>{{$t('Variant_dimension')}}</th>
+                  <th>{{$t('Variant_ply')}}</th>
+                  <th>{{$t('Variant_Paper_Grams')}}</th>
+                  <th>{{$t('Variant_Paper_Type')}}</th>
+                  <th>{{$t('Variant_Paper_Shade')}}</th>
+                  <th>{{$t('Variant_cost')}}</th>
+                  <th>{{$t('Variant_price')}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="product_variant_data in product.products_variants_data">
+                  <td>{{product_variant_data.code}}</td>
+                  <td>{{product_variant_data.name}}</td>
+                  <td>{{product_variant_data.dimension}}</td>
+                  <td>{{product_variant_data.ply}}</td>
+                  <td>{{product_variant_data.paperGram}}</td>
+                  <td>{{product_variant_data.paperType}}</td>
+                  <td>{{product_variant_data.paperType}}</td>
+                  <td>{{currentUser.currency}} {{product_variant_data.cost}}</td>
+                  <td>{{currentUser.currency}} {{product_variant_data.price}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </b-col>
           <!-- Warehouse Quantity -->
           <b-col md="8" class="mt-4" v-if="product.type == 'is_single'">
             <table class="table table-hover table-sm">
