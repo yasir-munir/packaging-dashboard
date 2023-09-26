@@ -68,11 +68,11 @@
                 <!-- Product -->
                 <b-col md="12" class="mb-5">
                   <h6>{{$t('ProductName')}}</h6>
-                 
+
                   <div id="autocomplete" class="autocomplete">
-                    <input 
+                    <input
                      :placeholder="$t('Scan_Search_Product_by_Code_Name')"
-                      @input='e => search_input = e.target.value' 
+                      @input='e => search_input = e.target.value'
                       @keyup="search(search_input)"
                       @focus="handleFocus"
                       @blur="handleBlur"
@@ -112,14 +112,14 @@
                           v-for="detail in details"
                           :class="{'row_deleted': detail.del === 1 || (detail.no_unit === 0 && detail.product_type != 'is_service')}"
                           :key="detail.detail_id"
-                           
+
                           >
                           <td>{{detail.detail_id}}</td>
                           <td>
                             <span>{{detail.code}}</span>
                             <br>
                             <span class="badge badge-success">{{detail.name}}</span>
-                           
+
                           </td>
                           <td>{{currentUser.currency}} {{formatNumber(detail.Net_price, 3)}}</td>
                           <td>
@@ -169,6 +169,12 @@
                 <div class="offset-md-9 col-md-3 mt-4">
                   <table class="table table-striped table-sm">
                     <tbody>
+                       <tr>
+                            <td class="bold">{{$t('PONumber')}}</td>
+                            <td>
+                                <span>{{sale.po_number}}</span>
+                            </td>
+                      </tr>
                       <tr>
                         <td class="bold">{{$t('OrderTax')}}</td>
                         <td>
@@ -196,6 +202,29 @@
                     </tbody>
                   </table>
                 </div>
+
+                <!-- PO Number -->
+                <b-col lg="4" md="4" sm="12" class="mb-3" v-if="currentUserPermissions && currentUserPermissions.includes('edit_tax_discount_shipping_sale')">
+                    <validation-provider
+                      name="PO Number"
+                      :rules="{ required: true}"
+                      v-slot="validationContext"
+                    >
+
+                      <b-form-group :label="$t('PONumber') + ' ' + '*'">
+                        <b-input-group>
+                          <b-form-input
+                            :state="getValidationState(validationContext)"
+                            aria-describedby="Discount-feedback"
+                            label="PO Number"
+                            :placeholder="$t('PONumber')"
+                            v-model.number="sale.po_number"
+                          ></b-form-input>
+                        </b-input-group>
+                      </b-form-group>
+                    </validation-provider>
+                  </b-col>
+
 
                  <!-- Order Tax  -->
                 <b-col lg="4" md="4" sm="12" class="mb-3" v-if="currentUserPermissions && currentUserPermissions.includes('edit_tax_discount_shipping_sale')">
@@ -281,9 +310,12 @@
                         :placeholder="$t('Choose_Status')"
                         :options="
                                 [
-                                  {label: 'completed', value: 'completed'},
-                                  {label: 'Pending', value: 'pending'},
-                                  {label: 'ordered', value: 'ordered'}
+                                    {label: 'Production', value: 'production'},
+                                    {label: 'Planning', value: 'planning'},
+                                    {label: 'Draft', value: 'draft'},
+                                    {label: 'Ordered', value: 'ordered'},
+                                    {label: 'Pending', value: 'pending'},
+                                    {label: 'Completed', value: 'completed'}
                                 ]"
                       ></v-select>
                       <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
@@ -484,6 +516,7 @@ export default {
         warehouse_id: "",
         tax_rate: 0,
         TaxNet: 0,
+        po_number: 0,
         shipping: 0,
         discount: 0
       },
@@ -532,7 +565,7 @@ export default {
     handleBlur() {
       this.focused = false
     },
-    
+
 
     //--- Submit Validate Update Sale
     Submit_Sale() {
@@ -987,6 +1020,7 @@ export default {
             GrandTotal: this.GrandTotal,
             warehouse_id: this.sale.warehouse_id,
             statut: this.sale.statut,
+            po_number: this.sale.po_number,
             notes: this.sale.notes,
             tax_rate: this.sale.tax_rate?this.sale.tax_rate:0,
             TaxNet: this.sale.TaxNet?this.sale.TaxNet:0,

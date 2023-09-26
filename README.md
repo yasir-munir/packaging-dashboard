@@ -1,19 +1,32 @@
-## Inventory Management System
+## Al-Fateh Inventory Management System
 
-A dashboard for the user to view all stats of his devices, able to view history and set schedules.
+A Web Application for the user to track all the purchases and sales of their Products.
 
 ## Requirements
-- PHP 7.4 and above.
-- Parse Server with MongoDB.
+- PHP 8.1 and above
+- Laravel 8
+- phpmyadmin
 
 ## Installation
-Install XAMPP or WAMPP for local server setup
-Open XAMPP Control panal and start [apache].
+Install XAMPP or WAMPP for local server with following extension requirements:
 
-### 1. Using Composer
-You can install the library via [Composer](https://getcomposer.org/). If you don't already have Composer installed, first install it by following one of these instructions depends on your OS of choice:
-* [Composer installation instruction for Windows](https://getcomposer.org/doc/00-intro.md#installation-windows)
-* [Composer installation instruction for Mac OS X and Linux](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
+- BCMath PHP Extension
+- Ctype PHP Extension
+- Fileinfo PHP Extension
+- GD2 PHP Extension
+- JSON PHP Extension
+- Mbstring PHP Extension
+- OpenSSL PHP Extension
+- PDO PHP Extension
+- Tokenizer PHP Extension
+- XML PHP Extension
+
+### 1. Installation With XAMPP
+ Go to C:\Windows\system32\drivers\etc\ open the "hosts" file in Administrator mode. Add the following code to it. Here
+
+```
+127.0.0.1 alfateh
+```
 
 
 Now, you can easily keep the library up-to-date. After cloning the repository, you need to run int the terminal. 

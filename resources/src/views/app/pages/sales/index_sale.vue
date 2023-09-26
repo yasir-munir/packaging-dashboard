@@ -16,7 +16,7 @@
         placeholder: $t('Search_this_table'),
         enabled: true,
       }"
-        :select-options="{ 
+        :select-options="{
           enabled: true ,
           clearSelectionText: '',
         }"
@@ -86,7 +86,7 @@
                   </b-dropdown-item>
                 </b-navbar-nav>
 
-                 <b-dropdown-item 
+                 <b-dropdown-item
                   title="Edit"
                   v-if="currentUserPermissions.includes('Sales_edit') && props.row.sale_has_return == 'no'"
                   :to="'/app/sales/edit/'+props.row.id"
@@ -141,6 +141,11 @@
                 <b-dropdown-item title="Invoice" @click="Invoice_POS(props.row.id)">
                   <i class="nav-icon i-File-TXT font-weight-bold mr-2"></i>
                   {{$t('Invoice_POS')}}
+                </b-dropdown-item>
+
+                <b-dropdown-item title="PDF" @click="GatePass_PDF(props.row , props.row.id)">
+                    <i class="nav-icon i-File-TXT font-weight-bold mr-2"></i>
+                    {{$t('GatePassGenerate')}}
                 </b-dropdown-item>
 
                 <b-dropdown-item title="PDF" @click="Invoice_PDF(props.row , props.row.id)">
@@ -222,7 +227,7 @@
                 <span class="ul-btn__text ml-1">{{props.row.Ref}}</span>
               </router-link> <br>
               <small v-if="props.row.sale_has_return == 'yes'"><i class="text-15 text-danger i-Back"></i></small>
-              
+
             </div>
         </template>
       </vue-good-table>
@@ -279,9 +284,12 @@
                 :placeholder="$t('Choose_Status')"
                 :options="
                       [
-                        {label: 'completed', value: 'completed'},
-                        {label: 'Pending', value: 'pending'},
+                        {label: 'Production', value: 'production'},
+                        {label: 'Planning', value: 'planning'},
+                        {label: 'Draft', value: 'draft'},
                         {label: 'Ordered', value: 'ordered'},
+                        {label: 'Pending', value: 'pending'},
+                        {label: 'Completed', value: 'completed'}
                       ]"
               ></v-select>
             </b-form-group>
@@ -541,7 +549,7 @@
               >{{parseFloat(payment.received_amount - payment.montant).toFixed(2)}}</p>
             </b-col>
 
-           
+
 
           <b-col md="12">
               <b-card v-show="payment.Reglement == 'credit card' && !EditPaiementMode">
@@ -565,7 +573,6 @@
                         <th>Type</th>
                         <th>Exp</th>
                         <th>Action</th>
-
                       </tr>
                     </thead>
 
@@ -577,11 +584,11 @@
                         <td>
                             <b-button variant="outline-primary" @click="selectCard(card)" v-if="!isSelectedCard(card) && card_id != card.card_id">
                               <span>
-                                <i class="i-Drag-Up"></i> 
+                                <i class="i-Drag-Up"></i>
                                 Use This
                               </span>
                             </b-button>
-                              <i v-if="isSelectedCard(card) || card_id == card.card_id" class="i-Yes" style=" font-size: 20px; "></i> 
+                              <i v-if="isSelectedCard(card) || card_id == card.card_id" class="i-Yes" style=" font-size: 20px; "></i>
                         </td>
                       </tr>
                     </tbody>
@@ -1082,7 +1089,7 @@ export default {
                 this.submit_showing_credit_card = false;
             });
 
-         
+
         }else{
           this.hasSavedPaymentMethod = false;
           this.useSavedPaymentMethod = false;
@@ -1139,7 +1146,7 @@ export default {
       a.document.write(divContents);
       a.document.write("</body></html>");
       a.document.close();
-      
+
       setTimeout(() => {
          a.print();
       }, 1000);
@@ -1197,7 +1204,7 @@ export default {
       this.Get_Sales(this.serverParams.page);
     },
 
-    
+
     onSearch(value) {
       this.search = value.searchTerm;
       this.Get_Sales(this.serverParams.page);
@@ -1215,7 +1222,7 @@ export default {
           this.$t("Warning")
         );
         this.payment.montant = 0;
-      } 
+      }
       else if (this.payment.montant > this.due) {
         this.makeToast(
           "warning",
@@ -1231,7 +1238,7 @@ export default {
     Verified_Received_Amount() {
       if (isNaN(this.payment.received_amount)) {
         this.payment.received_amount = 0;
-      } 
+      }
     },
 
 
@@ -1382,12 +1389,40 @@ export default {
           setTimeout(() => NProgress.done(), 500);
         });
     },
+    //-----------------------------  Invoice PDF ------------------------------\\
+    GatePass_PDF(sale, id) {
+      // Start the progress bar.
+      NProgress.start();
+      NProgress.set(0.1);
+       axios
+        .get("gate_pass/" + id, {
+          responseType: "blob", // important
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        .then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "GatePass-" + sale.Ref + ".pdf");
+          document.body.appendChild(link);
+          link.click();
+          // Complete the animation of the  progress bar.
+          setTimeout(() => NProgress.done(), 500);
+        })
+        .catch(() => {
+          // Complete the animation of the  progress bar.
+          setTimeout(() => NProgress.done(), 500);
+        });
+    },
+
     //------------------------ Payments Sale PDF ------------------------------\\
     Payment_Sale_PDF(payment, id) {
       // Start the progress bar.
       NProgress.start();
       NProgress.set(0.1);
-     
+
       axios
         .get("payment_sale_pdf/" + id, {
           responseType: "blob", // important
@@ -1410,6 +1445,7 @@ export default {
           setTimeout(() => NProgress.done(), 500);
         });
     },
+
     //---------------------------------------- Set To Strings-------------------------\\
     setToStrings() {
       // Simply replaces null values with strings=''
@@ -1510,7 +1546,7 @@ export default {
       axios
         .post("payment_sale_send_email", {
           id: id,
-         
+
         })
         .then(response => {
           // Complete the animation of the  progress bar.
@@ -1637,7 +1673,7 @@ export default {
         NProgress.done();
         this.$bvModal.show("Add_Payment");
       }, 1000);
-     
+
     },
     //-------------------------------Show All Payment with Sale ---------------------\\
     Show_Payments(id, sale) {
@@ -1741,7 +1777,7 @@ export default {
       this.paymentProcessing = true;
       NProgress.start();
       NProgress.set(0.1);
-      
+
         axios
           .put("payment_sale/" + this.payment.id, {
             sale_id: this.sale.id,
@@ -1852,7 +1888,7 @@ export default {
             })
             .catch(error => {
               NProgress.done();
-                
+
             });
     },
 
