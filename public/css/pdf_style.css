@@ -35,6 +35,7 @@ a {
 
 #total {
 	float: right;
+  font-size: 12px;
 }
 
 #total>table {
@@ -47,6 +48,14 @@ a {
 	padding: 10px;
 	background: #EEEEEE;
 	line-height: 10px;
+}
+
+#total>table td:nth-child(2) {
+	padding: 10px;
+	background: #EEEEEE;
+	line-height: 10px;
+  float: right;
+  text-align: right;
 }
 
 #total>table th {
@@ -73,8 +82,26 @@ a {
 	min-height: 90px;
 	font-size: 85%;
 	font-size: 22px;
-	color:#8A2BE2;
+	color:#666666;
 	font-weight: 900;
+}
+
+#Title-heading-company {
+	float: left;
+	margin-right: 160px;
+	margin-top: 40px;
+	padding-left: 6px;
+	min-height: 90px;
+	font-size: 85%;
+	font-size: 22px;
+	color:#000000;
+	font-weight: 900;
+}
+
+#Title-heading-company .company-address{
+  font-size: 85%;
+  font-size: 12px;
+  clear: both;
 }
 
 #logo {
@@ -130,7 +157,7 @@ h2.name {
 #invoice>table th {
 	padding: 6px;
 	border-bottom: 1px solid #FFFFFF;
-	background: blueviolet;
+	background: #666666;
 	color: #fff;
 	font-size: 13px;
 	font-weight: bold;
@@ -151,7 +178,7 @@ h2.name {
 
 #client>table th {
 	padding: 6px;
-	background: blueviolet;
+	background: #666666;
 	color: #fff;
 	font-size: 13px;
 	font-weight: bold;
@@ -210,48 +237,49 @@ h2.name {
 	text-align: left;
 	border-bottom: 1px solid #FFFFFF;
 	color: #fff;
-	background: blueviolet;
+	background: #666666;
 	color: #fff;
-	font-size: 13px;
+	font-size: 12px;
 	font-weight: bold;
 }
 
 #details_inv>table td {
 	text-align: left;
+  font-size: 12px;
 }
 
 #details_inv>table td h3 {
 	color: #57B223;
-	font-size: 1.2em;
+	font-size: 12px;
 	font-weight: normal;
 	margin: 0 0 0.2em 0;
 }
 
 #details_inv>table .no {
 	color: #FFFFFF;
-	font-size: 1.6em;
+	font-size: 12px;
 	background: #57B223;
 }
 
 #details_inv>table .Ref {
 	text-align: left;
-	font-size: 16px!important;
+	font-size: 12px!important;
 }
 
 #details_inv>table .Payment {
 	text-align: right;
-	font-size: 16px!important;
+	font-size: 12px!important;
 }
 
 #details_inv>table .mode {
 	text-align: center;
-	font-size: 16px!important;
+	font-size: 12px!important;
 }
 
 #details_inv>table td.unit,
 #details_inv>table td.qty,
 #details_inv>table td.total {
-	font-size: 1.2em;
+	font-size: 12px;
 }
 
 #details_inv>table tbody tr:last-child td {
@@ -262,7 +290,7 @@ h2.name {
 	padding: 10px 20px;
 	background: #FFFFFF;
 	border-bottom: none;
-	font-size: 1.2em;
+	font-size: 10px;
 	white-space: nowrap;
 	border-top: 1px solid #AAAAAA;
 }
@@ -273,7 +301,7 @@ h2.name {
 
 #details_inv>table tfoot tr:last-child td {
 	color: #57B223;
-	font-size: 1.4em;
+	font-size: 12px;
 	border-top: 1px solid #57B223;
 }
 

@@ -1,7 +1,10 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="$t('ListSales')" :folder="$t('Sales')"/>
-    <div v-if="isLoading" class="loading_page spinner spinner-primary mr-3"></div>
+    <breadcumb :page="$t('ListSales')" :folder="$t('Sales')" />
+    <div
+      v-if="isLoading"
+      class="loading_page spinner spinner-primary mr-3"
+    ></div>
     <div v-else>
       <vue-good-table
         mode="remote"
@@ -13,52 +16,77 @@
         @on-sort-change="onSortChange"
         @on-search="onSearch"
         :search-options="{
-        placeholder: $t('Search_this_table'),
-        enabled: true,
-      }"
+          placeholder: $t('Search_this_table'),
+          enabled: true,
+        }"
         :select-options="{
-          enabled: true ,
+          enabled: true,
           clearSelectionText: '',
         }"
         @on-selected-rows-change="selectionChanged"
         :pagination-options="{
-        enabled: true,
-        mode: 'records',
-        nextLabel: 'next',
-        prevLabel: 'prev',
-      }"
-        :styleClass="showDropdown?'tableOne table-hover vgt-table full-height':'tableOne table-hover vgt-table non-height'"
+          enabled: true,
+          mode: 'records',
+          nextLabel: 'next',
+          prevLabel: 'prev',
+        }"
+        :styleClass="
+          showDropdown
+            ? 'tableOne table-hover vgt-table full-height'
+            : 'tableOne table-hover vgt-table non-height'
+        "
       >
         <div slot="selected-row-actions">
-          <button class="btn btn-danger btn-sm" @click="delete_by_selected()">{{$t('Del')}}</button>
+          <button class="btn btn-danger btn-sm" @click="delete_by_selected()">
+            {{ $t("Del") }}
+          </button>
         </div>
+        <!-- <div slot="selected-row-actions">
+          <button
+            class="btn btn-success btn-sm"
+            @click="create_pass_selected()"
+          >
+            {{ $t("GatePass") }}
+          </button>
+        </div> -->
         <div slot="table-actions" class="mt-2 mb-3">
-          <b-button variant="outline-info ripple m-1" size="sm" v-b-toggle.sidebar-right>
+          <b-button
+            variant="outline-info ripple m-1"
+            size="sm"
+            v-b-toggle.sidebar-right
+          >
             <i class="i-Filter-2"></i>
             {{ $t("Filter") }}
           </b-button>
-          <b-button @click="Sales_PDF()" size="sm" variant="outline-success ripple m-1">
+          <b-button
+            @click="Sales_PDF()"
+            size="sm"
+            variant="outline-success ripple m-1"
+          >
             <i class="i-File-Copy"></i> PDF
           </b-button>
           <vue-excel-xlsx
-              class="btn btn-sm btn-outline-danger ripple m-1"
-              :data="sales"
-              :columns="columns"
-              :file-name="'sales'"
-              :file-type="'xlsx'"
-              :sheet-name="'sales'"
-              >
-              <i class="i-File-Excel"></i> EXCEL
+            class="btn btn-sm btn-outline-danger ripple m-1"
+            :data="sales"
+            :columns="columns"
+            :file-name="'sales'"
+            :file-type="'xlsx'"
+            :sheet-name="'sales'"
+          >
+            <i class="i-File-Excel"></i> EXCEL
           </vue-excel-xlsx>
           <router-link
             class="btn-sm btn btn-primary ripple btn-icon m-1"
-            v-if="currentUserPermissions && currentUserPermissions.includes('Sales_add')"
+            v-if="
+              currentUserPermissions &&
+              currentUserPermissions.includes('Sales_add')
+            "
             to="/app/sales/store"
           >
             <span class="ul-btn__icon">
               <i class="i-Add"></i>
             </span>
-            <span class="ul-btn__text ml-1">{{$t('Add')}}</span>
+            <span class="ul-btn__text ml-1">{{ $t("Add") }}</span>
           </router-link>
         </div>
 
@@ -80,45 +108,62 @@
                   <span class="_dot _r_block-dot bg-dark"></span>
                 </template>
                 <b-navbar-nav>
-                  <b-dropdown-item title="Show" :to="'/app/sales/detail/'+props.row.id">
+                  <b-dropdown-item
+                    title="Show"
+                    :to="'/app/sales/detail/' + props.row.id"
+                  >
                     <i class="nav-icon i-Eye font-weight-bold mr-2"></i>
-                    {{$t('SaleDetail')}}
+                    {{ $t("SaleDetail") }}
                   </b-dropdown-item>
                 </b-navbar-nav>
 
-                 <b-dropdown-item
+                <b-dropdown-item
                   title="Edit"
-                  v-if="currentUserPermissions.includes('Sales_edit') && props.row.sale_has_return == 'no'"
-                  :to="'/app/sales/edit/'+props.row.id"
+                  v-if="
+                    currentUserPermissions.includes('Sales_edit') &&
+                    props.row.sale_has_return == 'no'
+                  "
+                  :to="'/app/sales/edit/' + props.row.id"
                 >
                   <i class="nav-icon i-Pen-2 font-weight-bold mr-2"></i>
-                  {{$t('EditSale')}}
+                  {{ $t("EditSale") }}
+                </b-dropdown-item>
+
+                <!-- <b-dropdown-item
+                  title="Sell Return"
+                  v-if="
+                    currentUserPermissions.includes('Sale_Returns_add') &&
+                    props.row.sale_has_return == 'no'
+                  "
+                  :to="'/app/sales/sale_return/' + props.row.id"
+                >
+                  <i class="nav-icon i-Back font-weight-bold mr-2"></i>
+                  {{ $t("Sell_Return") }}
                 </b-dropdown-item>
 
                 <b-dropdown-item
                   title="Sell Return"
-                  v-if="currentUserPermissions.includes('Sale_Returns_add') && props.row.sale_has_return == 'no'"
-                  :to="'/app/sales/sale_return/'+props.row.id"
+                  v-if="
+                    currentUserPermissions.includes('Sale_Returns_add') &&
+                    props.row.sale_has_return == 'yes'
+                  "
+                  :to="
+                    '/app/sale_return/edit/' +
+                    props.row.salereturn_id +
+                    '/' +
+                    props.row.id
+                  "
                 >
                   <i class="nav-icon i-Back font-weight-bold mr-2"></i>
-                  {{$t('Sell_Return')}}
-                </b-dropdown-item>
-
-                <b-dropdown-item
-                  title="Sell Return"
-                  v-if="currentUserPermissions.includes('Sale_Returns_add') && props.row.sale_has_return == 'yes'"
-                  :to="'/app/sale_return/edit/'+props.row.salereturn_id+'/'+props.row.id"
-                >
-                  <i class="nav-icon i-Back font-weight-bold mr-2"></i>
-                  {{$t('Sell_Return')}}
+                  {{ $t("Sell_Return") }}
                 </b-dropdown-item>
 
                 <b-dropdown-item
                   v-if="currentUserPermissions.includes('payment_sales_view')"
-                  @click="Show_Payments(props.row.id , props.row)"
+                  @click="Show_Payments(props.row.id, props.row)"
                 >
                   <i class="nav-icon i-Money-Bag font-weight-bold mr-2"></i>
-                  {{$t('ShowPayment')}}
+                  {{ $t("ShowPayment") }}
                 </b-dropdown-item>
 
                 <b-dropdown-item
@@ -126,50 +171,66 @@
                   @click="New_Payment(props.row)"
                 >
                   <i class="nav-icon i-Add font-weight-bold mr-2"></i>
-                  {{$t('AddPayment')}}
-                </b-dropdown-item>
+                  {{ $t("AddPayment") }}
+                </b-dropdown-item>-->
 
                 <b-dropdown-item
                   v-if="currentUserPermissions.includes('shipment')"
                   @click="Edit_Shipment(props.row.id)"
                 >
                   <i class="nav-icon i-Pen-2 font-weight-bold mr-2"></i>
-                  {{$t('Edit_Shipping')}}
+                  {{ $t("GatePass") }}
                 </b-dropdown-item>
 
-
-                <b-dropdown-item title="Invoice" @click="Invoice_POS(props.row.id)">
+                <!-- <b-dropdown-item
+                  title="Invoice"
+                  @click="Invoice_POS(props.row.id)"
+                >
                   <i class="nav-icon i-File-TXT font-weight-bold mr-2"></i>
-                  {{$t('Invoice_POS')}}
-                </b-dropdown-item>
+                  {{ $t("Invoice_POS") }}
+                </b-dropdown-item> -->
 
-                <b-dropdown-item title="PDF" @click="GatePass_PDF(props.row , props.row.id)">
+                <!-- <b-dropdown-item title="PDF" @click="GatePass_PDF(props.row , props.row.id)">
                     <i class="nav-icon i-File-TXT font-weight-bold mr-2"></i>
                     {{$t('GatePassGenerate')}}
-                </b-dropdown-item>
+                </b-dropdown-item> -->
 
-                <b-dropdown-item title="PDF" @click="Invoice_PDF(props.row , props.row.id)">
+                <b-dropdown-item
+                  title="PDF"
+                  @click="Invoice_PDF(props.row, props.row.id)"
+                >
                   <i class="nav-icon i-File-TXT font-weight-bold mr-2"></i>
-                  {{$t('DownloadPdf')}}
+                  {{ $t("InvoiceDownload") }}
                 </b-dropdown-item>
 
-                <b-dropdown-item title="Email" @click="Send_Email(props.row.id)">
+                <b-dropdown-item
+                  title="PDF"
+                  @click="Tax_Invoice_PDF(props.row, props.row.id)"
+                >
+                  <i class="nav-icon i-File-TXT font-weight-bold mr-2"></i>
+                  {{ $t("TaxInvoiceDownload") }}
+                </b-dropdown-item>
+
+                <!-- <b-dropdown-item
+                  title="Email"
+                  @click="Send_Email(props.row.id)"
+                >
                   <i class="nav-icon i-Envelope-2 font-weight-bold mr-2"></i>
-                  {{$t('email_notification')}}
+                  {{ $t("email_notification") }}
                 </b-dropdown-item>
 
-                 <b-dropdown-item title="SMS" @click="Sale_SMS(props.row.id)">
+                <b-dropdown-item title="SMS" @click="Sale_SMS(props.row.id)">
                   <i class="nav-icon i-Speach-Bubble font-weight-bold mr-2"></i>
-                  {{$t('sms_notification')}}
-                </b-dropdown-item>
+                  {{ $t("sms_notification") }}
+                </b-dropdown-item> -->
 
                 <b-dropdown-item
                   title="Delete"
                   v-if="currentUserPermissions.includes('Sales_delete')"
-                  @click="Remove_Sale(props.row.id , props.row.sale_has_return)"
+                  @click="Remove_Sale(props.row.id, props.row.sale_has_return)"
                 >
                   <i class="nav-icon i-Close-Window font-weight-bold mr-2"></i>
-                  {{$t('DeleteSale')}}
+                  {{ $t("DeleteSale") }}
                 </b-dropdown-item>
               </b-dropdown>
             </div>
@@ -178,63 +239,85 @@
             <span
               v-if="props.row.statut == 'completed'"
               class="badge badge-outline-success"
-            >{{$t('complete')}}</span>
+              >{{ $t("complete") }}</span
+            >
             <span
               v-else-if="props.row.statut == 'pending'"
               class="badge badge-outline-info"
-            >{{$t('Pending')}}</span>
-            <span v-else class="badge badge-outline-warning">{{$t('Ordered')}}</span>
+              >{{ $t("Pending") }}</span
+            >
+            <span v-else class="badge badge-outline-warning">{{
+              $t("Ordered")
+            }}</span>
           </div>
 
           <div v-else-if="props.column.field == 'payment_status'">
             <span
               v-if="props.row.payment_status == 'paid'"
               class="badge badge-outline-success"
-            >{{$t('Paid')}}</span>
+              >{{ $t("Paid") }}</span
+            >
             <span
               v-else-if="props.row.payment_status == 'partial'"
               class="badge badge-outline-primary"
-            >{{$t('partial')}}</span>
-            <span v-else class="badge badge-outline-warning">{{$t('Unpaid')}}</span>
+              >{{ $t("partial") }}</span
+            >
+            <span v-else class="badge badge-outline-warning">{{
+              $t("Unpaid")
+            }}</span>
           </div>
           <div v-else-if="props.column.field == 'shipping_status'">
             <span
               v-if="props.row.shipping_status == 'ordered'"
               class="badge badge-outline-warning"
-            >{{$t('Ordered')}}</span>
+              >{{ $t("Ordered") }}</span
+            >
 
             <span
               v-else-if="props.row.shipping_status == 'packed'"
               class="badge badge-outline-info"
-            >{{$t('Packed')}}</span>
+              >{{ $t("Packed") }}</span
+            >
 
             <span
               v-else-if="props.row.shipping_status == 'shipped'"
               class="badge badge-outline-secondary"
-            >{{$t('Shipped')}}</span>
+              >{{ $t("Shipped") }}</span
+            >
 
-             <span
+            <span
               v-else-if="props.row.shipping_status == 'delivered'"
               class="badge badge-outline-success"
-            >{{$t('Delivered')}}</span>
+              >{{ $t("Delivered") }}</span
+            >
 
-            <span v-else-if="props.row.shipping_status == 'cancelled'" class="badge badge-outline-danger">{{$t('Cancelled')}}</span>
+            <span
+              v-else-if="props.row.shipping_status == 'cancelled'"
+              class="badge badge-outline-danger"
+              >{{ $t("Cancelled") }}</span
+            >
           </div>
-           <div v-else-if="props.column.field == 'Ref'">
-              <router-link
-                :to="'/app/sales/detail/'+props.row.id"
-              >
-                <span class="ul-btn__text ml-1">{{props.row.Ref}}</span>
-              </router-link> <br>
-              <small v-if="props.row.sale_has_return == 'yes'"><i class="text-15 text-danger i-Back"></i></small>
-
-            </div>
+          <div v-else-if="props.column.field == 'Ref'">
+            <router-link :to="'/app/sales/detail/' + props.row.id">
+              <span class="ul-btn__text ml-1">{{ props.row.Ref }}</span>
+            </router-link>
+            <br />
+            <small v-if="props.row.sale_has_return == 'yes'"
+              ><i class="text-15 text-danger i-Back"></i
+            ></small>
+          </div>
         </template>
       </vue-good-table>
     </div>
 
     <!-- Sidebar Filter -->
-    <b-sidebar id="sidebar-right" :title="$t('Filter')" bg-variant="white" right shadow>
+    <b-sidebar
+      id="sidebar-right"
+      :title="$t('Filter')"
+      bg-variant="white"
+      right
+      shadow
+    >
       <div class="px-3 py-2">
         <b-row>
           <!-- date  -->
@@ -247,7 +330,11 @@
           <!-- Reference -->
           <b-col md="12">
             <b-form-group :label="$t('Reference')">
-              <b-form-input label="Reference" :placeholder="$t('Reference')" v-model="Filter_Ref"></b-form-input>
+              <b-form-input
+                label="Reference"
+                :placeholder="$t('Reference')"
+                v-model="Filter_Ref"
+              ></b-form-input>
             </b-form-group>
           </b-col>
 
@@ -255,10 +342,15 @@
           <b-col md="12">
             <b-form-group :label="$t('Customer')">
               <v-select
-                :reduce="label => label.value"
+                :reduce="(label) => label.value"
                 :placeholder="$t('Choose_Customer')"
                 v-model="Filter_Client"
-                :options="customers.map(customers => ({label: customers.name, value: customers.id}))"
+                :options="
+                  customers.map((customers) => ({
+                    label: customers.name,
+                    value: customers.id,
+                  }))
+                "
               />
             </b-form-group>
           </b-col>
@@ -268,9 +360,14 @@
             <b-form-group :label="$t('warehouse')">
               <v-select
                 v-model="Filter_warehouse"
-                :reduce="label => label.value"
+                :reduce="(label) => label.value"
                 :placeholder="$t('Choose_Warehouse')"
-                :options="warehouses.map(warehouses => ({label: warehouses.name, value: warehouses.id}))"
+                :options="
+                  warehouses.map((warehouses) => ({
+                    label: warehouses.name,
+                    value: warehouses.id,
+                  }))
+                "
               />
             </b-form-group>
           </b-col>
@@ -280,17 +377,16 @@
             <b-form-group :label="$t('Status')">
               <v-select
                 v-model="Filter_status"
-                :reduce="label => label.value"
+                :reduce="(label) => label.value"
                 :placeholder="$t('Choose_Status')"
-                :options="
-                      [
-                        {label: 'Production', value: 'production'},
-                        {label: 'Planning', value: 'planning'},
-                        {label: 'Draft', value: 'draft'},
-                        {label: 'Ordered', value: 'ordered'},
-                        {label: 'Pending', value: 'pending'},
-                        {label: 'Completed', value: 'completed'}
-                      ]"
+                :options="[
+                  { label: 'Production', value: 'production' },
+                  { label: 'Planning', value: 'planning' },
+                  { label: 'Draft', value: 'draft' },
+                  { label: 'Ordered', value: 'ordered' },
+                  { label: 'Pending', value: 'pending' },
+                  { label: 'Completed', value: 'completed' },
+                ]"
               ></v-select>
             </b-form-group>
           </b-col>
@@ -300,33 +396,31 @@
             <b-form-group :label="$t('PaymentStatus')">
               <v-select
                 v-model="Filter_Payment"
-                :reduce="label => label.value"
+                :reduce="(label) => label.value"
                 :placeholder="$t('Choose_Status')"
-                :options="
-                      [
-                        {label: 'Paid', value: 'paid'},
-                        {label: 'partial', value: 'partial'},
-                        {label: 'UnPaid', value: 'unpaid'},
-                      ]"
+                :options="[
+                  { label: 'Paid', value: 'paid' },
+                  { label: 'partial', value: 'partial' },
+                  { label: 'UnPaid', value: 'unpaid' },
+                ]"
               ></v-select>
             </b-form-group>
           </b-col>
 
-           <!-- Shipping Status  -->
+          <!-- Shipping Status  -->
           <b-col md="12">
             <b-form-group :label="$t('Shipping_status')">
               <v-select
                 v-model="Filter_shipping"
-                :reduce="label => label.value"
+                :reduce="(label) => label.value"
                 :placeholder="$t('Choose_Status')"
-                :options="
-                      [
-                        {label: 'Ordered', value: 'ordered'},
-                        {label: 'Packed', value: 'packed'},
-                        {label: 'Shipped', value: 'shipped'},
-                        {label: 'Delivered', value: 'delivered'},
-                        {label: 'Cancelled', value: 'cancelled'},
-                      ]"
+                :options="[
+                  { label: 'Ordered', value: 'ordered' },
+                  { label: 'Packed', value: 'packed' },
+                  { label: 'Shipped', value: 'shipped' },
+                  { label: 'Delivered', value: 'delivered' },
+                  { label: 'Cancelled', value: 'cancelled' },
+                ]"
               ></v-select>
             </b-form-group>
           </b-col>
@@ -342,7 +436,11 @@
             </b-button>
           </b-col>
           <b-col md="6" sm="12">
-            <b-button @click="Reset_Filter()" variant="danger ripple btn-block m-1" size="sm">
+            <b-button
+              @click="Reset_Filter()"
+              variant="danger ripple btn-block m-1"
+              size="sm"
+            >
               <i class="i-Power-2"></i>
               {{ $t("Reset") }}
             </b-button>
@@ -359,33 +457,42 @@
             <table class="table table-hover table-bordered table-md">
               <thead>
                 <tr>
-                  <th scope="col">{{$t('date')}}</th>
-                  <th scope="col">{{$t('Reference')}}</th>
-                  <th scope="col">{{$t('Amount')}}</th>
-                  <th scope="col">{{$t('PayeBy')}}</th>
-                  <th scope="col">{{$t('Action')}}</th>
+                  <th scope="col">{{ $t("date") }}</th>
+                  <th scope="col">{{ $t("Reference") }}</th>
+                  <th scope="col">{{ $t("Amount") }}</th>
+                  <th scope="col">{{ $t("PayeBy") }}</th>
+                  <th scope="col">{{ $t("Action") }}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-if="payments.length <= 0">
-                  <td colspan="5">{{$t('NodataAvailable')}}</td>
+                  <td colspan="5">{{ $t("NodataAvailable") }}</td>
                 </tr>
                 <tr v-for="payment in payments">
-                  <td>{{payment.date}}</td>
-                  <td>{{payment.Ref}}</td>
-                  <td>{{currentUser.currency}} {{formatNumber(payment.montant,2)}}</td>
-                  <td>{{payment.Reglement}}</td>
+                  <td>{{ payment.date }}</td>
+                  <td>{{ payment.Ref }}</td>
                   <td>
-                    <div role="group" aria-label="Basic example" class="btn-group">
+                    {{ currentUser.currency }}
+                    {{ formatNumber(payment.montant, 2) }}
+                  </td>
+                  <td>{{ payment.Reglement }}</td>
+                  <td>
+                    <div
+                      role="group"
+                      aria-label="Basic example"
+                      class="btn-group"
+                    >
                       <span
                         title="Print"
                         class="btn btn-icon btn-info btn-sm"
-                        @click="Payment_Sale_PDF(payment,payment.id)"
+                        @click="Payment_Sale_PDF(payment, payment.id)"
                       >
                         <i class="i-Billing"></i>
                       </span>
                       <span
-                        v-if="currentUserPermissions.includes('payment_sales_edit')"
+                        v-if="
+                          currentUserPermissions.includes('payment_sales_edit')
+                        "
                         title="Edit"
                         class="btn btn-icon btn-success btn-sm"
                         @click="Edit_Payment(payment)"
@@ -407,7 +514,11 @@
                         <i class="i-Speach-Bubble"></i>
                       </span>
                       <span
-                        v-if="currentUserPermissions.includes('payment_sales_delete')"
+                        v-if="
+                          currentUserPermissions.includes(
+                            'payment_sales_delete'
+                          )
+                        "
                         title="Delete"
                         class="btn btn-icon btn-danger btn-sm"
                         @click="Remove_Payment(payment.id)"
@@ -430,16 +541,16 @@
         hide-footer
         size="lg"
         id="Add_Payment"
-        :title="EditPaiementMode?$t('EditPayment'):$t('AddPayment')"
+        :title="EditPaiementMode ? $t('EditPayment') : $t('AddPayment')"
       >
         <b-form @submit.prevent="Submit_Payment">
-          <h1 class="text-center mt-3 mb-3">{{client_name}}</h1>
+          <h1 class="text-center mt-3 mb-3">{{ client_name }}</h1>
           <b-row>
             <!-- date -->
             <b-col lg="4" md="12" sm="12">
               <validation-provider
                 name="date"
-                :rules="{ required: true}"
+                :rules="{ required: true }"
                 v-slot="validationContext"
               >
                 <b-form-group :label="$t('date')">
@@ -450,7 +561,9 @@
                     v-model="payment.date"
                     type="date"
                   ></b-form-input>
-                  <b-form-invalid-feedback id="date-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                  <b-form-invalid-feedback id="date-feedback">{{
+                    validationContext.errors[0]
+                  }}</b-form-invalid-feedback>
                 </b-form-group>
               </validation-provider>
             </b-col>
@@ -467,41 +580,48 @@
               </b-form-group>
             </b-col>
 
-             <!-- Payment choice -->
+            <!-- Payment choice -->
             <b-col lg="4" md="12" sm="12">
-              <validation-provider name="Payment choice" :rules="{ required: true}">
-                <b-form-group slot-scope="{ valid, errors }" :label="$t('Paymentchoice')">
+              <validation-provider
+                name="Payment choice"
+                :rules="{ required: true }"
+              >
+                <b-form-group
+                  slot-scope="{ valid, errors }"
+                  :label="$t('Paymentchoice')"
+                >
                   <v-select
-                    :class="{'is-invalid': !!errors.length}"
-                    :state="errors[0] ? false : (valid ? true : null)"
+                    :class="{ 'is-invalid': !!errors.length }"
+                    :state="errors[0] ? false : valid ? true : null"
                     v-model="payment.Reglement"
                     @input="Selected_PaymentMethod"
                     :disabled="EditPaiementMode"
-                    :reduce="label => label.value"
+                    :reduce="(label) => label.value"
                     :placeholder="$t('PleaseSelect')"
-                    :options="
-                          [
-                          {label: 'Cash', value: 'Cash'},
-                          {label: 'credit card', value: 'credit card'},
-                          {label: 'TPE', value: 'tpe'},
-                          {label: 'cheque', value: 'cheque'},
-                          {label: 'Western Union', value: 'Western Union'},
-                          {label: 'bank transfer', value: 'bank transfer'},
-                          {label: 'other', value: 'other'},
-                          ]"
+                    :options="[
+                      { label: 'Cash', value: 'Cash' },
+                      { label: 'credit card', value: 'credit card' },
+                      { label: 'TPE', value: 'tpe' },
+                      { label: 'cheque', value: 'cheque' },
+                      { label: 'Western Union', value: 'Western Union' },
+                      { label: 'bank transfer', value: 'bank transfer' },
+                      { label: 'other', value: 'other' },
+                    ]"
                   ></v-select>
-                  <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
+                  <b-form-invalid-feedback>{{
+                    errors[0]
+                  }}</b-form-invalid-feedback>
                 </b-form-group>
               </validation-provider>
             </b-col>
 
             <!-- Received  Amount  -->
             <b-col lg="4" md="12" sm="12">
-                <validation-provider
-                  name="Received Amount"
-                  :rules="{ required: true , regex: /^\d*\.?\d*$/}"
-                  v-slot="validationContext"
-                >
+              <validation-provider
+                name="Received Amount"
+                :rules="{ required: true, regex: /^\d*\.?\d*$/ }"
+                v-slot="validationContext"
+              >
                 <b-form-group :label="$t('Received_Amount')">
                   <b-form-input
                     @keyup="Verified_Received_Amount(payment.received_amount)"
@@ -510,11 +630,13 @@
                     v-model.number="payment.received_amount"
                     :state="getValidationState(validationContext)"
                     aria-describedby="Received_Amount-feedback"
-                    :disabled="EditPaiementMode && payment.Reglement == 'credit card'"
+                    :disabled="
+                      EditPaiementMode && payment.Reglement == 'credit card'
+                    "
                   ></b-form-input>
-                  <b-form-invalid-feedback
-                    id="Received_Amount-feedback"
-                  >{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                  <b-form-invalid-feedback id="Received_Amount-feedback">{{
+                    validationContext.errors[0]
+                  }}</b-form-invalid-feedback>
                 </b-form-group>
               </validation-provider>
             </b-col>
@@ -523,48 +645,65 @@
             <b-col lg="4" md="12" sm="12">
               <validation-provider
                 name="Amount"
-                :rules="{ required: true , regex: /^\d*\.?\d*$/}"
+                :rules="{ required: true, regex: /^\d*\.?\d*$/ }"
                 v-slot="validationContext"
               >
                 <b-form-group :label="$t('Paying_Amount')">
                   <b-form-input
-                   @keyup="Verified_paidAmount(payment.montant)"
+                    @keyup="Verified_paidAmount(payment.montant)"
                     label="Amount"
                     :placeholder="$t('Paying_Amount')"
                     v-model.number="payment.montant"
                     :state="getValidationState(validationContext)"
                     aria-describedby="Amount-feedback"
-                    :disabled="EditPaiementMode && payment.Reglement == 'credit card'"
+                    :disabled="
+                      EditPaiementMode && payment.Reglement == 'credit card'
+                    "
                   ></b-form-input>
-                  <b-form-invalid-feedback id="Amount-feedback">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                  <b-form-invalid-feedback id="Amount-feedback">{{
+                    validationContext.errors[0]
+                  }}</b-form-invalid-feedback>
                 </b-form-group>
               </validation-provider>
             </b-col>
 
             <!-- change Amount  -->
             <b-col lg="4" md="12" sm="12">
-              <label>{{$t('Change')}} :</label>
-              <p
-                class="change_amount"
-              >{{parseFloat(payment.received_amount - payment.montant).toFixed(2)}}</p>
+              <label>{{ $t("Change") }} :</label>
+              <p class="change_amount">
+                {{
+                  parseFloat(payment.received_amount - payment.montant).toFixed(
+                    2
+                  )
+                }}
+              </p>
             </b-col>
 
-
-
-          <b-col md="12">
-              <b-card v-show="payment.Reglement == 'credit card' && !EditPaiementMode">
+            <b-col md="12">
+              <b-card
+                v-show="payment.Reglement == 'credit card' && !EditPaiementMode"
+              >
                 <div v-once class="typo__p" v-if="submit_showing_credit_card">
                   <div class="spinner sm spinner-primary mt-3"></div>
                 </div>
-                <div v-if="displaySavedPaymentMethods && !submit_showing_credit_card">
-                  <div class="mt-3"><span class="mr-3">Saved Credit Card Info For This Client </span>
-                  <b-button variant="outline-info" @click="show_new_credit_card()">
+                <div
+                  v-if="
+                    displaySavedPaymentMethods && !submit_showing_credit_card
+                  "
+                >
+                  <div class="mt-3">
+                    <span class="mr-3"
+                      >Saved Credit Card Info For This Client
+                    </span>
+                    <b-button
+                      variant="outline-info"
+                      @click="show_new_credit_card()"
+                    >
                       <span>
                         <i class="i-Two-Windows"></i>
                         New Credit Card
                       </span>
-                  </b-button>
-
+                    </b-button>
                   </div>
                   <table class="table table-hover mt-3">
                     <thead>
@@ -577,18 +716,33 @@
                     </thead>
 
                     <tbody>
-                      <tr v-for="card in savedPaymentMethods" :class="{ 'bg-selected-card': isSelectedCard(card) }">
-                        <td>**** {{card.last4}}</td>
-                        <td>{{card.type}}</td>
-                        <td>{{card.exp}}</td>
+                      <tr
+                        v-for="card in savedPaymentMethods"
+                        :class="{ 'bg-selected-card': isSelectedCard(card) }"
+                      >
+                        <td>**** {{ card.last4 }}</td>
+                        <td>{{ card.type }}</td>
+                        <td>{{ card.exp }}</td>
                         <td>
-                            <b-button variant="outline-primary" @click="selectCard(card)" v-if="!isSelectedCard(card) && card_id != card.card_id">
-                              <span>
-                                <i class="i-Drag-Up"></i>
-                                Use This
-                              </span>
-                            </b-button>
-                              <i v-if="isSelectedCard(card) || card_id == card.card_id" class="i-Yes" style=" font-size: 20px; "></i>
+                          <b-button
+                            variant="outline-primary"
+                            @click="selectCard(card)"
+                            v-if="
+                              !isSelectedCard(card) && card_id != card.card_id
+                            "
+                          >
+                            <span>
+                              <i class="i-Drag-Up"></i>
+                              Use This
+                            </span>
+                          </b-button>
+                          <i
+                            v-if="
+                              isSelectedCard(card) || card_id == card.card_id
+                            "
+                            class="i-Yes"
+                            style="font-size: 20px"
+                          ></i>
                         </td>
                       </tr>
                     </tbody>
@@ -597,27 +751,38 @@
 
                 <div v-if="displayFormNewCard && !submit_showing_credit_card">
                   <form id="payment-form">
-                    <label for="card-element" class="leading-7 text-sm text-gray-600">
-                      {{$t('Credit_Card_Info')}}
-                      <b-button variant="outline-info" @click="show_saved_credit_card()" v-if="savedPaymentMethods.length > 0">
+                    <label
+                      for="card-element"
+                      class="leading-7 text-sm text-gray-600"
+                    >
+                      {{ $t("Credit_Card_Info") }}
+                      <b-button
+                        variant="outline-info"
+                        @click="show_saved_credit_card()"
+                        v-if="savedPaymentMethods.length > 0"
+                      >
                         <span>
-                              <i class="i-Two-Windows"></i>
-                              Use Saved Credit Card
-                            </span>
-                        </b-button>
-                      </label>
-                    <div id="card-element">
-                    </div>
+                          <i class="i-Two-Windows"></i>
+                          Use Saved Credit Card
+                        </span>
+                      </b-button>
+                    </label>
+                    <div id="card-element"></div>
                     <div id="card-errors" class="is-invalid" role="alert"></div>
                   </form>
                 </div>
               </b-card>
-          </b-col>
+            </b-col>
 
             <!-- Note -->
             <b-col lg="12" md="12" sm="12" class="mt-3">
               <b-form-group :label="$t('Note')">
-                <b-form-textarea id="textarea" v-model="payment.notes" rows="3" max-rows="6"></b-form-textarea>
+                <b-form-textarea
+                  id="textarea"
+                  v-model="payment.notes"
+                  rows="3"
+                  max-rows="6"
+                ></b-form-textarea>
               </b-form-group>
             </b-col>
             <b-col md="12" class="mt-3">
@@ -625,7 +790,9 @@
                 variant="primary"
                 type="submit"
                 :disabled="paymentProcessing"
-              ><i class="i-Yes me-2 font-weight-bold"></i> {{$t('submit')}}</b-button>
+                ><i class="i-Yes me-2 font-weight-bold"></i>
+                {{ $t("submit") }}</b-button
+              >
               <div v-once class="typo__p" v-if="paymentProcessing">
                 <div class="spinner sm spinner-primary mt-3"></div>
               </div>
@@ -635,40 +802,68 @@
       </b-modal>
     </validation-observer>
 
-     <!-- Modal Edit Shipment -->
+    <!-- Modal Edit Shipment -->
     <validation-observer ref="shipment_ref">
-      <b-modal hide-footer size="md" id="modal_shipment" :title="$t('Edit')">
+      <b-modal hide-footer size="md" id="modal_shipment" :title="$t('GatePass')">
         <b-form @submit.prevent="Submit_Shipment">
           <b-row>
             <!-- Status  -->
             <b-col md="12">
-              <validation-provider name="Status" :rules="{ required: true}">
-                <b-form-group slot-scope="{ valid, errors }" :label="$t('Status') + ' ' + '*'">
+              <validation-provider name="Status" :rules="{ required: true }">
+                <b-form-group
+                  slot-scope="{ valid, errors }"
+                  :label="$t('Status') + ' ' + '*'"
+                >
                   <v-select
-                    :class="{'is-invalid': !!errors.length}"
-                    :state="errors[0] ? false : (valid ? true : null)"
+                    :class="{ 'is-invalid': !!errors.length }"
+                    :state="errors[0] ? false : valid ? true : null"
                     v-model="shipment.status"
-                    :reduce="label => label.value"
+                    :reduce="(label) => label.value"
                     :placeholder="$t('Choose_Status')"
-                    :options="
-                                [
-                                  {label: 'Ordered', value: 'ordered'},
-                                  {label: 'Packed', value: 'packed'},
-                                  {label: 'Shipped', value: 'shipped'},
-                                  {label: 'Delivered', value: 'delivered'},
-                                  {label: 'Cancelled', value: 'cancelled'},
-                                ]"
+                    :options="[
+                      { label: 'Ordered', value: 'ordered' },
+                      { label: 'Packed', value: 'packed' },
+                      { label: 'Shipped', value: 'shipped' },
+                      { label: 'Delivered', value: 'delivered' },
+                      { label: 'Cancelled', value: 'cancelled' },
+                    ]"
                   ></v-select>
-                  <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
+                  <b-form-invalid-feedback>{{
+                    errors[0]
+                  }}</b-form-invalid-feedback>
                 </b-form-group>
               </validation-provider>
             </b-col>
 
+            <!-- Driver Name -->
+            <b-col md="12">
+              <b-form-group :label="$t('driverName')">
+                <b-form-input
+                  label="driver_name"
+                  v-model="shipment.driver_name"
+                  :placeholder="$t('driverName')"
+                ></b-form-input>
+              </b-form-group>
+            </b-col>
+
+            <!-- Vehical Number -->
+            <b-col md="12">
+              <b-form-group :label="$t('vehicalNumber')">
+                <b-form-input
+                  label="vehical_number"
+                  v-model="shipment.vehical_number"
+                  :placeholder="$t('vehicalNumber')"
+                ></b-form-input>
+              </b-form-group>
+            </b-col>
+
+            <!-- Delivered To -->
             <b-col md="12">
               <b-form-group :label="$t('delivered_to')">
                 <b-form-input
                   label="delivered_to"
                   v-model="shipment.delivered_to"
+                  :value="customers.name"
                   :placeholder="$t('delivered_to')"
                 ></b-form-input>
               </b-form-group>
@@ -701,7 +896,9 @@
                 variant="primary"
                 type="submit"
                 :disabled="Submit_Processing_shipment"
-              ><i class="i-Yes me-2 font-weight-bold"></i> {{$t('submit')}}</b-button>
+                ><i class="i-Yes me-2 font-weight-bold"></i>
+                {{ $t("submit") }}</b-button
+              >
               <div v-once class="typo__p" v-if="Submit_Processing_shipment">
                 <div class="spinner sm spinner-primary mt-3"></div>
               </div>
@@ -712,106 +909,184 @@
     </validation-observer>
 
     <!-- Modal Show Invoice POS-->
-    <b-modal hide-footer size="sm" scrollable id="Show_invoice" :title="$t('Invoice_POS')">
-        <div id="invoice-POS">
-          <div style="max-width:400px;margin:0px auto">
-          <div class="info" >
+    <b-modal
+      hide-footer
+      size="sm"
+      scrollable
+      id="Show_invoice"
+      :title="$t('Invoice_POS')"
+    >
+      <div id="invoice-POS">
+        <div style="max-width: 400px; margin: 0px auto">
+          <div class="info">
             <div class="invoice_logo text-center mb-2">
-              <img :src="'/images/'+invoice_pos.setting.logo" alt width="60" height="60">
+              <img
+                :src="'/images/' + invoice_pos.setting.logo"
+                alt
+                width="60"
+                height="60"
+              />
             </div>
             <p>
-                <span>{{$t('date')}} : {{invoice_pos.sale.date}} <br></span>
-                <span v-show="pos_settings.show_address">{{$t('Adress')}} : {{invoice_pos.setting.CompanyAdress}} <br></span>
-                <span v-show="pos_settings.show_email">{{$t('Email')}} : {{invoice_pos.setting.email}} <br></span>
-                <span v-show="pos_settings.show_phone">{{$t('Phone')}} : {{invoice_pos.setting.CompanyPhone}} <br></span>
-                <span v-show="pos_settings.show_customer">{{$t('Customer')}} : {{invoice_pos.sale.client_name}} <br></span>
-                <span v-show="pos_settings.show_Warehouse">{{$t('warehouse')}} : {{invoice_pos.sale.warehouse_name}} <br></span>
-              </p>
+              <span>{{ $t("date") }} : {{ invoice_pos.sale.date }} <br /></span>
+              <span v-show="pos_settings.show_address"
+                >{{ $t("Adress") }} : {{ invoice_pos.setting.CompanyAdress }}
+                <br
+              /></span>
+              <span v-show="pos_settings.show_email"
+                >{{ $t("Email") }} : {{ invoice_pos.setting.email }} <br
+              /></span>
+              <span v-show="pos_settings.show_phone"
+                >{{ $t("Phone") }} : {{ invoice_pos.setting.CompanyPhone }} <br
+              /></span>
+              <span v-show="pos_settings.show_customer"
+                >{{ $t("Customer") }} : {{ invoice_pos.sale.client_name }} <br
+              /></span>
+              <span v-show="pos_settings.show_Warehouse"
+                >{{ $t("warehouse") }} : {{ invoice_pos.sale.warehouse_name }}
+                <br
+              /></span>
+            </p>
           </div>
 
           <table>
             <tbody>
               <tr v-for="detail_invoice in invoice_pos.details">
                 <td colspan="3">
-                  {{detail_invoice.name}}
-                  <br v-show="detail_invoice.is_imei && detail_invoice.imei_number !==null">
-                  <span v-show="detail_invoice.is_imei && detail_invoice.imei_number !==null ">{{$t('IMEI_SN')}} : {{detail_invoice.imei_number}}</span>
-                  <br>
-                  <span>{{formatNumber(detail_invoice.quantity,2)}} {{detail_invoice.unit_sale}} x {{formatNumber(detail_invoice.total/detail_invoice.quantity,2)}}</span>
+                  {{ detail_invoice.name }}
+                  <br
+                    v-show="
+                      detail_invoice.is_imei &&
+                      detail_invoice.imei_number !== null
+                    "
+                  />
+                  <span
+                    v-show="
+                      detail_invoice.is_imei &&
+                      detail_invoice.imei_number !== null
+                    "
+                    >{{ $t("IMEI_SN") }} :
+                    {{ detail_invoice.imei_number }}</span
+                  >
+                  <br />
+                  <span
+                    >{{ formatNumber(detail_invoice.quantity, 2) }}
+                    {{ detail_invoice.unit_sale }} x
+                    {{
+                      formatNumber(
+                        detail_invoice.total / detail_invoice.quantity,
+                        2
+                      )
+                    }}</span
+                  >
                 </td>
-                <td style="text-align:right;vertical-align:bottom">{{formatNumber(detail_invoice.total,2)}}</td>
+                <td style="text-align: right; vertical-align: bottom">
+                  {{ formatNumber(detail_invoice.total, 2) }}
+                </td>
               </tr>
 
-
-              <tr style="margin-top:10px" v-show="pos_settings.show_discount">
-                <td colspan="3" class="total">{{$t('OrderTax')}}</td>
-                <td style="text-align:right;" class="total">{{invoice_pos.symbol}} {{formatNumber(invoice_pos.sale.taxe ,2)}} ({{formatNumber(invoice_pos.sale.tax_rate,2)}} %)</td>
+              <tr style="margin-top: 10px" v-show="pos_settings.show_discount">
+                <td colspan="3" class="total">{{ $t("OrderTax") }}</td>
+                <td style="text-align: right" class="total">
+                  {{ invoice_pos.symbol }}
+                  {{ formatNumber(invoice_pos.sale.taxe, 2) }} ({{
+                    formatNumber(invoice_pos.sale.tax_rate, 2)
+                  }}
+                  %)
+                </td>
               </tr>
 
-              <tr style="margin-top:10px" v-show="pos_settings.show_discount">
-                <td colspan="3" class="total">{{$t('Discount')}}</td>
-                <td style="text-align:right;" class="total">{{invoice_pos.symbol}} {{formatNumber(invoice_pos.sale.discount ,2)}}</td>
+              <tr style="margin-top: 10px" v-show="pos_settings.show_discount">
+                <td colspan="3" class="total">{{ $t("Discount") }}</td>
+                <td style="text-align: right" class="total">
+                  {{ invoice_pos.symbol }}
+                  {{ formatNumber(invoice_pos.sale.discount, 2) }}
+                </td>
               </tr>
 
-              <tr style="margin-top:10px" v-show="pos_settings.show_discount">
-                <td colspan="3" class="total">{{$t('Shipping')}}</td>
-                <td style="text-align:right;" class="total">{{invoice_pos.symbol}} {{formatNumber(invoice_pos.sale.shipping ,2)}}</td>
+              <tr style="margin-top: 10px" v-show="pos_settings.show_discount">
+                <td colspan="3" class="total">{{ $t("Shipping") }}</td>
+                <td style="text-align: right" class="total">
+                  {{ invoice_pos.symbol }}
+                  {{ formatNumber(invoice_pos.sale.shipping, 2) }}
+                </td>
               </tr>
 
-              <tr style="margin-top:10px">
-                <td colspan="3" class="total">{{$t('Total')}}</td>
-                <td style="text-align:right;" class="total">{{invoice_pos.symbol}} {{formatNumber(invoice_pos.sale.GrandTotal ,2)}}</td>
+              <tr style="margin-top: 10px">
+                <td colspan="3" class="total">{{ $t("Total") }}</td>
+                <td style="text-align: right" class="total">
+                  {{ invoice_pos.symbol }}
+                  {{ formatNumber(invoice_pos.sale.GrandTotal, 2) }}
+                </td>
               </tr>
 
-                  <tr v-show="invoice_pos.sale.paid_amount < invoice_pos.sale.GrandTotal">
-                    <td colspan="3" class="total">{{$t('Paid')}}</td>
-                    <td
-                      style="text-align:right;"
-                      class="total"
-                    >{{invoice_pos.symbol}} {{formatNumber(invoice_pos.sale.paid_amount ,2)}}</td>
-                  </tr>
+              <tr
+                v-show="
+                  invoice_pos.sale.paid_amount < invoice_pos.sale.GrandTotal
+                "
+              >
+                <td colspan="3" class="total">{{ $t("Paid") }}</td>
+                <td style="text-align: right" class="total">
+                  {{ invoice_pos.symbol }}
+                  {{ formatNumber(invoice_pos.sale.paid_amount, 2) }}
+                </td>
+              </tr>
 
-                  <tr v-show="invoice_pos.sale.paid_amount < invoice_pos.sale.GrandTotal">
-                    <td colspan="3" class="total">{{$t('Due')}}</td>
-                    <td
-                      style="text-align:right;"
-                      class="total"
-                    >{{invoice_pos.symbol}} {{parseFloat(invoice_pos.sale.GrandTotal - invoice_pos.sale.paid_amount).toFixed(2)}}</td>
-                  </tr>
+              <tr
+                v-show="
+                  invoice_pos.sale.paid_amount < invoice_pos.sale.GrandTotal
+                "
+              >
+                <td colspan="3" class="total">{{ $t("Due") }}</td>
+                <td style="text-align: right" class="total">
+                  {{ invoice_pos.symbol }}
+                  {{
+                    parseFloat(
+                      invoice_pos.sale.GrandTotal - invoice_pos.sale.paid_amount
+                    ).toFixed(2)
+                  }}
+                </td>
+              </tr>
             </tbody>
           </table>
 
-           <table
-                class="change mt-3"
-                style=" font-size: 10px;"
-                v-show="invoice_pos.sale.paid_amount > 0"
-              >
-                <thead>
-                  <tr style="background: #eee; ">
-                    <th style="text-align: left;" colspan="1">{{$t('PayeBy')}}:</th>
-                    <th style="text-align: center;" colspan="2">{{$t('Amount')}}:</th>
-                    <th style="text-align: right;" colspan="1">{{$t('Change')}}:</th>
-                  </tr>
-                </thead>
+          <table
+            class="change mt-3"
+            style="font-size: 10px"
+            v-show="invoice_pos.sale.paid_amount > 0"
+          >
+            <thead>
+              <tr style="background: #eee">
+                <th style="text-align: left" colspan="1">
+                  {{ $t("PayeBy") }}:
+                </th>
+                <th style="text-align: center" colspan="2">
+                  {{ $t("Amount") }}:
+                </th>
+                <th style="text-align: right" colspan="1">
+                  {{ $t("Change") }}:
+                </th>
+              </tr>
+            </thead>
 
-                <tbody>
-                  <tr v-for="payment_pos in payments">
-                    <td style="text-align: left;" colspan="1">{{payment_pos.Reglement}}</td>
-                    <td
-                      style="text-align: center;"
-                      colspan="2"
-                    >{{formatNumber(payment_pos.montant ,2)}}</td>
-                    <td
-                      style="text-align: right;"
-                      colspan="1"
-                    >{{formatNumber(payment_pos.change ,2)}}</td>
-                  </tr>
-                </tbody>
-              </table>
+            <tbody>
+              <tr v-for="payment_pos in payments">
+                <td style="text-align: left" colspan="1">
+                  {{ payment_pos.Reglement }}
+                </td>
+                <td style="text-align: center" colspan="2">
+                  {{ formatNumber(payment_pos.montant, 2) }}
+                </td>
+                <td style="text-align: right" colspan="1">
+                  {{ formatNumber(payment_pos.change, 2) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
           <div id="legalcopy" class="ml-2">
             <p class="legal" v-show="pos_settings.show_note">
-               <strong>{{pos_settings.note_customer}}</strong>
+              <strong>{{ pos_settings.note_customer }}</strong>
             </p>
             <div id="bar" v-show="pos_settings.show_barcode">
               <barcode
@@ -820,17 +1095,17 @@
                 :value="invoice_pos.sale.Ref"
                 textmargin="0"
                 fontoptions="bold"
-                fontSize= "15"
-                height= "25"
-                width= "1"
+                fontSize="15"
+                height="25"
+                width="1"
               ></barcode>
-            </div>
             </div>
           </div>
         </div>
+      </div>
       <button @click="print_it()" class="btn btn-outline-primary">
         <i class="i-Billing"></i>
-        {{$t('print')}}
+        {{ $t("print") }}
       </button>
     </b-modal>
   </div>
@@ -847,25 +1122,25 @@ import { loadStripe } from "@stripe/stripe-js";
 export default {
   components: {
     vueEasyPrint,
-    barcode: VueBarcode
+    barcode: VueBarcode,
   },
   metaInfo: {
-    title: "Sales"
+    title: "Sales",
   },
   data() {
     return {
-      stripe_key:'',
+      stripe_key: "",
       stripe: {},
       cardElement: {},
-      pos_settings:{},
+      pos_settings: {},
       paymentProcessing: false,
-      Submit_Processing_shipment:false,
+      Submit_Processing_shipment: false,
 
       savedPaymentMethods: [],
       hasSavedPaymentMethod: false,
       useSavedPaymentMethod: false,
-      selectedCard:null,
-      card_id:'',
+      selectedCard: null,
+      card_id: "",
       is_new_credit_card: false,
       submit_showing_credit_card: false,
 
@@ -873,10 +1148,10 @@ export default {
       serverParams: {
         sort: {
           field: "id",
-          type: "desc"
+          type: "desc",
         },
         page: 1,
-        perPage: 10
+        perPage: 10,
       },
       selectedIds: [],
       search: "",
@@ -890,14 +1165,14 @@ export default {
       Filter_status: "",
       Filter_Payment: "",
       Filter_warehouse: "",
-      Filter_shipping:"",
+      Filter_shipping: "",
       customers: [],
       warehouses: [],
       shipment: {},
       sales: [],
-      sale_due:'',
-      due:0,
-      client_name:'',
+      sale_due: "",
+      due: 0,
+      client_name: "",
       invoice_pos: {
         sale: {
           Ref: "",
@@ -908,7 +1183,7 @@ export default {
           tax_rate: "",
           shipping: "",
           GrandTotal: "",
-          paid_amount:'',
+          paid_amount: "",
         },
         details: [],
         setting: {
@@ -916,8 +1191,8 @@ export default {
           CompanyName: "",
           CompanyAdress: "",
           email: "",
-          CompanyPhone: ""
-        }
+          CompanyPhone: "",
+        },
       },
       payments: [],
       payment: {},
@@ -929,7 +1204,7 @@ export default {
         subject: "",
         message: "",
         client_name: "",
-        Sale_Ref: ""
+        Sale_Ref: "",
       },
       emailPayment: {
         id: "",
@@ -937,15 +1212,15 @@ export default {
         subject: "",
         message: "",
         client_name: "",
-        Ref: ""
-      }
+        Ref: "",
+      },
     };
   },
-   mounted() {
-    this.$root.$on("bv::dropdown::show", bvEvent => {
+  mounted() {
+    this.$root.$on("bv::dropdown::show", (bvEvent) => {
       this.showDropdown = true;
     });
-    this.$root.$on("bv::dropdown::hide", bvEvent => {
+    this.$root.$on("bv::dropdown::hide", (bvEvent) => {
       this.showDropdown = false;
     });
   },
@@ -953,23 +1228,23 @@ export default {
     ...mapGetters(["currentUserPermissions", "currentUser"]),
 
     displaySavedPaymentMethods() {
-      if(this.hasSavedPaymentMethod){
+      if (this.hasSavedPaymentMethod) {
         return true;
-      }else{
+      } else {
         return false;
       }
     },
 
     displayFormNewCard() {
-      if(this.useSavedPaymentMethod){
+      if (this.useSavedPaymentMethod) {
         return false;
-      }else{
+      } else {
         return true;
       }
     },
 
     isSelectedCard() {
-      return card => this.selectedCard === card;
+      return (card) => this.selectedCard === card;
     },
 
     columns() {
@@ -978,73 +1253,79 @@ export default {
           label: this.$t("date"),
           field: "date",
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
         {
           label: this.$t("Reference"),
           field: "Ref",
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
         {
           label: this.$t("Created_by"),
           field: "created_by",
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
         {
           label: this.$t("Customer"),
           field: "client_name",
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
         {
-          label: this.$t("warehouse"),
-          field: "warehouse_name",
+          label: this.$t("PO Number"),
+          field: "po_number",
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
+        // {
+        //   label: this.$t("warehouse"),
+        //   field: "warehouse_name",
+        //   tdClass: "text-left",
+        //   thClass: "text-left",
+        // },
         {
           label: this.$t("Status"),
           field: "statut",
           html: true,
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
         {
           label: this.$t("Total"),
           field: "GrandTotal",
           tdClass: "text-left",
           thClass: "text-left",
-          sortable: false
+          sortable: false,
         },
         {
           label: this.$t("Paid"),
           field: "paid_amount",
           tdClass: "text-left",
           thClass: "text-left",
-          sortable: false
+          sortable: false,
         },
         {
           label: this.$t("Due"),
           field: "due",
           tdClass: "text-left",
           thClass: "text-left",
-          sortable: false
+          sortable: false,
         },
         {
           label: this.$t("PaymentStatus"),
           field: "payment_status",
           html: true,
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
         {
           label: this.$t("Shipping_status"),
           field: "shipping_status",
           html: true,
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
         {
           label: this.$t("Action"),
@@ -1052,62 +1333,59 @@ export default {
           html: true,
           tdClass: "text-right",
           thClass: "text-right",
-          sortable: false
-        }
+          sortable: false,
+        },
       ];
-    }
+    },
   },
   methods: {
-
-     async Selected_PaymentMethod(value) {
-      if (value === 'credit card') {
+    async Selected_PaymentMethod(value) {
+      if (value === "credit card") {
         this.savedPaymentMethods = [];
         this.submit_showing_credit_card = true;
-        this.selectedCard = null
-        this.card_id = '';
+        this.selectedCard = null;
+        this.card_id = "";
         // Check if the customer has saved payment methods
-        await axios.get(`/retrieve-customer?customerId=${this.sale.client_id}`)
-            .then(response => {
-                // If the customer has saved payment methods, display them
-                this.savedPaymentMethods = response.data.data;
-                this.card_id = response.data.customer_default_source;
-                this.hasSavedPaymentMethod = true;
-                this.useSavedPaymentMethod = true;
-                this.is_new_credit_card = false;
-                this.submit_showing_credit_card = false;
-            })
-            .catch(error => {
-                // If the customer does not have saved payment methods, show the card element for them to enter their payment information
-                this.hasSavedPaymentMethod = false;
-                this.useSavedPaymentMethod = false;
-                this.is_new_credit_card = true;
-                this.card_id = '';
+        await axios
+          .get(`/retrieve-customer?customerId=${this.sale.client_id}`)
+          .then((response) => {
+            // If the customer has saved payment methods, display them
+            this.savedPaymentMethods = response.data.data;
+            this.card_id = response.data.customer_default_source;
+            this.hasSavedPaymentMethod = true;
+            this.useSavedPaymentMethod = true;
+            this.is_new_credit_card = false;
+            this.submit_showing_credit_card = false;
+          })
+          .catch((error) => {
+            // If the customer does not have saved payment methods, show the card element for them to enter their payment information
+            this.hasSavedPaymentMethod = false;
+            this.useSavedPaymentMethod = false;
+            this.is_new_credit_card = true;
+            this.card_id = "";
 
-                setTimeout(() => {
-                    this.loadStripe_payment();
-                }, 1000);
-                this.submit_showing_credit_card = false;
-            });
-
-
-        }else{
-          this.hasSavedPaymentMethod = false;
-          this.useSavedPaymentMethod = false;
-          this.is_new_credit_card = false;
-        }
-
+            setTimeout(() => {
+              this.loadStripe_payment();
+            }, 1000);
+            this.submit_showing_credit_card = false;
+          });
+      } else {
+        this.hasSavedPaymentMethod = false;
+        this.useSavedPaymentMethod = false;
+        this.is_new_credit_card = false;
+      }
     },
 
     show_saved_credit_card() {
       this.hasSavedPaymentMethod = true;
       this.useSavedPaymentMethod = true;
       this.is_new_credit_card = false;
-      this.Selected_PaymentMethod('credit card');
+      this.Selected_PaymentMethod("credit card");
     },
 
     show_new_credit_card() {
       this.selectedCard = null;
-      this.card_id = '';
+      this.card_id = "";
       this.useSavedPaymentMethod = false;
       this.hasSavedPaymentMethod = false;
       this.is_new_credit_card = true;
@@ -1127,13 +1405,11 @@ export default {
       const elements = this.stripe.elements();
       this.cardElement = elements.create("card", {
         classes: {
-          base:
-            "bg-gray-100 rounded border border-gray-300 focus:border-indigo-500 text-base outline-none text-gray-700 p-3 leading-8 transition-colors duration-200 ease-in-out"
-        }
+          base: "bg-gray-100 rounded border border-gray-300 focus:border-indigo-500 text-base outline-none text-gray-700 p-3 leading-8 transition-colors duration-200 ease-in-out",
+        },
       });
       this.cardElement.mount("#card-element");
     },
-
 
     //------------------------------ Print -------------------------\\
     print_it() {
@@ -1148,10 +1424,9 @@ export default {
       a.document.close();
 
       setTimeout(() => {
-         a.print();
+        a.print();
       }, 1000);
     },
-
 
     //---- update Params Table
     updateParams(newProps) {
@@ -1190,7 +1465,7 @@ export default {
         field = "client_id";
       } else if (params[0].field == "warehouse_name") {
         field = "warehouse_id";
-      }else if (params[0].field == "created_by") {
+      } else if (params[0].field == "created_by") {
         field = "user_id";
       } else {
         field = params[0].field;
@@ -1198,19 +1473,18 @@ export default {
       this.updateParams({
         sort: {
           type: params[0].type,
-          field: field
-        }
+          field: field,
+        },
       });
       this.Get_Sales(this.serverParams.page);
     },
-
 
     onSearch(value) {
       this.search = value.searchTerm;
       this.Get_Sales(this.serverParams.page);
     },
 
-     //---------- keyup paid Amount
+    //---------- keyup paid Amount
 
     Verified_paidAmount() {
       if (isNaN(this.payment.montant)) {
@@ -1222,8 +1496,7 @@ export default {
           this.$t("Warning")
         );
         this.payment.montant = 0;
-      }
-      else if (this.payment.montant > this.due) {
+      } else if (this.payment.montant > this.due) {
         this.makeToast(
           "warning",
           this.$t("Paying_amount_is_greater_than_Grand_Total"),
@@ -1241,10 +1514,9 @@ export default {
       }
     },
 
-
     //------ Validate Form Submit_Payment
     Submit_Payment() {
-      this.$refs.Add_payment.validate().then(success => {
+      this.$refs.Add_payment.validate().then((success) => {
         if (!success) {
           this.makeToast(
             "danger",
@@ -1258,24 +1530,20 @@ export default {
             this.$t("Warning")
           );
           this.payment.received_amount = 0;
-        }
-        else if (this.payment.montant > this.due) {
+        } else if (this.payment.montant > this.due) {
           this.makeToast(
             "warning",
             this.$t("Paying_amount_is_greater_than_Grand_Total"),
             this.$t("Warning")
           );
           this.payment.montant = 0;
-
-        }else if (!this.EditPaiementMode) {
-            this.Create_Payment();
+        } else if (!this.EditPaiementMode) {
+          this.Create_Payment();
         } else {
-            this.Update_Payment();
+          this.Update_Payment();
         }
-
       });
     },
-
 
     //---Validate State Fields
     getValidationState({ dirty, validated, valid = null }) {
@@ -1286,7 +1554,7 @@ export default {
       this.$root.$bvToast.toast(msg, {
         title: title,
         variant: variant,
-        solid: true
+        solid: true,
       });
     },
     //------ Reset Filter
@@ -1303,9 +1571,8 @@ export default {
     },
     //------------------------------Formetted Numbers -------------------------\\
     formatNumber(number, dec) {
-      const value = (typeof number === "string"
-        ? number
-        : number.toString()
+      const value = (
+        typeof number === "string" ? number : number.toString()
       ).split(".");
       if (dec <= 0) return value[0];
       let formated = value[1] || "";
@@ -1328,7 +1595,7 @@ export default {
         { title: "Paid", dataKey: "paid_amount" },
         { title: "Due", dataKey: "due" },
         { title: "Status Payment", dataKey: "payment_status" },
-        { title: "Shipping Status", dataKey: "shipping_status" }
+        { title: "Shipping Status", dataKey: "shipping_status" },
       ];
       pdf.autoTable(columns, self.sales);
       pdf.text("Sale List", 40, 25);
@@ -1341,7 +1608,7 @@ export default {
       NProgress.set(0.1);
       axios
         .get("sales_print_invoice/" + id)
-        .then(response => {
+        .then((response) => {
           this.invoice_pos = response.data;
           this.payments = response.data.payments;
           this.pos_settings = response.data.pos_settings;
@@ -1351,10 +1618,9 @@ export default {
             this.$bvModal.show("Show_invoice");
           }, 500);
 
-          if(response.data.pos_settings.is_printable){
+          if (response.data.pos_settings.is_printable) {
             setTimeout(() => this.print_it(), 1000);
           }
-
         })
         .catch(() => {
           // Complete the animation of the  progress bar.
@@ -1367,18 +1633,18 @@ export default {
       // Start the progress bar.
       NProgress.start();
       NProgress.set(0.1);
-       axios
+      axios
         .get("sale_pdf/" + id, {
           responseType: "blob", // important
           headers: {
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         })
-        .then(response => {
+        .then((response) => {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", "Sale-" + sale.Ref + ".pdf");
+          link.setAttribute("download", "Sale-Invoice-" + sale.Ref + ".pdf");
           document.body.appendChild(link);
           link.click();
           // Complete the animation of the  progress bar.
@@ -1389,19 +1655,48 @@ export default {
           setTimeout(() => NProgress.done(), 500);
         });
     },
+
+    //-----------------------------  Invoice PDF ------------------------------\\
+    Tax_Invoice_PDF(sale, id) {
+      // Start the progress bar.
+      NProgress.start();
+      NProgress.set(0.1);
+      axios
+        .get("sale_tax_pdf/" + id, {
+          responseType: "blob", // important
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "Sale-Tax-Invoice-" + sale.Ref + ".pdf");
+          document.body.appendChild(link);
+          link.click();
+          // Complete the animation of the  progress bar.
+          setTimeout(() => NProgress.done(), 500);
+        })
+        .catch(() => {
+          // Complete the animation of the  progress bar.
+          setTimeout(() => NProgress.done(), 500);
+        });
+    },
+
     //-----------------------------  Invoice PDF ------------------------------\\
     GatePass_PDF(sale, id) {
       // Start the progress bar.
       NProgress.start();
       NProgress.set(0.1);
-       axios
+      axios
         .get("gate_pass/" + id, {
           responseType: "blob", // important
           headers: {
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         })
-        .then(response => {
+        .then((response) => {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement("a");
           link.href = url;
@@ -1427,10 +1722,10 @@ export default {
         .get("payment_sale_pdf/" + id, {
           responseType: "blob", // important
           headers: {
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         })
-        .then(response => {
+        .then((response) => {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement("a");
           link.href = url;
@@ -1457,7 +1752,7 @@ export default {
         this.Filter_status = "";
       } else if (this.Filter_Payment === null) {
         this.Filter_Payment = "";
-      }else if (this.Filter_shipping === null) {
+      } else if (this.Filter_shipping === null) {
         this.Filter_shipping = "";
       }
     },
@@ -1494,7 +1789,7 @@ export default {
             "&limit=" +
             this.limit
         )
-        .then(response => {
+        .then((response) => {
           this.sales = response.data.sales;
           this.customers = response.data.customers;
           this.warehouses = response.data.warehouses;
@@ -1504,7 +1799,7 @@ export default {
           NProgress.done();
           this.isLoading = false;
         })
-        .catch(response => {
+        .catch((response) => {
           // Complete the animation of theprogress bar.
           NProgress.done();
           setTimeout(() => {
@@ -1514,7 +1809,7 @@ export default {
     },
 
     //---------SMS notification
-     Payment_Sale_SMS(id) {
+    Payment_Sale_SMS(id) {
       // Start the progress bar.
       NProgress.start();
       NProgress.set(0.1);
@@ -1522,22 +1817,21 @@ export default {
         .post("payment_sale_send_sms", {
           id: id,
         })
-        .then(response => {
+        .then((response) => {
+          // Complete the animation of the  progress bar.
+          setTimeout(() => NProgress.done(), 500);
+          this.makeToast("success", this.$t("Send_SMS"), this.$t("Success"));
+        })
+        .catch((error) => {
           // Complete the animation of the  progress bar.
           setTimeout(() => NProgress.done(), 500);
           this.makeToast(
-            "success",
-            this.$t("Send_SMS"),
-            this.$t("Success")
+            "danger",
+            this.$t("sms_config_invalid"),
+            this.$t("Failed")
           );
-        })
-        .catch(error => {
-          // Complete the animation of the  progress bar.
-          setTimeout(() => NProgress.done(), 500);
-          this.makeToast("danger", this.$t("sms_config_invalid"), this.$t("Failed"));
         });
     },
-
 
     Send_Email_Payment(id) {
       // Start the progress bar.
@@ -1546,9 +1840,8 @@ export default {
       axios
         .post("payment_sale_send_email", {
           id: id,
-
         })
-        .then(response => {
+        .then((response) => {
           // Complete the animation of the  progress bar.
           setTimeout(() => NProgress.done(), 500);
           this.makeToast(
@@ -1557,7 +1850,7 @@ export default {
             this.$t("Success")
           );
         })
-        .catch(error => {
+        .catch((error) => {
           // Complete the animation of the  progress bar.
           setTimeout(() => NProgress.done(), 500);
           this.makeToast("danger", this.$t("SMTPIncorrect"), this.$t("Failed"));
@@ -1572,7 +1865,7 @@ export default {
         .post("sales_send_email", {
           id: id,
         })
-        .then(response => {
+        .then((response) => {
           // Complete the animation of the  progress bar.
           setTimeout(() => NProgress.done(), 500);
           this.makeToast(
@@ -1581,15 +1874,15 @@ export default {
             this.$t("Success")
           );
         })
-        .catch(error => {
+        .catch((error) => {
           // Complete the animation of the  progress bar.
           setTimeout(() => NProgress.done(), 500);
           this.makeToast("danger", this.$t("SMTPIncorrect"), this.$t("Failed"));
         });
     },
 
-      //---------SMS notification
-     Sale_SMS(id) {
+    //---------SMS notification
+    Sale_SMS(id) {
       // Start the progress bar.
       NProgress.start();
       NProgress.set(0.1);
@@ -1597,22 +1890,21 @@ export default {
         .post("sales_send_sms", {
           id: id,
         })
-        .then(response => {
+        .then((response) => {
+          // Complete the animation of the  progress bar.
+          setTimeout(() => NProgress.done(), 500);
+          this.makeToast("success", this.$t("Send_SMS"), this.$t("Success"));
+        })
+        .catch((error) => {
           // Complete the animation of the  progress bar.
           setTimeout(() => NProgress.done(), 500);
           this.makeToast(
-            "success",
-            this.$t("Send_SMS"),
-            this.$t("Success")
+            "danger",
+            this.$t("sms_config_invalid"),
+            this.$t("Failed")
           );
-        })
-        .catch(error => {
-          // Complete the animation of the  progress bar.
-          setTimeout(() => NProgress.done(), 500);
-          this.makeToast("danger", this.$t("sms_config_invalid"), this.$t("Failed"));
         });
     },
-
 
     Number_Order_Payment() {
       axios
@@ -1620,14 +1912,13 @@ export default {
         .then(({ data }) => (this.payment.Ref = data));
     },
 
-
     //----------------------------------- New Payment Sale ------------------------------\\
     New_Payment(sale) {
       if (sale.payment_status == "paid") {
         this.$swal({
           icon: "error",
           title: "Oops...",
-          text: this.$t("PaymentComplete")
+          text: this.$t("PaymentComplete"),
         });
       } else {
         // Start the progress bar.
@@ -1639,7 +1930,7 @@ export default {
         this.payment.date = new Date().toISOString().slice(0, 10);
         this.Number_Order_Payment();
         this.payment.montant = sale.due;
-        this.payment.Reglement = 'Cash';
+        this.payment.Reglement = "Cash";
         this.payment.received_amount = sale.due;
         this.due = parseFloat(sale.due);
         this.client_name = sale.client_name;
@@ -1658,14 +1949,16 @@ export default {
       this.reset_form_payment();
       this.EditPaiementMode = true;
 
-      this.payment.id        = payment.id;
-      this.payment.Ref       = payment.Ref;
+      this.payment.id = payment.id;
+      this.payment.Ref = payment.Ref;
       this.payment.Reglement = payment.Reglement;
-      this.payment.date    = payment.date;
-      this.payment.change  = payment.change;
+      this.payment.date = payment.date;
+      this.payment.change = payment.change;
       this.payment.montant = payment.montant;
-      this.payment.received_amount = parseFloat(payment.montant + payment.change).toFixed(2);
-      this.payment.notes   = payment.notes;
+      this.payment.received_amount = parseFloat(
+        payment.montant + payment.change
+      ).toFixed(2);
+      this.payment.notes = payment.notes;
 
       this.due = parseFloat(this.sale_due) + payment.montant;
       setTimeout(() => {
@@ -1673,7 +1966,6 @@ export default {
         NProgress.done();
         this.$bvModal.show("Add_Payment");
       }, 1000);
-
     },
     //-------------------------------Show All Payment with Sale ---------------------\\
     Show_Payments(id, sale) {
@@ -1688,9 +1980,7 @@ export default {
     },
     //----------------------------------Process Payment (Mode Create) ------------------------------\\
     async processPayment_Create() {
-      const { token, error } = await this.stripe.createToken(
-        this.cardElement
-      );
+      const { token, error } = await this.stripe.createToken(this.cardElement);
       if (error) {
         this.paymentProcessing = false;
         NProgress.done();
@@ -1703,8 +1993,12 @@ export default {
             client_id: this.sale.client_id,
             date: this.payment.date,
             montant: parseFloat(this.payment.montant).toFixed(2),
-            received_amount: parseFloat(this.payment.received_amount).toFixed(2),
-            change: parseFloat(this.payment.received_amount - this.payment.montant).toFixed(2),
+            received_amount: parseFloat(this.payment.received_amount).toFixed(
+              2
+            ),
+            change: parseFloat(
+              this.payment.received_amount - this.payment.montant
+            ).toFixed(2),
             Reglement: this.payment.Reglement,
             notes: this.payment.notes,
             token: token.id,
@@ -1712,7 +2006,7 @@ export default {
             selectedCard: this.selectedCard,
             card_id: this.card_id,
           })
-          .then(response => {
+          .then((response) => {
             this.paymentProcessing = false;
             Fire.$emit("Create_Facture_sale");
             this.makeToast(
@@ -1721,7 +2015,7 @@ export default {
               this.$t("Success")
             );
           })
-          .catch(error => {
+          .catch((error) => {
             this.paymentProcessing = false;
             // Complete the animation of the  progress bar.
             NProgress.done();
@@ -1736,28 +2030,36 @@ export default {
       NProgress.start();
       NProgress.set(0.1);
       if (this.payment.Reglement == "credit card" && this.is_new_credit_card) {
-          if(this.stripe_key != ''){
-            this.processPayment_Create();
-          }else{
-            this.makeToast("danger", this.$t("credit_card_account_not_available"), this.$t("Failed"));
-            NProgress.done();
-            this.paymentProcessing = false;
-          }
-        }else{
+        if (this.stripe_key != "") {
+          this.processPayment_Create();
+        } else {
+          this.makeToast(
+            "danger",
+            this.$t("credit_card_account_not_available"),
+            this.$t("Failed")
+          );
+          NProgress.done();
+          this.paymentProcessing = false;
+        }
+      } else {
         axios
           .post("payment_sale", {
             sale_id: this.sale.id,
             date: this.payment.date,
             montant: parseFloat(this.payment.montant).toFixed(2),
-            received_amount: parseFloat(this.payment.received_amount).toFixed(2),
-            change: parseFloat(this.payment.received_amount - this.payment.montant).toFixed(2),
+            received_amount: parseFloat(this.payment.received_amount).toFixed(
+              2
+            ),
+            change: parseFloat(
+              this.payment.received_amount - this.payment.montant
+            ).toFixed(2),
             Reglement: this.payment.Reglement,
             notes: this.payment.notes,
             is_new_credit_card: this.is_new_credit_card,
             selectedCard: this.selectedCard,
             card_id: this.card_id,
           })
-          .then(response => {
+          .then((response) => {
             this.paymentProcessing = false;
             Fire.$emit("Create_Facture_sale");
             this.makeToast(
@@ -1766,7 +2068,7 @@ export default {
               this.$t("Success")
             );
           })
-          .catch(error => {
+          .catch((error) => {
             this.paymentProcessing = false;
             NProgress.done();
           });
@@ -1778,29 +2080,31 @@ export default {
       NProgress.start();
       NProgress.set(0.1);
 
-        axios
-          .put("payment_sale/" + this.payment.id, {
-            sale_id: this.sale.id,
-            date: this.payment.date,
-            montant: parseFloat(this.payment.montant).toFixed(2),
-            received_amount: parseFloat(this.payment.received_amount).toFixed(2),
-            change: parseFloat(this.payment.received_amount - this.payment.montant).toFixed(2),
-            Reglement: this.payment.Reglement,
-            notes: this.payment.notes
-          })
-          .then(response => {
-            this.paymentProcessing = false;
-            Fire.$emit("Update_Facture_sale");
-            this.makeToast(
-              "success",
-              this.$t("Update.TitlePayment"),
-              this.$t("Success")
-            );
-          })
-          .catch(error => {
-            this.paymentProcessing = false;
-            NProgress.done();
-          });
+      axios
+        .put("payment_sale/" + this.payment.id, {
+          sale_id: this.sale.id,
+          date: this.payment.date,
+          montant: parseFloat(this.payment.montant).toFixed(2),
+          received_amount: parseFloat(this.payment.received_amount).toFixed(2),
+          change: parseFloat(
+            this.payment.received_amount - this.payment.montant
+          ).toFixed(2),
+          Reglement: this.payment.Reglement,
+          notes: this.payment.notes,
+        })
+        .then((response) => {
+          this.paymentProcessing = false;
+          Fire.$emit("Update_Facture_sale");
+          this.makeToast(
+            "success",
+            this.$t("Update.TitlePayment"),
+            this.$t("Success")
+          );
+        })
+        .catch((error) => {
+          this.paymentProcessing = false;
+          NProgress.done();
+        });
     },
     //----------------------------------------- Remove Payment ------------------------------\\
     Remove_Payment(id) {
@@ -1812,8 +2116,8 @@ export default {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         cancelButtonText: this.$t("Delete.cancelButtonText"),
-        confirmButtonText: this.$t("Delete.confirmButtonText")
-      }).then(result => {
+        confirmButtonText: this.$t("Delete.confirmButtonText"),
+      }).then((result) => {
         if (result.value) {
           // Start the progress bar.
           NProgress.start();
@@ -1844,7 +2148,7 @@ export default {
     Get_Payments(id) {
       axios
         .get("get_payments_by_sale/" + id)
-        .then(response => {
+        .then((response) => {
           this.payments = response.data.payments;
           this.sale_due = response.data.due;
           setTimeout(() => {
@@ -1869,32 +2173,31 @@ export default {
         montant: "",
         received_amount: "",
         Reglement: "",
-        notes: ""
+        notes: "",
       };
     },
 
-     //---------------------- Get_Data_Create  ------------------------------\\
+    //---------------------- Get_Data_Create  ------------------------------\\
 
-      Get_shipment_by_sale(sale_id) {
-        axios
-            .get("/shipments/" + sale_id)
-            .then(response => {
-                this.shipment   = response.data.shipment;
+    Get_shipment_by_sale(sale_id) {
+      axios
+        .get("/shipments/" + sale_id)
+        .then((response) => {
+          this.shipment = response.data.shipment;
 
-                 setTimeout(() => {
-                    NProgress.done();
-                    this.$bvModal.show("modal_shipment");
-                }, 1000);
-            })
-            .catch(error => {
-              NProgress.done();
-
-            });
+          setTimeout(() => {
+            NProgress.done();
+            this.$bvModal.show("modal_shipment");
+          }, 1000);
+        })
+        .catch((error) => {
+          NProgress.done();
+        });
     },
 
-      //------------- Submit Validation Edit shipment
-      Submit_Shipment() {
-      this.$refs.shipment_ref.validate().then(success => {
+    //------------- Submit Validation Edit shipment  ------------------------------\\
+    Submit_Shipment() {
+      this.$refs.shipment_ref.validate().then((success) => {
         if (!success) {
           this.makeToast(
             "danger",
@@ -1907,7 +2210,7 @@ export default {
       });
     },
 
-      //----------------------- Update_Shipment ---------------------------\\
+    //----------------------- Update_Shipment ---------------------------\\
     Update_Shipment() {
       var self = this;
       self.Submit_Processing_shipment = true;
@@ -1917,10 +2220,12 @@ export default {
           sale_id: self.shipment.sale_id,
           shipping_address: self.shipment.shipping_address,
           delivered_to: self.shipment.delivered_to,
+          driver_name: self.shipment.driver_name,
+          vehical_number: self.shipment.vehical_number,
           shipping_details: self.shipment.shipping_details,
-          status: self.shipment.status
+          status: self.shipment.status,
         })
-        .then(response => {
+        .then((response) => {
           this.makeToast(
             "success",
             this.$t("Updated_in_successfully"),
@@ -1929,14 +2234,13 @@ export default {
           Fire.$emit("event_update_shipment");
           self.Submit_Processing_shipment = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.makeToast("danger", this.$t("InvalidData"), this.$t("Failed"));
           self.Submit_Processing_shipment = false;
         });
     },
 
-
-     //------------------------------ Show Modal (Edit shipment) -------------------------------\\
+    //------------------------------ Show Modal (Edit shipment) -------------------------------\\
     Edit_Shipment(sale_id) {
       NProgress.start();
       NProgress.set(0.1);
@@ -1944,7 +2248,15 @@ export default {
       this.Get_shipment_by_sale(sale_id);
     },
 
-      //-------------------------------- Reset Form -------------------------------\\
+    //------------------------------ Show Modal (Edit shipment) -------------------------------\\
+    create_pass_selected() {
+      NProgress.start();
+      NProgress.set(0.1);
+      this.reset_Form_shipment();
+      //   this.Get_shipment_by_sale(sale_id);
+    },
+
+    //-------------------------------- Reset Form -------------------------------\\
     reset_Form_shipment() {
       this.shipment = {
         id: "",
@@ -1953,17 +2265,23 @@ export default {
         sale_id: "",
         attachment: "",
         delivered_to: "",
+        driver_name: "",
+        vehical_number: "",
         shipping_address: "",
         status: "",
-        shipping_details: ""
+        shipping_details: "",
       };
     },
 
     //------------------------------------------ Remove Sale ------------------------------\\
-    Remove_Sale(id , sale_has_return) {
-      if(sale_has_return == 'yes'){
-        this.makeToast("danger", this.$t("Return_exist_for_the_Transaction"), this.$t("Failed"));
-      }else{
+    Remove_Sale(id, sale_has_return) {
+      if (sale_has_return == "yes") {
+        this.makeToast(
+          "danger",
+          this.$t("Return_exist_for_the_Transaction"),
+          this.$t("Failed")
+        );
+      } else {
         this.$swal({
           title: this.$t("Delete.Title"),
           text: this.$t("Delete.Text"),
@@ -1972,8 +2290,8 @@ export default {
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
           cancelButtonText: this.$t("Delete.cancelButtonText"),
-          confirmButtonText: this.$t("Delete.confirmButtonText")
-        }).then(result => {
+          confirmButtonText: this.$t("Delete.confirmButtonText"),
+        }).then((result) => {
           if (result.value) {
             // Start the progress bar.
             NProgress.start();
@@ -2011,15 +2329,15 @@ export default {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         cancelButtonText: this.$t("Delete.cancelButtonText"),
-        confirmButtonText: this.$t("Delete.confirmButtonText")
-      }).then(result => {
+        confirmButtonText: this.$t("Delete.confirmButtonText"),
+      }).then((result) => {
         if (result.value) {
           // Start the progress bar.
           NProgress.start();
           NProgress.set(0.1);
           axios
             .post("sales_delete_by_selection", {
-              selectedIds: this.selectedIds
+              selectedIds: this.selectedIds,
             })
             .then(() => {
               this.$swal(
@@ -2040,7 +2358,7 @@ export default {
             });
         }
       });
-    }
+    },
   },
   //----------------------------- Created function-------------------\\
   created() {
@@ -2054,9 +2372,7 @@ export default {
       }, 800);
     });
 
-
     Fire.$on("Update_Facture_sale", () => {
-
       setTimeout(() => {
         NProgress.done();
         this.$bvModal.hide("Add_Payment");
@@ -2064,7 +2380,6 @@ export default {
         this.Get_Sales(this.serverParams.page);
       }, 800);
     });
-
 
     Fire.$on("Delete_Facture_sale", () => {
       setTimeout(() => {
@@ -2074,7 +2389,6 @@ export default {
       }, 800);
     });
 
-
     Fire.$on("Delete_sale", () => {
       setTimeout(() => {
         this.Get_Sales(this.serverParams.page);
@@ -2083,21 +2397,21 @@ export default {
       }, 800);
     });
 
-     Fire.$on("event_update_shipment", () => {
+    Fire.$on("event_update_shipment", () => {
       setTimeout(() => {
         this.Get_Sales(this.serverParams.page);
         this.$bvModal.hide("modal_shipment");
       }, 800);
     });
-  }
+  },
 };
 </script>
 
 <style>
-  .total{
-    font-weight: bold;
-    font-size: 14px;
-    /* text-transform: uppercase;
+.total {
+  font-weight: bold;
+  font-size: 14px;
+  /* text-transform: uppercase;
     height: 50px; */
-  }
+}
 </style>

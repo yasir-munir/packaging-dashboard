@@ -295,7 +295,7 @@
               <span class="item-name">{{$t('AddProduct')}}</span>
             </router-link>
           </li>
-          <li
+          <!-- <li
             class="nav-item"
             v-if="currentUserPermissions && currentUserPermissions.includes('products_add')"
           >
@@ -312,7 +312,7 @@
               <i class="nav-icon i-Add-File"></i>
               <span class="item-name">{{$t('AddCarton')}}</span>
             </router-link>
-          </li>
+          </li> -->
 
           <li
             class="nav-item"

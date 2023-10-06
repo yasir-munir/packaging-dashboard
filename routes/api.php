@@ -435,7 +435,8 @@ Route::middleware(['auth:api', 'Is_Active'])->group(function () {
     //------------------------------------------------------------------\\
 
     Route::get('sale_pdf/{id}', 'SalesController@Sale_PDF');
-    Route::get('gate_pass/{id}', 'SalesController@GatePass_PDF');
+    Route::get('sale_tax_pdf/{id}', 'SalesController@Sale_Tax_PDF');
+    Route::get('gate_pass/{id}', 'ShipmentController@GatePass_PDF');
     Route::get('quote_pdf/{id}', 'QuotationsController@Quotation_pdf');
     Route::get('purchase_pdf/{id}', 'PurchasesController@Purchase_pdf');
     Route::get('return_sale_pdf/{id}', 'SalesReturnController@Return_pdf');

@@ -1,7 +1,10 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="$t('Shipments')" :folder="$t('Sales')"/>
-    <div v-if="isLoading" class="loading_page spinner spinner-primary mr-3"></div>
+    <breadcumb :page="$t('Shipments')" :folder="$t('Sales')" />
+    <div
+      v-if="isLoading"
+      class="loading_page spinner spinner-primary mr-3"
+    ></div>
     <div v-else>
       <vue-good-table
         mode="remote"
@@ -13,43 +16,66 @@
         @on-sort-change="onSortChange"
         @on-search="onSearch"
         :search-options="{
-        placeholder: $t('Search_this_table'),
-        enabled: true,
-      }"
-        :select-options="{ 
-          enabled: true ,
+          placeholder: $t('Search_this_table'),
+          enabled: true,
+        }"
+        :select-options="{
+          enabled: true,
           clearSelectionText: '',
         }"
         @on-selected-rows-change="selectionChanged"
         :pagination-options="{
-        enabled: true,
-        mode: 'records',
-        nextLabel: 'next',
-        prevLabel: 'prev',
-      }"
-        :styleClass="showDropdown?'tableOne table-hover vgt-table full-height':'tableOne table-hover vgt-table non-height'"
+          enabled: true,
+          mode: 'records',
+          nextLabel: 'next',
+          prevLabel: 'prev',
+        }"
+        :styleClass="
+          showDropdown
+            ? 'tableOne table-hover vgt-table full-height'
+            : 'tableOne table-hover vgt-table non-height'
+        "
       >
         <div slot="table-actions" class="mt-2 mb-3">
-          <b-button @click="Shipments_pdf()" size="sm" variant="outline-success ripple m-1">
+          <b-button
+            @click="Shipments_pdf()"
+            size="sm"
+            variant="outline-success ripple m-1"
+          >
             <i class="i-File-Copy"></i> PDF
           </b-button>
-           <vue-excel-xlsx
-              class="btn btn-sm btn-outline-danger ripple m-1"
-              :data="shipments"
-              :columns="columns"
-              :file-name="'shipments'"
-              :file-type="'xlsx'"
-              :sheet-name="'shipments'"
-              >
-              <i class="i-File-Excel"></i> EXCEL
+          <vue-excel-xlsx
+            class="btn btn-sm btn-outline-danger ripple m-1"
+            :data="shipments"
+            :columns="columns"
+            :file-name="'shipments'"
+            :file-type="'xlsx'"
+            :sheet-name="'shipments'"
+          >
+            <i class="i-File-Excel"></i> EXCEL
           </vue-excel-xlsx>
         </div>
 
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'actions'">
             <a
+              @click="Print_Shipment(props.row)"
+              v-if="
+                currentUserPermissions &&
+                currentUserPermissions.includes('shipment')
+              "
+              title="Print"
+              class="cursor-pointer"
+              v-b-tooltip.hover
+            >
+              <i class="i-Billing text-25 text-success"></i>
+            </a>
+            <a
               @click="Edit_Shipment(props.row)"
-              v-if="currentUserPermissions && currentUserPermissions.includes('shipment')"
+              v-if="
+                currentUserPermissions &&
+                currentUserPermissions.includes('shipment')
+              "
               title="Edit"
               class="cursor-pointer"
               v-b-tooltip.hover
@@ -60,7 +86,10 @@
               title="Delete"
               class="cursor-pointer"
               v-b-tooltip.hover
-              v-if="currentUserPermissions && currentUserPermissions.includes('shipment')"
+              v-if="
+                currentUserPermissions &&
+                currentUserPermissions.includes('shipment')
+              "
               @click="Remove_Shipment(props.row.id)"
             >
               <i class="i-Close-Window text-25 text-danger"></i>
@@ -71,24 +100,30 @@
             <span
               v-if="props.row.status == 'ordered'"
               class="badge badge-outline-warning"
-            >{{$t('Ordered')}}</span>
+              >{{ $t("Ordered") }}</span
+            >
 
             <span
               v-else-if="props.row.status == 'packed'"
               class="badge badge-outline-info"
-            >{{$t('Packed')}}</span>
+              >{{ $t("Packed") }}</span
+            >
 
             <span
               v-else-if="props.row.status == 'shipped'"
               class="badge badge-outline-secondary"
-            >{{$t('Shipped')}}</span>
+              >{{ $t("Shipped") }}</span
+            >
 
-             <span
+            <span
               v-else-if="props.row.status == 'delivered'"
               class="badge badge-outline-success"
-            >{{$t('Delivered')}}</span>
+              >{{ $t("Delivered") }}</span
+            >
 
-            <span v-else class="badge badge-outline-danger">{{$t('Cancelled')}}</span>
+            <span v-else class="badge badge-outline-danger">{{
+              $t("Cancelled")
+            }}</span>
           </div>
         </template>
       </vue-good-table>
@@ -96,33 +131,65 @@
 
     <!-- Modal Edit Shipment -->
     <validation-observer ref="shipment_ref">
-      <b-modal hide-footer size="md" id="modal_shipment" :title="$t('Edit')">
+      <b-modal
+        hide-footer
+        size="md"
+        id="modal_shipment"
+        :title="$t('GatePass')"
+      >
         <b-form @submit.prevent="Submit_Shipment">
           <b-row>
             <!-- Status  -->
             <b-col md="12">
-              <validation-provider name="Status" :rules="{ required: true}">
-                <b-form-group slot-scope="{ valid, errors }" :label="$t('Status') + ' ' + '*'">
+              <validation-provider name="Status" :rules="{ required: true }">
+                <b-form-group
+                  slot-scope="{ valid, errors }"
+                  :label="$t('Status') + ' ' + '*'"
+                >
                   <v-select
-                    :class="{'is-invalid': !!errors.length}"
-                    :state="errors[0] ? false : (valid ? true : null)"
+                    :class="{ 'is-invalid': !!errors.length }"
+                    :state="errors[0] ? false : valid ? true : null"
                     v-model="shipment.status"
-                    :reduce="label => label.value"
+                    :reduce="(label) => label.value"
                     :placeholder="$t('Choose_Status')"
-                    :options="
-                                [
-                                  {label: 'Ordered', value: 'ordered'},
-                                  {label: 'Packed', value: 'packed'},
-                                  {label: 'Shipped', value: 'shipped'},
-                                  {label: 'Delivered', value: 'delivered'},
-                                  {label: 'Cancelled', value: 'cancelled'},
-                                ]"
+                    :options="[
+                      { label: 'Ordered', value: 'ordered' },
+                      { label: 'Packed', value: 'packed' },
+                      { label: 'Shipped', value: 'shipped' },
+                      { label: 'Delivered', value: 'delivered' },
+                      { label: 'Cancelled', value: 'cancelled' },
+                    ]"
                   ></v-select>
-                  <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
+                  <b-form-invalid-feedback>{{
+                    errors[0]
+                  }}</b-form-invalid-feedback>
                 </b-form-group>
               </validation-provider>
             </b-col>
 
+            <!-- Driver Name -->
+            <b-col md="12">
+              <b-form-group :label="$t('driverName')">
+                <b-form-input
+                  label="driver_name"
+                  v-model="shipment.driver_name"
+                  :placeholder="$t('driverName')"
+                ></b-form-input>
+              </b-form-group>
+            </b-col>
+
+            <!-- Vehical Number -->
+            <b-col md="12">
+              <b-form-group :label="$t('vehicalNumber')">
+                <b-form-input
+                  label="vehical_number"
+                  v-model="shipment.vehical_number"
+                  :placeholder="$t('vehicalNumber')"
+                ></b-form-input>
+              </b-form-group>
+            </b-col>
+
+            <!-- Delivered To -->
             <b-col md="12">
               <b-form-group :label="$t('delivered_to')">
                 <b-form-input
@@ -160,7 +227,9 @@
                 variant="primary"
                 type="submit"
                 :disabled="SubmitProcessing"
-              ><i class="i-Yes me-2 font-weight-bold"></i> {{$t('submit')}}</b-button>
+                ><i class="i-Yes me-2 font-weight-bold"></i>
+                {{ $t("submit") }}</b-button
+              >
               <div v-once class="typo__p" v-if="SubmitProcessing">
                 <div class="spinner sm spinner-primary mt-3"></div>
               </div>
@@ -181,7 +250,7 @@ import "jspdf-autotable";
 
 export default {
   metaInfo: {
-    title: "Shipment"
+    title: "Shipment",
   },
   data() {
     return {
@@ -192,16 +261,16 @@ export default {
         columnFilters: {},
         sort: {
           field: "id",
-          type: "desc"
+          type: "desc",
         },
         page: 1,
-        perPage: 10
+        perPage: 10,
       },
       totalRows: "",
       search: "",
       limit: "10",
       shipments: [],
-      shipment: {}
+      shipment: {},
     };
   },
 
@@ -213,38 +282,38 @@ export default {
           label: this.$t("date"),
           field: "date",
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
         {
           label: this.$t("shipment_ref"),
           field: "shipment_ref",
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
 
         {
           label: this.$t("sale_ref"),
           field: "sale_ref",
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
         {
           label: this.$t("Customer"),
           field: "customer_name",
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
         {
           label: this.$t("warehouse"),
           field: "warehouse_name",
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
         {
           label: this.$t("Status"),
           field: "status",
           tdClass: "text-left",
-          thClass: "text-left"
+          thClass: "text-left",
         },
 
         {
@@ -253,16 +322,16 @@ export default {
           html: true,
           tdClass: "text-right",
           thClass: "text-right",
-          sortable: false
-        }
+          sortable: false,
+        },
       ];
-    }
+    },
   },
 
   methods: {
     //------------- Submit Validation Edit shipment
     Submit_Shipment() {
-      this.$refs.shipment_ref.validate().then(success => {
+      this.$refs.shipment_ref.validate().then((success) => {
         if (!success) {
           this.makeToast(
             "danger",
@@ -310,8 +379,8 @@ export default {
       this.updateParams({
         sort: {
           type: params[0].type,
-          field: params[0].field
-        }
+          field: params[0].field,
+        },
       });
       this.Get_shipments(this.serverParams.page);
     },
@@ -332,7 +401,7 @@ export default {
       this.$root.$bvToast.toast(msg, {
         title: title,
         variant: variant,
-        solid: true
+        solid: true,
       });
     },
 
@@ -340,14 +409,16 @@ export default {
     Shipments_pdf() {
       var self = this;
 
-      let pdf = new jsPDF("p", "pt");
+      let pdf = new jsPDF("l", "pt");
       let columns = [
         { title: "Date", dataKey: "date" },
         { title: "Shipment Ref", dataKey: "shipment_ref" },
         { title: "Sale Ref", dataKey: "sale_ref" },
         { title: "Customer", dataKey: "customer_name" },
         { title: "Warehouse", dataKey: "warehouse_name" },
-        { title: "Status", dataKey: "status" }
+        { title: "Driver", dataKey: "driver_name" },
+        { title: "Vehical", dataKey: "vehical_number" },
+        { title: "Status", dataKey: "status" },
       ];
       pdf.autoTable(columns, self.shipments);
       pdf.text("Shipments", 40, 25);
@@ -372,7 +443,7 @@ export default {
             "&limit=" +
             this.limit
         )
-        .then(response => {
+        .then((response) => {
           this.shipments = response.data.shipments;
           this.totalRows = response.data.totalRows;
 
@@ -380,7 +451,7 @@ export default {
           NProgress.done();
           this.isLoading = false;
         })
-        .catch(response => {
+        .catch((response) => {
           // Complete the animation of theprogress bar.
           NProgress.done();
           setTimeout(() => {
@@ -388,7 +459,6 @@ export default {
           }, 500);
         });
     },
-
 
     //------------------------------ Show Modal (Edit shipment) -------------------------------\\
     Edit_Shipment(shipment) {
@@ -402,7 +472,6 @@ export default {
         NProgress.done();
         this.$bvModal.show("modal_shipment");
       }, 800);
-     
     },
 
     //----------------------- Update_Shipment ---------------------------\\
@@ -414,10 +483,12 @@ export default {
           sale_id: self.shipment.sale_id,
           shipping_address: self.shipment.shipping_address,
           delivered_to: self.shipment.delivered_to,
+          driver_name: self.shipment.driver_name,
+          vehical_number: self.shipment.vehical_number,
           shipping_details: self.shipment.shipping_details,
-          status: self.shipment.status
+          status: self.shipment.status,
         })
-        .then(response => {
+        .then((response) => {
           this.makeToast(
             "success",
             this.$t("Updated_in_successfully"),
@@ -426,9 +497,58 @@ export default {
           Fire.$emit("event_update_shipment");
           self.SubmitProcessing = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.makeToast("danger", this.$t("InvalidData"), this.$t("Failed"));
           self.SubmitProcessing = false;
+        });
+    },
+
+
+    //--------------------------------- Shipments PDF -------------------------------\\
+    Print_Shipments_pdf() {
+      var self = this;
+
+      let pdf = new jsPDF("p", "pt");
+      let columns = [
+        { title: "Date", dataKey: "date" },
+        { title: "Shipment Ref", dataKey: "shipment_ref" },
+        { title: "Sale Ref", dataKey: "sale_ref" },
+        { title: "Customer", dataKey: "customer_name" },
+        { title: "Warehouse", dataKey: "warehouse_name" },
+        { title: "Status", dataKey: "status" },
+      ];
+      pdf.autoTable(columns, self.shipments);
+      pdf.text("Shipments", 40, 25);
+      pdf.save("Shipments.pdf");
+    },
+
+  //----------------------------- Created function-------------------
+  Print_Shipment(id) {
+      // Start the progress bar.
+
+      console.log(' GatePass ID: '+id['id']);
+      NProgress.start();
+      NProgress.set(0.1);
+      axios
+        .get("gate_pass/" + id['id'], {
+          responseType: "blob", // important
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "GatePass-" + sale.Ref + ".pdf");
+          document.body.appendChild(link);
+          link.click();
+          // Complete the animation of the  progress bar.
+          setTimeout(() => NProgress.done(), 500);
+        })
+        .catch(() => {
+          // Complete the animation of the  progress bar.
+          setTimeout(() => NProgress.done(), 500);
         });
     },
 
@@ -441,9 +561,11 @@ export default {
         sale_id: "",
         attachment: "",
         delivered_to: "",
+        driver_name: "",
+        vehical_number: "",
         shipping_address: "",
         status: "",
-        shipping_details: ""
+        shipping_details: "",
       };
     },
 
@@ -457,8 +579,8 @@ export default {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         cancelButtonText: this.$t("Delete.cancelButtonText"),
-        confirmButtonText: this.$t("Delete.confirmButtonText")
-      }).then(result => {
+        confirmButtonText: this.$t("Delete.confirmButtonText"),
+      }).then((result) => {
         if (result.value) {
           axios
             .delete("shipments/" + id)
@@ -479,12 +601,12 @@ export default {
             });
         }
       });
-    }
+    },
   }, // END METHODS
 
   //----------------------------- Created function-------------------
 
-  created: function() {
+  created: function () {
     this.Get_shipments(1);
 
     Fire.$on("event_update_shipment", () => {
@@ -499,6 +621,7 @@ export default {
         this.Get_shipments(this.serverParams.page);
       }, 500);
     });
-  }
+  },
+
 };
 </script>
