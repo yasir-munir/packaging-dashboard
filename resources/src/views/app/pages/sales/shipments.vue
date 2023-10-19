@@ -59,7 +59,7 @@
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'actions'">
             <a
-              @click="Print_Shipment(props.row)"
+              @click="Print_Shipment(props.row, props.row.id)"
               v-if="
                 currentUserPermissions &&
                 currentUserPermissions.includes('shipment')
@@ -540,7 +540,7 @@ export default {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", "GatePass-" + sale.Ref + ".pdf");
+          link.setAttribute("download", "GatePass-"+id['shipment_ref']+".pdf");
           document.body.appendChild(link);
           link.click();
           // Complete the animation of the  progress bar.

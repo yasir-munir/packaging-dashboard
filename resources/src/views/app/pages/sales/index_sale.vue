@@ -1685,32 +1685,32 @@ export default {
     },
 
     //-----------------------------  Invoice PDF ------------------------------\\
-    GatePass_PDF(sale, id) {
-      // Start the progress bar.
-      NProgress.start();
-      NProgress.set(0.1);
-      axios
-        .get("gate_pass/" + id, {
-          responseType: "blob", // important
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", "GatePass-" + sale.Ref + ".pdf");
-          document.body.appendChild(link);
-          link.click();
-          // Complete the animation of the  progress bar.
-          setTimeout(() => NProgress.done(), 500);
-        })
-        .catch(() => {
-          // Complete the animation of the  progress bar.
-          setTimeout(() => NProgress.done(), 500);
-        });
-    },
+    // GatePass_PDF(sale, id) {
+    //   // Start the progress bar.
+    //   NProgress.start();
+    //   NProgress.set(0.1);
+    //   axios
+    //     .get("gate_pass/" + id, {
+    //       responseType: "blob", // important
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //     })
+    //     .then((response) => {
+    //       const url = window.URL.createObjectURL(new Blob([response.data]));
+    //       const link = document.createElement("a");
+    //       link.href = url;
+    //       link.setAttribute("download", "GatePass-" + sale.Ref + ".pdf");
+    //       document.body.appendChild(link);
+    //       link.click();
+    //       // Complete the animation of the  progress bar.
+    //       setTimeout(() => NProgress.done(), 500);
+    //     })
+    //     .catch(() => {
+    //       // Complete the animation of the  progress bar.
+    //       setTimeout(() => NProgress.done(), 500);
+    //     });
+    // },
 
     //------------------------ Payments Sale PDF ------------------------------\\
     Payment_Sale_PDF(payment, id) {
