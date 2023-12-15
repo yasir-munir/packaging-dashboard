@@ -6,7 +6,7 @@
     <validation-observer ref="Create_Product" v-if="!isLoading">
       <b-form @submit.prevent="Submit_Product" enctype="multipart/form-data">
         <b-row>
-          <b-col md="8" class="mb-2">
+          <b-col md="10" class="mb-2">
             <b-card class="mt-3">
               <b-row>
                 <!-- Name -->
@@ -237,7 +237,7 @@
                               [
                               {label: 'Reel', value: 'is_reel'},
                               {label: 'Roll', value: 'is_roll'},
-                              {label: 'Carton', value: 'is_carton'}
+                              // {label: 'Carton', value: 'is_carton'}
                               ]"
                         ></v-select>
                         <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
@@ -407,11 +407,14 @@
                         <tr>
                           <th scope="col">{{$t('Variant_code')}}</th>
                           <th scope="col">{{$t('Variant_Name')}}</th>
-                          <th scope="col">{{$t('Variant_Width')}}</th>
-                          <th scope="col">{{$t('Variant_Weight')}}</th>
                           <th scope="col">{{$t('Variant_Paper_Grams')}}</th>
+                          <th scope="col">{{$t('Variant_BF')}}</th>
+                          <th scope="col">{{$t('Variant_RCT')}}</th>
                           <th scope="col">{{$t('Variant_Paper_Type')}}</th>
                           <th scope="col">{{$t('Variant_Paper_Shade')}}</th>
+                          <th scope="col">{{$t('Variant_Top')}}</th>
+                          <th scope="col">{{$t('Variant_Flute')}}</th>
+                          <th scope="col">{{$t('Variant_Back')}}</th>
                           <th scope="col">{{$t('Variant_cost')}}</th>
                           <th scope="col">{{$t('Variant_price')}}</th>
                           <th scope="col"></th>
@@ -429,19 +432,71 @@
                             <input required  class="form-control" v-model="variant.text">
                           </td>
                           <td>
+                            <input required class="form-control" v-model="variant.paperGram">
+                            <!-- <v-select
+                                v-model="variant.paperGram"
+                                :options="
+                                    [
+                                    {label: '90', value: '90'},
+                                    {label: '115', value: '115'},
+                                    {label: '125', value: '125'}
+                                    ]"
+                                ></v-select> -->
+                          </td>
+                          <td>
                             <input required class="form-control" v-model="variant.width">
                           </td>
                           <td>
-                            <input required class="form-control" v-model="variant.weight">
-                          </td>
-                          <td>
-                            <input required class="form-control" v-model="variant.paperGram">
+                            <input required class="form-control" v-model="variant.rct">
                           </td>
                           <td>
                             <input required class="form-control" v-model="variant.paperType">
                           </td>
                           <td>
                             <input required class="form-control" v-model="variant.paperShade">
+                            <!-- <v-select
+                                v-model="variant.paperShade"
+                                :options="
+                                    [
+                                    {label: 'Natural', value: 'Natural'},
+                                    {label: 'Refish Craft', value: 'Refish Craft'},
+                                    {label: 'Yellow', value: 'Yellow'},
+                                    {label: 'White', value: 'White'}
+                                    ]"
+                                ></v-select> -->
+                          </td>
+                          <td>
+                            <!-- <input required class="form-control" v-model="variant.top"> -->
+                            <v-select
+                                v-model="variant.top"
+                                :options="
+                                    [
+                                    {label: 'Yes', value: 'Yes'},
+                                    {label: 'No', value: 'No'},
+                                    ]"
+                                ></v-select>
+                          </td>
+                          <td>
+                            <!-- <input required class="form-control" v-model="variant.flute"> -->
+                            <v-select
+                                v-model="variant.flute"
+                                :options="
+                                    [
+                                    {label: 'Yes', value: 'Yes'},
+                                    {label: 'No', value: 'No'},
+                                    ]"
+                                ></v-select>
+                          </td>
+                          <td>
+                            <!-- <input required class="form-control" v-model="variant.back"> -->
+                            <v-select
+                                v-model="variant.back"
+                                :options="
+                                    [
+                                    {label: 'Yes', value: 'Yes'},
+                                    {label: 'No', value: 'No'},
+                                    ]"
+                                ></v-select>
                           </td>
                           <td>
                             <input required class="form-control" v-model="variant.cost">
@@ -464,7 +519,7 @@
                     </table>
                   </div>
                 </div>
-                <div class="col-md-12 mb-2" v-if="product.type == 'is_variant' && product.listingtype == 'is_roll'" >
+                <!-- <div class="col-md-12 mb-2" v-if="product.type == 'is_variant' && product.listingtype == 'is_roll'" >
                     <div class="table-responsive">
                       <table class="table table-hover table-sm">
                         <thead class="bg-gray-300">
@@ -591,7 +646,7 @@
                         </tbody>
                       </table>
                     </div>
-                  </div>
+                  </div> -->
               </b-row>
             </b-card>
 
@@ -626,7 +681,7 @@
             </b-card>
           </b-col>
 
-          <b-col md="4">
+          <b-col md="2">
             <!-- upload-multiple-image -->
             <b-card>
               <div class="card-header">
@@ -698,7 +753,7 @@ export default {
       roles: {},
       variants: [],
       product: {
-        type: "is_single",
+        type: "is_variant",
         name: "",
         code: "",
         Type_barcode: "CODE128",
@@ -708,6 +763,7 @@ export default {
         category_id: "",
         TaxNet: "0",
         tax_method: "1",
+        listingtype: "is_reel",
         unit_id: "",
         unit_sale_id: "",
         unit_purchase_id: "",

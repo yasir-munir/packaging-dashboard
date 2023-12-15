@@ -38,4 +38,9 @@ class Client extends Model
     protected $casts = [
         'code' => 'integer',
     ];
+
+    public function purchaseorders()
+    {
+        return $this->hasMany('App\Models\PurchaseOrder');
+    }
 }

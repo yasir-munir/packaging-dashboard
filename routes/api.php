@@ -208,6 +208,17 @@ Route::middleware(['auth:api', 'Is_Active'])->group(function () {
     Route::get('pos/get_products_pos', 'PosController@GetProductsByParametre');
     Route::get('pos/data_create_pos', 'PosController@GetELementPos');
 
+    //------------------------------- PURCHASE ORDERS --------------------------\\
+    //------------------------------------------------------------------\\
+
+    Route::resource('purchase_order', 'PurchaseOrderController');
+    Route::get('get_payments_by_purchase/{id}', 'PurchaseOrderController@Get_Payments');
+    Route::get('get_po_detail/{id}', 'PurchaseOrderController@Get_PO_Details');
+    Route::post('purchase_send_email', 'PurchaseOrderController@Send_Email');
+    Route::post('purchase_send_sms', 'PurchaseOrderController@Send_SMS');
+    Route::post('purchases_delete_by_selection', 'PurchaseOrderController@delete_by_selection');
+    Route::get('get_Products_by_purchase/{id}', 'PurchaseOrderController@get_Products_by_purchase');
+
     //------------------------------- PRODUCTS --------------------------\\
     //------------------------------------------------------------------\\
 
@@ -227,6 +238,24 @@ Route::middleware(['auth:api', 'Is_Active'])->group(function () {
 
     Route::resource('categories', 'CategorieController');
     Route::post('categories/delete/by_selection', 'CategorieController@delete_by_selection');
+
+    //------------------------------- Shade --------------------------\\
+    //------------------------------------------------------------------\\
+
+    Route::resource('shades', 'ShadeController');
+    Route::post('shades/delete/by_selection', 'ShadeController@delete_by_selection');
+
+    //------------------------------- Grams --------------------------\\
+    //------------------------------------------------------------------\\
+
+    Route::resource('grams', 'GramsController');
+    Route::post('grams/delete/by_selection', 'GramsController@delete_by_selection');
+
+    //------------------------------- Reel --------------------------\\
+    //------------------------------------------------------------------\\
+
+    Route::resource('reelsize', 'ReelSizeController');
+    Route::post('reelsize/delete/by_selection', 'ReelSizeController@delete_by_selection');
 
     //------------------------------- Units --------------------------\\
     //------------------------------------------------------------------\\

@@ -24,6 +24,23 @@
               <span class="nav-text">{{ $t("dashboard") }}</span>
             </router-link>
           </li>
+          <!-- Purchase Order -->
+          <li
+          v-show="currentUserPermissions && (currentUserPermissions.includes('Purchases_view')
+                      || currentUserPermissions.includes('Purchases_add'))"
+          @mouseenter="toggleSubMenu"
+          class="nav-item"
+          :class="{ active: selectedParentMenu == 'purchase_order' }"
+          data-item="purchase_order"
+          :data-submenu="true"
+        >
+          <a class="nav-item-hold" href="#">
+            <i class="nav-icon i-Receipt"></i>
+            <span class="nav-text">{{$t('Sales Order')}}</span>
+          </a>
+          <div class="square"></div>
+        </li>
+        <!-- End Purchase Order  -->
           <li
             v-show="currentUserPermissions
             && (currentUserPermissions.includes('products_add')
@@ -281,6 +298,32 @@
       class="sidebar-left-secondary ps rtl-ps-none"
     >
       <div ref="sidebarChild">
+
+        <ul
+          class="childNav d-none"
+          data-parent="purchase_order"
+          :class="{ 'd-block': selectedParentMenu == 'purchase_order' }"
+        >
+          <li
+            class="nav-item"
+            v-if="currentUserPermissions && currentUserPermissions.includes('Purchases_add')"
+          >
+            <router-link tag="a" class to="/app/purchase_order/store">
+              <i class="nav-icon i-Add-File"></i>
+              <span class="item-name">{{$t('Add Sales Order')}}</span>
+            </router-link>
+          </li>
+          <li
+            class="nav-item"
+            v-if="currentUserPermissions && currentUserPermissions.includes('Purchases_view')"
+          >
+            <router-link tag="a" class to="/app/purchase_order/list">
+              <i class="nav-icon i-Files"></i>
+              <span class="item-name">{{$t('List Sales Orders')}}</span>
+            </router-link>
+          </li>
+        </ul>
+
         <ul
           class="childNav d-none"
           data-parent="products"
@@ -295,7 +338,7 @@
               <span class="item-name">{{$t('AddProduct')}}</span>
             </router-link>
           </li>
-          <!-- <li
+          <li
             class="nav-item"
             v-if="currentUserPermissions && currentUserPermissions.includes('products_add')"
           >
@@ -312,7 +355,7 @@
               <i class="nav-icon i-Add-File"></i>
               <span class="item-name">{{$t('AddCarton')}}</span>
             </router-link>
-          </li> -->
+          </li>
 
           <li
             class="nav-item"
@@ -343,11 +386,38 @@
           </li>
           <li
             class="nav-item"
+            v-if="currentUserPermissions && currentUserPermissions.includes('category')"
+          >
+            <router-link tag="a" class to="/app/products/Shades">
+              <i class="nav-icon i-Duplicate-Layer"></i>
+              <span class="item-name">{{$t('Shades')}}</span>
+            </router-link>
+          </li>
+          <li
+            class="nav-item"
+            v-if="currentUserPermissions && currentUserPermissions.includes('category')"
+          >
+            <router-link tag="a" class to="/app/products/Grams">
+              <i class="nav-icon i-Duplicate-Layer"></i>
+              <span class="item-name">{{$t('Grams')}}</span>
+            </router-link>
+          </li>
+          <li
+            class="nav-item"
+            v-if="currentUserPermissions && currentUserPermissions.includes('category')"
+          >
+            <router-link tag="a" class to="/app/products/ReelSize">
+              <i class="nav-icon i-Duplicate-Layer"></i>
+              <span class="item-name">{{$t('Reel Size')}}</span>
+            </router-link>
+          </li>
+          <li
+            class="nav-item"
             v-if="currentUserPermissions && currentUserPermissions.includes('brand')"
           >
             <router-link tag="a" class to="/app/products/Brands">
               <i class="nav-icon i-Bookmark"></i>
-              <span class="item-name">{{$t('Brand')}}</span>
+              <span class="item-name">{{$t('Type')}}</span>
             </router-link>
           </li>
           <li

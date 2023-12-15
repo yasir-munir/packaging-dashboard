@@ -6,9 +6,12 @@ use App\Models\User;
 use App\Models\UserWarehouse;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Grams;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\product_warehouse;
+use App\Models\ReelSize;
+use App\Models\Shade;
 use App\Models\Unit;
 use App\Models\Warehouse;
 use App\utils\helpers;
@@ -157,6 +160,30 @@ class ProductsController extends BaseController
         ]);
     }
 
+
+    //---------------- Show Form Create Product ---------------\\
+
+    public function create(Request $request)
+    {
+
+        $this->authorizeForUser($request->user('api'), 'create', Product::class);
+
+        $categories = Category::where('deleted_at', null)->get(['id', 'name']);
+        $brands = Brand::where('deleted_at', null)->get(['id', 'name']);
+        $units = Unit::where('deleted_at', null)->where('base_unit', null)->get();
+        $reelsize = ReelSize::where('deleted_at', null)->get(['id', 'name']);
+        $grams = Grams::where('deleted_at', null)->get(['id', 'name']);
+        $shades = Shade::where('deleted_at', null)->get(['id', 'name']);
+        $brands = Brand::where('deleted_at', null)->get(['id', 'name']);
+
+        return response()->json([
+            'categories' => $categories,
+            'brands' => $brands,
+            'units' => $units,
+        ]);
+
+    }
+
     //-------------- Store new  Product  ---------------\\
 
     public function store(Request $request)
@@ -214,8 +241,8 @@ class ProductsController extends BaseController
                                     } else if (!array_key_exists('width', $variant) || empty($variant['width'])) {
                                         $fail('Variant width cannot be empty.');
                                         return;
-                                    } else if (!array_key_exists('weight', $variant) || empty($variant['weight'])) {
-                                        $fail('Variant weight cannot be empty.');
+                                    }  else if (!array_key_exists('rct', $variant) || empty($variant['rct'])) {
+                                        $fail('Variant RCT cannot be empty.');
                                         return;
                                     } else if (!array_key_exists('paperGram', $variant) || empty($variant['paperGram'])) {
                                         $fail('Variant paper grams cannot be empty.');
@@ -225,6 +252,15 @@ class ProductsController extends BaseController
                                         return;
                                     } else if (!array_key_exists('paperShade', $variant) || empty($variant['paperShade'])) {
                                         $fail('Variant paper shade cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('top', $variant) || empty($variant['top'])) {
+                                        $fail('Variant top cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('flute', $variant) || empty($variant['flute'])) {
+                                        $fail('Variant flute cannot be empty.');
+                                        return;
+                                    } else if (!array_key_exists('back', $variant) || empty($variant['back'])) {
+                                        $fail('Variant back cannot be empty.');
                                         return;
                                     } else if (!array_key_exists('cost', $variant) || empty($variant['cost'])) {
                                         $fail('Variant cost cannot be empty.');
@@ -377,16 +413,16 @@ class ProductsController extends BaseController
                         }
 
                         if ($request['listingtype'] == 'is_reel'){
-                            $all_weight = array_column($variants, 'weight');
+                            $all_weight = array_column($variants, 'rct');
                             if ($all_weight) {
                                 foreach ($all_weight as $weight) {
                                     if (empty($weight)) {
-                                        $fail('Variant weight cannot be empty.');
+                                        $fail('Variant RCT cannot be empty.');
                                         return;
                                     }
                                 }
                             } else {
-                                $fail('Variant weight cannot be empty.');
+                                $fail('Variant RCT cannot be empty.');
                                 return;
                             }
                         }
@@ -574,7 +610,8 @@ class ProductsController extends BaseController
 
                 $Product->is_variant = $request['is_variant'] == 'true' ? 1 : 0;
                 $Product->is_imei = $request['is_imei'] == 'true' ? 1 : 0;
-                $Product->not_selling = $request['not_selling'] == 'true' ? 1 : 0;
+                // $Product->not_selling = $request['not_selling'] == 'true' ? 1 : 0;
+                $Product->not_selling = ($request['listingtype'] == 'is_reel' || $request['listingtype'] == 'is_roll') ? 1 : ($request['not_selling'] == 'true' ? 1 : 0);
 
                 if ($request['images']) {
                     $files = $request['images'];
@@ -604,10 +641,14 @@ class ProductsController extends BaseController
                                 'product_id' => $Product->id,
                                 'name' => $variant->text,
                                 'width' => $variant->width,
-                                'weight' => $variant->weight,
+                                'rct' => $variant->rct,
+                                'weight' => $variant->rct,
                                 'paper_grams' => $variant->paperGram,
                                 'paper_type' => $variant->paperType,
                                 'paper_shade' => $variant->paperShade,
+                                'top' => $variant->top->value,
+                                'flute' => $variant->flute->value,
+                                'back' => $variant->back->value,
                                 'cost' => $variant->cost,
                                 'price' => $variant->price,
                                 'code' => $variant->code,
@@ -1636,12 +1677,16 @@ class ProductsController extends BaseController
                 $ProductVariant['name'] = $variant->name;
                 $ProductVariant['width'] = $variant->width;
                 $ProductVariant['weight'] = $variant->weight;
+                $ProductVariant['rct'] = $variant->rct;
                 $ProductVariant['dimension'] = $variant->dimension;
                 $ProductVariant['ply'] = $variant->ply;
                 $ProductVariant['crafting'] = $variant->crafting;
                 $ProductVariant['paperGram'] = $variant->paper_grams;
                 $ProductVariant['paperType'] = $variant->paper_type;
                 $ProductVariant['paperShade'] = $variant->paper_shade;
+                $ProductVariant['top'] = $variant->top;
+                $ProductVariant['flute'] = $variant->flute;
+                $ProductVariant['back'] = $variant->back;
                 $ProductVariant['cost'] = number_format($variant->cost, 2, '.', ',');
                 $ProductVariant['price'] = number_format($variant->price, 2, '.', ',');
 
@@ -2000,24 +2045,6 @@ class ProductsController extends BaseController
             'products' => $products,
             'warehouses' => $warehouses,
         ]);
-    }
-
-    //---------------- Show Form Create Product ---------------\\
-
-    public function create(Request $request)
-    {
-
-        $this->authorizeForUser($request->user('api'), 'create', Product::class);
-
-        $categories = Category::where('deleted_at', null)->get(['id', 'name']);
-        $brands = Brand::where('deleted_at', null)->get(['id', 'name']);
-        $units = Unit::where('deleted_at', null)->where('base_unit', null)->get();
-        return response()->json([
-            'categories' => $categories,
-            'brands' => $brands,
-            'units' => $units,
-        ]);
-
     }
 
     //---------------- Show Elements Barcode ---------------\\

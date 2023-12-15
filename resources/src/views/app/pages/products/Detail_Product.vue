@@ -107,8 +107,12 @@
                   <th>{{$t('Variant_Name')}}</th>
                   <th>{{$t('Variant_Width')}}</th>
                   <th>{{$t('Variant_Weight')}}</th>
+                  <th>{{$t('Variant_RCT')}}</th>
                   <th>{{$t('Variant_Paper_Grams')}}</th>
                   <th>{{$t('Variant_Paper_Type')}}</th>
+                  <th>{{$t('Variant_Top')}}</th>
+                  <th>{{$t('Variant_Flute')}}</th>
+                  <th>{{$t('Variant_Back')}}</th>
                   <th>{{$t('Variant_Paper_Shade')}}</th>
                   <th>{{$t('Variant_cost')}}</th>
                   <th>{{$t('Variant_price')}}</th>
@@ -120,9 +124,13 @@
                   <td>{{product_variant_data.name}}</td>
                   <td>{{product_variant_data.width}}</td>
                   <td>{{product_variant_data.weight}}</td>
+                  <td>{{product_variant_data.rct}}</td>
                   <td>{{product_variant_data.paperGram}}</td>
                   <td>{{product_variant_data.paperType}}</td>
-                  <td>{{product_variant_data.paperType}}</td>
+                  <td>{{product_variant_data.top}}</td>
+                  <td>{{product_variant_data.flute}}</td>
+                  <td>{{product_variant_data.back}}</td>
+                  <td>{{product_variant_data.paperShade}}</td>
                   <td>{{currentUser.currency}} {{product_variant_data.cost}}</td>
                   <td>{{currentUser.currency}} {{product_variant_data.price}}</td>
                 </tr>

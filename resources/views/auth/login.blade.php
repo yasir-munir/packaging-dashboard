@@ -8,13 +8,13 @@
     <link rel=icon href=/images/favicon.ico>
     <link rel="stylesheet" href="/css/master.css">
 
-    <title>Stocky | EPTeck Inventory Management System</title>
+    <title>EPTeck | EPTeck Inventory Management System</title>
   </head>
 
   <body class="text-left">
     <noscript>
       <strong>
-        We're sorry but Stocky doesn't work properly without JavaScript
+        We're sorry but EPTeck IMS doesn't work properly without JavaScript
         enabled. Please enable it to continue.</strong
       >
     </noscript>

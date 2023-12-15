@@ -28,4 +28,9 @@ class Shipment extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+
+    public function purchaseOrder()
+    {
+        return $this->hasMany('App\Models\PurchaseOrder');
+    }
 }

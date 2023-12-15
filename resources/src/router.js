@@ -26,6 +26,52 @@ const routes = [
                     )
             },
 
+            //Purchase Orders
+            {
+                path: "/app/purchase_order",
+                component: () =>
+                    import(
+                        /* webpackChunkName: "purchase_order" */ "./views/app/pages/purchase_order"
+                    ),
+                redirect: "/app/purchase_order/list",
+                children: [
+                    {
+                        name: "index_purchase_order",
+                        path: "list",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "index_purchases" */ "./views/app/pages/purchase_order/index_purchase_order"
+                            )
+                    },
+                    {
+                        name: "store_purchase_order",
+                        path: "store",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "store_purchase" */
+                                "./views/app/pages/purchase_order/Add_purchaseOrder"
+                            )
+                    },
+                    {
+                        name: "Edit_purchase_order",
+                        path: "edit/:id",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "edit_purchase" */ "./views/app/pages/purchase_order/Edit_purchase_order"
+                            )
+                    },
+                    {
+                        name: "Detail_purchase_order",
+                        path: "detail/:id",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "edit_purchase" */ "./views/app/pages/purchase_order/Detail_purchase_order"
+                            )
+                    }
+                ]
+            },
+
+
             //Products
             {
                 path: "/app/products",
@@ -98,6 +144,36 @@ const routes = [
                         component: () =>
                             import(
                                 /* webpackChunkName: "Categories" */ "./views/app/pages/products/categorie"
+                            )
+                    },
+
+                    // Shades
+                    {
+                        name: "shades",
+                        path: "Shades",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "Shades" */ "./views/app/pages/products/shades"
+                            )
+                    },
+
+                    // Grams
+                    {
+                        name: "grams",
+                        path: "Grams",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "Grams" */ "./views/app/pages/products/grams"
+                            )
+                    },
+
+                    // Reel Size
+                    {
+                        name: "reelsize",
+                        path: "ReelSize",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "Reel Size" */ "./views/app/pages/products/reelsize"
                             )
                     },
 
