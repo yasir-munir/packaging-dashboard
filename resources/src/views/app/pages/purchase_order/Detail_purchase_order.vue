@@ -79,7 +79,7 @@
               <thead>
                 <tr>
                   <th>{{$t('Dimensions (LxWxH)')}}</th>
-                  <th>{{$t('Material')}}</th>
+                  <th>{{$t('Type')}}</th>
                   <th>{{$t('Ply')}}</th>
                   <th>{{$t('Quantity')}}</th>
                   <th>{{$t('Paper Type')}}</th>
@@ -90,7 +90,7 @@
               <tbody>
                 <tr v-for="product_variant_data in product.products_variants_data">
                   <td>{{product_variant_data.carton_size}}</td>
-                  <td>{{product_variant_data.material}}</td>
+                  <td>{{product_variant_data.category_id}}</td>
                   <td>{{product_variant_data.ply}}</td>
                   <td>{{product_variant_data.quantity}}</td>
                   <td>{{product_variant_data.paper_type}}</td>

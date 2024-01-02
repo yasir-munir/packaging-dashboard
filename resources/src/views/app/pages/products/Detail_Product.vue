@@ -22,7 +22,7 @@
             ></barcode>
           </b-col>
 
-          <b-col md="8">
+          <b-col md="12">
             <table class="table table-hover table-bordered table-md">
               <tbody>
                  <tr>
@@ -41,10 +41,10 @@
                   <td>{{$t('Categorie')}}</td>
                   <th>{{product.category}}</th>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <td>{{$t('Brand')}}</td>
                   <th>{{product.brand}}</th>
-                </tr>
+                </tr> -->
                 <tr v-if="product.type == 'is_single'">
                   <td>{{$t('Cost')}}</td>
                   <th>{{currentUser.currency}} {{formatNumber(product.cost ,2)}}</th>
@@ -77,7 +77,7 @@
               </tbody>
             </table>
           </b-col>
-          <b-col md="4" class="mb-30">
+          <!-- <b-col md="4" class="mb-30">
             <div class="carousel_wrap">
               <b-carousel
                 id="carousel-1"
@@ -96,7 +96,7 @@
                 ></b-carousel-slide>
               </b-carousel>
             </div>
-          </b-col>
+          </b-col> -->
 
           <!-- product variant -->
           <b-col md="8" class="mt-4" v-if="product.type == 'is_variant' && product.listingType == 'is_reel'">
@@ -106,14 +106,14 @@
                   <th>{{$t('Variant_code')}}</th>
                   <th>{{$t('Variant_Name')}}</th>
                   <th>{{$t('Variant_Width')}}</th>
-                  <th>{{$t('Variant_Weight')}}</th>
-                  <th>{{$t('Variant_RCT')}}</th>
+                  <!-- <th>{{$t('Variant_Weight')}}</th>
+                  <th>{{$t('Variant_RCT')}}</th> -->
                   <th>{{$t('Variant_Paper_Grams')}}</th>
                   <th>{{$t('Variant_Paper_Type')}}</th>
+                  <th>{{$t('Variant_Paper_Shade')}}</th>
                   <th>{{$t('Variant_Top')}}</th>
                   <th>{{$t('Variant_Flute')}}</th>
                   <th>{{$t('Variant_Back')}}</th>
-                  <th>{{$t('Variant_Paper_Shade')}}</th>
                   <th>{{$t('Variant_cost')}}</th>
                   <th>{{$t('Variant_price')}}</th>
                 </tr>
@@ -123,14 +123,14 @@
                   <td>{{product_variant_data.code}}</td>
                   <td>{{product_variant_data.name}}</td>
                   <td>{{product_variant_data.width}}</td>
-                  <td>{{product_variant_data.weight}}</td>
-                  <td>{{product_variant_data.rct}}</td>
+                  <!-- <td>{{product_variant_data.weight}}</td>
+                  <td>{{product_variant_data.rct}}</td> -->
                   <td>{{product_variant_data.paperGram}}</td>
                   <td>{{product_variant_data.paperType}}</td>
+                  <td>{{product_variant_data.paperShade}}</td>
                   <td>{{product_variant_data.top}}</td>
                   <td>{{product_variant_data.flute}}</td>
                   <td>{{product_variant_data.back}}</td>
-                  <td>{{product_variant_data.paperShade}}</td>
                   <td>{{currentUser.currency}} {{product_variant_data.cost}}</td>
                   <td>{{currentUser.currency}} {{product_variant_data.price}}</td>
                 </tr>

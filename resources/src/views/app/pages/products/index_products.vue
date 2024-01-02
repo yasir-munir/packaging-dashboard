@@ -12,14 +12,14 @@
         @on-per-page-change="onPerPageChange"
         @on-sort-change="onSortChange"
         @on-search="onSearch"
-        :select-options="{ 
+        :select-options="{
           enabled: true ,
           clearSelectionText: '',
         }"
         @on-selected-rows-change="selectionChanged"
         :search-options="{
           enabled: true,
-          placeholder: $t('Search_this_table'),  
+          placeholder: $t('Search_this_table'),
         }"
         :pagination-options="{
         enabled: true,
@@ -344,20 +344,14 @@ export default {
     ...mapGetters(["currentUserPermissions"]),
     columns() {
       return [
-        {
-          label: this.$t("image"),
-          field: "image",
-          type: "image",
-          html: true,
-          tdClass: "text-left",
-          thClass: "text-left"
-        },
-        {
-          label: this.$t("type"),
-          field: "type",
-          tdClass: "text-left",
-          thClass: "text-left"
-        },
+        // {
+        //   label: this.$t("image"),
+        //   field: "image",
+        //   type: "image",
+        //   html: true,
+        //   tdClass: "text-left",
+        //   thClass: "text-left"
+        // },
         {
           label: this.$t("Name_product"),
           field: "name",
@@ -370,10 +364,10 @@ export default {
           tdClass: "text-left",
           thClass: "text-left"
         },
-
         {
-          label: this.$t("Brand"),
-          field: "brand",
+          label: this.$t("type"),
+          field: "type",
+          html: true,
           tdClass: "text-left",
           thClass: "text-left"
         },
@@ -383,7 +377,34 @@ export default {
           tdClass: "text-left",
           thClass: "text-left"
         },
-       
+        {
+          label: this.$t("Brand"),
+          field: "paper_type",
+          html: true,
+          tdClass: "text-left",
+          thClass: "text-left"
+        },
+        {
+          label: this.$t("Grams"),
+          field: "paper_grams",
+          html: true,
+          tdClass: "text-left",
+          thClass: "text-left"
+        },
+        {
+          label: this.$t("Reel Size"),
+          field: "width",
+          html: true,
+          tdClass: "text-left",
+          thClass: "text-left"
+        },
+        {
+          label: this.$t("Shade"),
+          field: "paper_shade",
+          html: true,
+          tdClass: "text-left",
+          thClass: "text-left"
+        },
         {
           label: this.$t("Cost"),
           field: "cost",
@@ -401,15 +422,10 @@ export default {
           thClass: "text-left"
         },
         {
-          label: this.$t("Unit"),
-          field: "unit",
-          tdClass: "text-left",
-          thClass: "text-left"
-        },
-        {
           label: this.$t("Quantity"),
-          field: "quantity",
+          field: "qty",
           // type: "decimal",
+          html: true,
           tdClass: "text-left",
           thClass: "text-left"
         },
@@ -522,11 +538,11 @@ export default {
               this.$t("Failed")
             );
             }
-         
+
         });
     },
 
-    
+
     //------ Toast
     makeToast(variant, msg, title) {
       this.$root.$bvToast.toast(msg, {

@@ -28,6 +28,7 @@ use App\Models\sms_gateway;
 use App\Models\Role;
 use App\Models\SaleReturn;
 use App\Models\Sale;
+use App\Models\Category;
 use App\Models\SaleDetail;
 use App\Models\Setting;
 use App\Models\PosSetting;
@@ -115,6 +116,7 @@ class PurchaseOrderController extends Controller
             $item['po_number'] = $product->po_number;
             $item['export_order'] = $product->export_order;
             $item['order_date'] = $product->order_date;
+            $item['code'] = $product->code;
             $item['delivery_date'] = $product->delivery_date;
             $item['status'] = $product->status=='planning'? "Planning":'';
             // $item['category'] = $product['category']->name;
@@ -125,7 +127,7 @@ class PurchaseOrderController extends Controller
                 ->get();
 
                 $item['carton_size'] = '';
-                $item['material'] = '';
+                $item['category_id'] = '';
                 $item['ply'] = '';
                 $item['quantity'] = '';
                 $item['unit_price'] = '';
@@ -133,8 +135,8 @@ class PurchaseOrderController extends Controller
 
                 $item['carton_size'] .= $product_variant->carton_size;
                 $item['carton_size'] .= '<br>';
-                $item['material'] .= $product_variant->material;
-                $item['material'] .= '<br>';
+                $item['category_id'] .= $product_variant->category_id;
+                $item['category_id'] .= '<br>';
                 $item['ply'] .= $product_variant->ply;
                 $item['ply'] .= '<br>';
                 $item['quantity'] .= $product_variant->quantity;
@@ -225,13 +227,13 @@ class PurchaseOrderController extends Controller
             // $purchaseOrder->date = $request->order_date;
             $purchaseOrder->order_number = $this->getNumberOrder();
             $purchaseOrder->customer_id = $request->client_id;
-            $purchaseOrder->export_order = $request->export_order;
             $purchaseOrder->Type_barcode = $request->Type_barcode;
             $purchaseOrder->po_number = $request->po_number;
+            $purchaseOrder->export_order = $request->export_order;
             $purchaseOrder->status = 'planning';
             $purchaseOrder->order_date = $request->order_date;
             $purchaseOrder->delivery_date = $request->delivery_date;
-            $purchaseOrder->notes = $request->notes;
+            $purchaseOrder->notes = $request->note;
             $purchaseOrder->user_id = Auth::user()->id;
             $purchaseOrder->save();
 
@@ -239,20 +241,22 @@ class PurchaseOrderController extends Controller
             foreach ($data as $value) {
                 $orderDetails[] = [
                     'purchase_order_id' => $purchaseOrder->id,
-                    'product_code' => $value['text'],
+                    'category_id' => $value['type'],
+                    'costing_id' => $value['list_id'],
                     'carton_size' => $value['text'],
-                    'material' => $value['material']['value'],
-                    'ply' => $value['ply']['value'],
+                    'ply' => $value['ply'],
+                    'cost' => $value['cost'],
                     'quantity' => $value['quantity'],
                     'unit_price' => $value['price'],
                     'paper_type' => $value['paperType']['value'],
                     'status' => 'Planning',
+                    'created_at' => Carbon::now()
                 ];
             }
             PurchaseOrderDetails::insert($orderDetails);
         }, 10);
 
-        return response()->json(['success' => true, 'message' => 'Purchase Order Created !!']);
+        return response()->json(['success' => true, 'message' => 'Sales Order Created !!']);
     }
 
     /**
@@ -272,9 +276,69 @@ class PurchaseOrderController extends Controller
      * @param  \App\Models\PurchaseOrder  $purchaseOrder
      * @return \Illuminate\Http\Response
      */
-    public function edit(PurchaseOrder $purchaseOrder)
+    public function edit(Request $request, $id)
     {
         //
+        $this->authorizeForUser($request->user('api'), 'view', Product::class);
+        // How many items do you want to display.
+
+        $Product = PurchaseOrder::join('clients', 'purchase_orders.customer_id', '=', 'clients.id')
+            ->select('purchase_orders.*', 'clients.name')
+            ->where('purchase_orders.deleted_at', '=', null)
+            ->findOrFail($id);
+
+
+            $item['id'] = $Product->id;
+            $item['code'] = $Product->code;
+            $item['client_id'] = $Product->customer_id;
+            $item['po_number'] = $Product->po_number;
+            $item['export_order'] = $Product->export_order;
+            $item['order_date'] = $Product->order_date;
+            $item['note'] = $Product->notes;
+            $item['delivery_date'] = $Product->delivery_date;
+            $item['status'] = $Product->status=='planning'? "Planning":'';
+            $item['Type_barcode'] = $Product->Type_barcode;
+
+
+
+            $product_variant_data = PurchaseOrderDetails::where('purchase_order_id', $Product->id)
+                ->where('deleted_at', '=', null)
+                ->get();
+
+            $dataDetails = [];
+            foreach ($product_variant_data as $product_variant) {
+
+                $ProductVariant['id'] = $product_variant->id;
+                $ProductVariant['type'] = $product_variant->category_id;
+                $ProductVariant['costing_id'] = $product_variant->costing_id;
+                $ProductVariant['text'] = $product_variant->carton_size;
+                $ProductVariant['ply'] = $product_variant->ply;
+                $ProductVariant['cost'] = $product_variant->cost;
+                $ProductVariant['quantity'] = $product_variant->quantity;
+                $ProductVariant['price'] = $product_variant->unit_price;
+                $ProductVariant['paperType'] = $product_variant->paper_type;
+                $ProductVariant['status'] = $product_variant->status;
+
+                $dataDetails[] = $ProductVariant;
+
+            }
+
+
+            $data[] = $item;
+        // print_r($item);
+        // die();
+        $clients = Client::where('deleted_at', '=', null)->get(['id', 'name']);
+        $stripe_key = config('app.STRIPE_KEY');
+        $categories = Category::where('deleted_at', null)->get(['id', 'name']);
+        // $brands = Brand::where('deleted_at', null)->get(['id', 'name']);
+
+        return response()->json([
+            'categories' => $categories,
+            'variants' => $dataDetails,
+            'products' => $item,
+            'clients' => $clients,
+
+        ]);
     }
 
     /**
@@ -284,9 +348,128 @@ class PurchaseOrderController extends Controller
      * @param  \App\Models\PurchaseOrder  $purchaseOrder
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PurchaseOrder $purchaseOrder)
+    public function update(Request $request, $id)
     {
         //
+        request()->validate([
+            'client_id' => 'required',
+        ]);
+
+        \DB::transaction(function () use ($request, $id) {
+
+            $purchaseOrder = PurchaseOrder::where('id', $id)
+                    ->where('deleted_at', '=', null)
+                    ->first();
+
+            $purchaseOrder->customer_id = $request['client_id'];
+            $purchaseOrder->Type_barcode = $request['Type_barcode'];
+            $purchaseOrder->po_number = $request['po_number'];
+            $purchaseOrder->code = $request['code'];
+            $purchaseOrder->export_order = $request['export_order'];
+            $purchaseOrder->order_date = $request['order_date'];
+            $purchaseOrder->delivery_date = $request['delivery_date'];
+            $purchaseOrder->notes = $request['note'];
+            $purchaseOrder->user_id = Auth::user()->id;
+            $purchaseOrder->save();
+
+
+
+            // Store Variants Product
+            $oldVariants = PurchaseOrderDetails::where('purchase_order_id', $purchaseOrder->id)
+                    ->where('deleted_at', '=', null)
+                    ->get();
+
+
+            if ($oldVariants->isNotEmpty()) {
+                $new_variants_id = [];
+                $var = 'id';
+
+                foreach ($request['variants'] as $new_id) {
+                    if (array_key_exists($var, $new_id)) {
+                        $new_variants_id[] = $new_id['id'];
+                    } else {
+                        $new_variants_id[] = 0;
+                    }
+                }
+
+                foreach ($oldVariants as $key => $value) {
+                    $old_variants_id[] = $value->id;
+
+                    // Delete Variant
+                    if (!in_array($old_variants_id[$key], $new_variants_id)) {
+                        $ProductVariant = PurchaseOrderDetails::findOrFail($value->id);
+                        $ProductVariant->deleted_at = Carbon::now();
+                        $ProductVariant->save();
+                    }
+                }
+                foreach ($request['variants'] as $key => $variant) {
+                    if (array_key_exists($var, $variant)) {
+
+                        $ProductVariantDT = new PurchaseOrderDetails;
+                        //-- Field Required
+                        $ProductVariantDT->purchase_order_id = $purchaseOrder->id;
+                        $ProductVariantDT->category_id = $variant['type'];
+                        $ProductVariantDT->costing_id = $variant['costing_id'];
+                        $ProductVariantDT->carton_size = $variant['text'];
+                        $ProductVariantDT->ply = $variant['ply'];
+                        $ProductVariantDT->cost = $variant['cost'];
+                        $ProductVariantDT->quantity = $variant['quantity'];
+                        $ProductVariantDT->unit_price = $variant['price'];
+                        $ProductVariantDT->paper_type = $variant['paperType'];
+                        $ProductVariantDT->status = 'Planning';
+                        $ProductVariantDT->updated_at = Carbon::now();
+
+                        $ProductVariantUP['purchase_order_id'] = $purchaseOrder->id;
+                        $ProductVariantUP['category_id'] = $variant['type'];
+                        $ProductVariantUP['costing_id'] = $variant['costing_id'];
+                        $ProductVariantUP['carton_size'] = $variant['text'];
+                        $ProductVariantUP['ply'] = $variant['ply'];
+                        $ProductVariantUP['cost'] = $variant['cost'];
+                        $ProductVariantUP['quantity'] = $variant['quantity'];
+                        $ProductVariantUP['unit_price'] = $variant['price'];
+                        $ProductVariantUP['paper_type'] = $variant['paperType'];
+                        $ProductVariantUP['status'] = 'Planning';
+                        $ProductVariantUP['updated_at'] = Carbon::now();
+
+                    } else {
+                        $ProductVariantDT = new PurchaseOrderDetails;
+
+                        //-- Field Required
+                        $ProductVariantDT->purchase_order_id = $id;
+                        $ProductVariantDT->category_id = $variant['type'];
+                        $ProductVariantDT->costing_id = $variant['costing_id'];
+                        $ProductVariantDT->carton_size = $variant['text'];
+                        $ProductVariantDT->ply = $variant['ply'];
+                        $ProductVariantDT->cost = $variant['cost'];
+                        $ProductVariantDT->quantity = $variant['quantity'];
+                        $ProductVariantDT->unit_price = $variant['price'];
+                        $ProductVariantDT->paper_type = $variant['paperType'];
+                        $ProductVariantDT->status = 'Planning';
+
+                        $ProductVariantUP['purchase_order_id'] = $id;
+                        $ProductVariantUP['category_id'] = $variant['type'];
+                        $ProductVariantUP['costing_id'] = $variant['costing_id'];
+                        $ProductVariantUP['carton_size'] = $variant['text'];
+                        $ProductVariantUP['ply'] = $variant['ply'];
+                        $ProductVariantUP['cost'] = $variant['cost'];
+                        $ProductVariantUP['quantity'] = $variant['quantity'];
+                        $ProductVariantUP['unit_price'] = $variant['price'];
+                        $ProductVariantUP['paper_type'] = $variant['paperType'];
+                        $ProductVariantUP['status'] = 'Planning';
+
+                    }
+
+                    if (!in_array($new_variants_id[$key], $old_variants_id)) {
+                        $ProductVariantDT->save();
+                    } else {
+                        PurchaseOrderDetails::where('id', $variant['id'])->update($ProductVariantUP);
+                    }
+                }
+            }
+
+        }, 10);
+
+        return response()->json(['success' => true, 'message' => 'Sales Order Updated !!']);
     }
 
     /**
@@ -306,11 +489,7 @@ class PurchaseOrderController extends Controller
             $Product->save();
 
 
-            product_warehouse::where('product_id', $id)->update([
-                'deleted_at' => Carbon::now(),
-            ]);
-
-            PurchaseOrderDetails::where('product_id', $id)->update([
+            PurchaseOrderDetails::where('purchsae_order_id', $id)->update([
                 'deleted_at' => Carbon::now(),
             ]);
 
@@ -360,7 +539,7 @@ class PurchaseOrderController extends Controller
             foreach ($product_variant_data as $product_variant) {
 
                 $ProductVariant['carton_size'] = $product_variant->carton_size;
-                $ProductVariant['material'] = $product_variant->material;
+                $ProductVariant['category_id'] = $product_variant->category_id;
                 $ProductVariant['ply'] = $product_variant->ply;
                 $ProductVariant['quantity'] = $product_variant->quantity;
                 $ProductVariant['paper_type'] = $product_variant->paper_type;

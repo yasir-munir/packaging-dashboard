@@ -9,7 +9,7 @@
     <validation-observer ref="Edit_Product" v-if="!isLoading">
       <b-form @submit.prevent="Submit_Product" enctype="multipart/form-data">
         <b-row>
-          <b-col md="8" class="mb-2">
+          <b-col md="12" class="mb-2">
             <b-card class="mt-3">
               <b-row>
                 <!-- Name -->
@@ -141,7 +141,7 @@
                 </b-col>
 
                 <!-- Brand  -->
-                <b-col md="6" class="mb-2">
+                <!-- <b-col md="6" class="mb-2">
                   <b-form-group :label="$t('Brand')">
                     <v-select
                       :placeholder="$t('Choose_Brand')"
@@ -155,7 +155,7 @@
                       "
                     />
                   </b-form-group>
-                </b-col>
+                </b-col> -->
 
                 <!-- Order Tax -->
                 <b-col md="6" class="mb-2">
@@ -508,19 +508,22 @@
                 </div>
 
                 <div class="col-md-12 mb-2" v-if="product.type == 'is_variant' && product.listingType == 'is_reel'">
-                  <div class="table-responsive">
+                  <div class="table">
                     <table class="table table-hover table-sm">
                       <thead class="bg-gray-300">
                         <tr>
                           <th scope="col">{{ $t("Variant_code") }}</th>
                           <th scope="col">{{ $t("Variant_Name") }}</th>
-                          <th scope="col">{{ $t("Variant_Width") }}</th>
-                          <th scope="col">{{ $t("Variant_Weight") }}</th>
                           <th scope="col">{{ $t("Variant_Paper_Grams") }}</th>
+                          <th scope="col">{{ $t("Variant_BF") }}</th>
+                          <th scope="col">{{ $t("Variant_RCT") }}</th>
                           <th scope="col">{{ $t("Variant_Paper_Type") }}</th>
                           <th scope="col">{{ $t("Variant_Paper_Shade") }}</th>
-                          <th scope="col">{{ $t("Variant_cost") }}</th>
-                          <th scope="col">{{ $t("Variant_price") }}</th>
+                          <th scope="col">{{$t('Variant_Top')}}</th>
+                          <th scope="col">{{$t('Variant_Flute')}}</th>
+                          <th scope="col">{{$t('Variant_Back')}}</th>
+                          <th scope="col">{{$t("Variant_cost")}}</th>
+                          <th scope="col">{{$t("Variant_price")}}</th>
                           <th scope="col"></th>
                         </tr>
                       </thead>
@@ -531,7 +534,7 @@
                         <tr v-for="variant in variants">
                           <td>
                             <input
-                              required
+                              required disabled
                               class="form-control"
                               v-model="variant.code"
                             />
@@ -544,10 +547,27 @@
                             />
                           </td>
                           <td>
-                            <input
-                              required
-                              class="form-control"
-                              v-model="variant.width"
+                            <v-select
+                                v-model="variant.paperGram"
+                                :reduce="(label) => label.label"
+                                :options="
+                                    grams.map((grams) => ({
+                                    label: grams.name,
+                                    value: grams.id,
+                                    }))
+                                "
+                                />
+                          </td>
+                          <td>
+                            <v-select
+                                v-model="variant.width"
+                                :reduce="(label) => label.label"
+                                :options="
+                                    reelsize.map((reelsize) => ({
+                                    label: reelsize.name,
+                                    value: reelsize.id,
+                                    }))
+                                "
                             />
                           </td>
                           <td>
@@ -558,25 +578,61 @@
                             />
                           </td>
                           <td>
-                            <input
-                              required
-                              class="form-control"
-                              v-model="variant.paperGram"
-                            />
+                            <v-select
+                                v-model="variant.paperType"
+                                :reduce="(label) => label.label"
+                                :options="
+                                    brands.map((brands) => ({
+                                    label: brands.name,
+                                    value: brands.id,
+                                    }))
+                                "
+                                />
                           </td>
                           <td>
-                            <input
-                              required
-                              class="form-control"
-                              v-model="variant.paperType"
-                            />
+                            <v-select
+                                v-model="variant.paperShade"
+                                :reduce="(label) => label.label"
+                                :options="
+                                    shades.map((shades) => ({
+                                    label: shades.name,
+                                    value: shades.id,
+                                    }))
+                                "
+                                />
                           </td>
                           <td>
-                            <input
-                              required
-                              class="form-control"
-                              v-model="variant.paperShade"
-                            />
+                            <v-select
+                            v-model="variant.top"
+                            :reduce="(label) => label.value"
+                            :options="
+                                [
+                                    {label: 'Yes', value: 'Yes'},
+                                    {label: 'No', value: 'No'},
+                                ]"
+                            ></v-select>
+                          </td>
+                          <td>
+                            <v-select
+                                v-model="variant.flute"
+                                :reduce="(label) => label.value"
+                                :options="
+                                    [
+                                        {label: 'Yes', value: 'Yes'},
+                                        {label: 'No', value: 'No'},
+                                    ]"
+                                ></v-select>
+                          </td>
+                          <td>
+                            <v-select
+                                v-model="variant.back"
+                                :reduce="(label) => label.value"
+                                :options="
+                                    [
+                                        {label: 'Yes', value: 'Yes'},
+                                        {label: 'No', value: 'No'},
+                                    ]"
+                                ></v-select>
                           </td>
                           <td>
                             <input
@@ -826,7 +882,7 @@
                 </b-col> -->
 
                 <!-- This_Product_Not_For_Selling -->
-                <b-col md="12 mb-2">
+                <!-- <b-col md="12 mb-2">
                   <ValidationProvider rules vid="product" v-slot="x">
                     <div class="form-check">
                       <label class="checkbox checkbox-outline-primary">
@@ -836,14 +892,14 @@
                       </label>
                     </div>
                   </ValidationProvider>
-                </b-col>
+                </b-col> -->
               </b-row>
             </b-card>
           </b-col>
 
-          <b-col md="4">
+          <!-- <b-col md="4"> -->
             <!-- upload-multiple-image -->
-            <b-card>
+            <!-- <b-card>
               <div class="card-header">
                 <h5>{{ $t("MultipleImage") }}</h5>
               </div>
@@ -869,7 +925,7 @@
                 </b-row>
               </div>
             </b-card>
-          </b-col>
+          </b-col> -->
           <b-col md="12" class="mt-3">
             <b-button
               variant="primary"
@@ -889,278 +945,289 @@
 </template>
 
 <script>
-import VueUploadMultipleImage from "vue-upload-multiple-image";
-import VueTagsInput from "@johmun/vue-tags-input";
-import NProgress from "nprogress";
+    import VueUploadMultipleImage from "vue-upload-multiple-image";
+    import VueTagsInput from "@johmun/vue-tags-input";
+    import NProgress from "nprogress";
 
-export default {
-  metaInfo: {
-    title: "Edit Product",
-  },
-  data() {
-    return {
-      tag: "",
-      len: 8,
-      images: [],
-      imageArray: [],
-      change: false,
-      isLoading: true,
-      SubmitProcessing: false,
-      data: new FormData(),
-      categories: [],
-      Subcategories: [],
-      units: [],
-      units_sub: [],
-      brands: [],
-      roles: {},
-      variants: [],
-      product: {
-        type: "",
-        name: "",
-        code: "",
-        Type_barcode: "",
-        cost: "",
-        price: "",
-        brand_id: "",
-        category_id: "",
-        TaxNet: "",
-        tax_method: "1",
-        unit_id: "",
-        unit_sale_id: "",
-        unit_purchase_id: "",
-        stock_alert: "",
-        image: "",
-        note: "",
-        is_variant: false,
-        is_imei: false,
-        not_selling: false,
-      },
-      code_exist: "",
-    };
-  },
-
-  components: {
-    VueUploadMultipleImage,
-    VueTagsInput,
-  },
-
-  methods: {
-    //------ Generate code
-    generateNumber() {
-      this.code_exist = "";
-      this.product.code = Math.floor(
-        Math.pow(10, 7) +
-          Math.random() * (Math.pow(10, 8) - Math.pow(10, 7) - 1)
-      );
+    export default {
+    metaInfo: {
+        title: "Edit Product",
+    },
+    data() {
+        return {
+        tag: "",
+        len: 8,
+        images: [],
+        imageArray: [],
+        change: false,
+        isLoading: true,
+        SubmitProcessing: false,
+        data: new FormData(),
+        categories: [],
+        Subcategories: [],
+        units: [],
+        units_sub: [],
+        brands: [],
+        reelsize: [],
+        grams: [],
+        shades: [],
+        roles: {},
+        variants: [],
+        product: {
+            type: "",
+            name: "",
+            code: "",
+            Type_barcode: "",
+            cost: "",
+            price: "",
+            brand_id: "",
+            category_id: "",
+            TaxNet: "",
+            tax_method: "1",
+            unit_id: "",
+            unit_sale_id: "",
+            unit_purchase_id: "",
+            stock_alert: "",
+            image: "",
+            note: "",
+            is_variant: false,
+            is_imei: false,
+            not_selling: false,
+        },
+        code_exist: "",
+        };
     },
 
-    //------------- Submit Validation Update Product
-    Submit_Product() {
-      this.$refs.Edit_Product.validate().then((success) => {
-        if (!success) {
-          this.makeToast(
-            "danger",
-            this.$t("Please_fill_the_form_correctly"),
-            this.$t("Failed")
-          );
-        } else {
-          if (this.product.type == "is_variant" && this.variants.length <= 0) {
-            this.makeToast(
-              "danger",
-              "The variants array is required.",
-              this.$t("Failed")
-            );
-          } else {
-            this.Update_Product();
-          }
-        }
-      });
+    components: {
+        VueUploadMultipleImage,
+        VueTagsInput,
     },
 
-    //------ Validation state fields
-    getValidationState({ dirty, validated, valid = null }) {
-      return dirty || validated ? valid : null;
-    },
-
-    //------ Toast
-    makeToast(variant, msg, title) {
-      this.$root.$bvToast.toast(msg, {
-        title: title,
-        variant: variant,
-        solid: true,
-      });
-    },
-
-    add_variant(tag) {
-      if (
-        this.variants.length > 0 &&
-        this.variants.some((variant) => variant.text === tag)
-      ) {
-        this.makeToast(
-          "warning",
-          this.$t("VariantDuplicate"),
-          this.$t("Warning")
+    methods: {
+        //------ Generate code
+        generateNumber() {
+        this.code_exist = "";
+        this.product.code = Math.floor(
+            Math.pow(10, 7) +
+            Math.random() * (Math.pow(10, 8) - Math.pow(10, 7) - 1)
         );
-      } else {
-        if (this.tag != "") {
-          var variant_tag = {
-            var_id: this.variants.length + 1, // generate unique ID
-            text: tag,
-          };
-          this.variants.push(variant_tag);
-          this.tag = "";
-        } else {
-          this.makeToast(
-            "warning",
-            "Please Enter the Variant",
-            this.$t("Warning")
-          );
-        }
-      }
-    },
-    //-----------------------------------Delete variant------------------------------\\
-    delete_variant(var_id) {
-      for (var i = 0; i < this.variants.length; i++) {
-        if (var_id === this.variants[i].var_id) {
-          this.variants.splice(i, 1);
-        }
-      }
-    },
+        },
 
-    //------ event upload Image Success
-    uploadImageSuccess(formData, index, fileList, imageArray) {
-      this.images = fileList;
-    },
-
-    //------ event before Remove image
-    beforeRemove(index, done, fileList) {
-      var remove = confirm("remove image");
-      if (remove == true) {
-        this.images.splice(index, 1);
-        done();
-      } else {
-      }
-    },
-
-    //---------------------------------------Get Product Elements ------------------------------\\
-    GetElements() {
-      let id = this.$route.params.id;
-      axios
-        .get(`products/${id}/edit`)
-        .then((response) => {
-          this.product = response.data.product;
-          this.variants = response.data.product.ProductVariant;
-          this.images = response.data.product.images;
-          this.categories = response.data.categories;
-          this.brands = response.data.brands;
-          this.units = response.data.units;
-          this.units_sub = response.data.units_sub;
-          this.Subcategories = response.data.Subcategories;
-
-          this.isLoading = false;
-        })
-        .catch((response) => {
-          setTimeout(() => {
-            this.isLoading = false;
-          }, 500);
-        });
-    },
-
-    //---------------------- Get Sub Units with Unit id ------------------------------\\
-    Get_Units_SubBase(value) {
-      axios
-        .get("get_sub_units_by_base?id=" + value)
-        .then(({ data }) => (this.units_sub = data));
-    },
-
-    //---------------------- Event Select Unit Product ------------------------------\\
-    Selected_Unit(value) {
-      this.units_sub = [];
-      this.product.unit_sale_id = "";
-      this.product.unit_purchase_id = "";
-      this.Get_Units_SubBase(value);
-    },
-
-    //------------------------------ Update Product ------------------------------\\
-    Update_Product() {
-      NProgress.start();
-      NProgress.set(0.1);
-      var self = this;
-      self.data = new FormData();
-      self.SubmitProcessing = true;
-
-      if (self.product.type == "is_variant" && self.variants.length > 0) {
-        self.product.is_variant = true;
-      } else {
-        self.product.is_variant = false;
-      }
-
-      // append objet product
-      Object.entries(self.product).forEach(([key, value]) => {
-        self.data.append(key, value);
-      });
-
-      //append array variants
-      if (self.variants.length) {
-        for (var i = 0; i < self.variants.length; i++) {
-          Object.entries(self.variants[i]).forEach(([key, value]) => {
-            self.data.append("variants[" + i + "][" + key + "]", value);
-          });
-        }
-      }
-
-      //append array images
-      if (self.images.length > 0) {
-        for (var k = 0; k < self.images.length; k++) {
-          Object.entries(self.images[k]).forEach(([key, value]) => {
-            self.data.append("images[" + k + "][" + key + "]", value);
-          });
-        }
-      }
-
-      self.data.append("_method", "put");
-
-      //send Data with axios
-      axios
-        .post("products/" + this.product.id, self.data)
-        .then((response) => {
-          NProgress.done();
-          self.SubmitProcessing = false;
-          this.$router.push({ name: "index_products" });
-          this.makeToast(
-            "success",
-            this.$t("Successfully_Updated"),
-            this.$t("Success")
-          );
-        })
-        .catch((error) => {
-          NProgress.done();
-          self.SubmitProcessing = false;
-          if (error.errors.code && error.errors.code.length > 0) {
-            self.code_exist = error.errors.code[0];
-            this.makeToast("danger", error.errors.code[0], this.$t("Failed"));
-          } else if (
-            error.errors.variants &&
-            error.errors.variants.length > 0
-          ) {
+        //------------- Submit Validation Update Product
+        Submit_Product() {
+        this.$refs.Edit_Product.validate().then((success) => {
+            if (!success) {
             this.makeToast(
-              "danger",
-              error.errors.variants[0],
-              this.$t("Failed")
+                "danger",
+                this.$t("Please_fill_the_form_correctly"),
+                this.$t("Failed")
             );
-          } else {
-            this.makeToast("danger", this.$t("InvalidData"), this.$t("Failed"));
-          }
+            } else {
+            if (this.product.type == "is_variant" && this.variants.length <= 0) {
+                this.makeToast(
+                "danger",
+                "The variants array is required.",
+                this.$t("Failed")
+                );
+            } else {
+                this.Update_Product();
+            }
+            }
         });
+        },
+
+        //------ Validation state fields
+        getValidationState({ dirty, validated, valid = null }) {
+        return dirty || validated ? valid : null;
+        },
+
+        //------ Toast
+        makeToast(variant, msg, title) {
+        this.$root.$bvToast.toast(msg, {
+            title: title,
+            variant: variant,
+            solid: true,
+        });
+        },
+
+        add_variant(tag) {
+        if (
+            this.variants.length > 0 &&
+            this.variants.some((variant) => variant.text === tag)
+        ) {
+            this.makeToast(
+            "warning",
+            this.$t("VariantDuplicate"),
+            this.$t("Warning")
+            );
+        } else {
+            if (this.tag != "") {
+            var variant_tag = {
+                var_id: this.variants.length + 1, // generate unique ID
+                text: tag,
+                code: 'MC0'+Math.floor(
+                    Math.pow(10, 7) +
+                    Math.random() *
+                        (Math.pow(10, 8) - Math.pow(10, 7) - 1)
+                    )
+            };
+            this.variants.push(variant_tag);
+            this.tag = "";
+            } else {
+            this.makeToast(
+                "warning",
+                "Please Enter the Variant",
+                this.$t("Warning")
+            );
+            }
+        }
+        },
+        //-----------------------------------Delete variant------------------------------\\
+        delete_variant(var_id) {
+        for (var i = 0; i < this.variants.length; i++) {
+            if (var_id === this.variants[i].var_id) {
+            this.variants.splice(i, 1);
+            }
+        }
+        },
+
+        //------ event upload Image Success
+        uploadImageSuccess(formData, index, fileList, imageArray) {
+        this.images = fileList;
+        },
+
+        //------ event before Remove image
+        beforeRemove(index, done, fileList) {
+        var remove = confirm("remove image");
+        if (remove == true) {
+            this.images.splice(index, 1);
+            done();
+        } else {
+        }
+        },
+
+        //---------------------------------------Get Product Elements ------------------------------\\
+        GetElements() {
+        let id = this.$route.params.id;
+        axios
+            .get(`products/${id}/edit`)
+            .then((response) => {
+            this.product = response.data.product;
+            this.variants = response.data.product.ProductVariant;
+            this.images = response.data.product.images;
+            this.categories = response.data.categories;
+            this.brands = response.data.brands;
+            this.units = response.data.units;
+            this.reelsize = response.data.reelsize;
+            this.grams = response.data.grams;
+            this.shades = response.data.shades;
+            this.units_sub = response.data.units_sub;
+            this.Subcategories = response.data.Subcategories;
+
+            this.isLoading = false;
+            })
+            .catch((response) => {
+            setTimeout(() => {
+                this.isLoading = false;
+            }, 500);
+            });
+        },
+
+        //---------------------- Get Sub Units with Unit id ------------------------------\\
+        Get_Units_SubBase(value) {
+        axios
+            .get("get_sub_units_by_base?id=" + value)
+            .then(({ data }) => (this.units_sub = data));
+        },
+
+        //---------------------- Event Select Unit Product ------------------------------\\
+        Selected_Unit(value) {
+        this.units_sub = [];
+        this.product.unit_sale_id = "";
+        this.product.unit_purchase_id = "";
+        this.Get_Units_SubBase(value);
+        },
+
+        //------------------------------ Update Product ------------------------------\\
+        Update_Product() {
+        NProgress.start();
+        NProgress.set(0.1);
+        var self = this;
+        self.data = new FormData();
+        self.SubmitProcessing = true;
+
+        if (self.product.type == "is_variant" && self.variants.length > 0) {
+            self.product.is_variant = true;
+        } else {
+            self.product.is_variant = false;
+        }
+
+        // append objet product
+        Object.entries(self.product).forEach(([key, value]) => {
+            self.data.append(key, value);
+        });
+
+        //append array variants
+        if (self.variants.length) {
+            for (var i = 0; i < self.variants.length; i++) {
+            Object.entries(self.variants[i]).forEach(([key, value]) => {
+                self.data.append("variants[" + i + "][" + key + "]", value);
+            });
+            }
+        }
+
+        //append array images
+        if (self.images.length > 0) {
+            for (var k = 0; k < self.images.length; k++) {
+            Object.entries(self.images[k]).forEach(([key, value]) => {
+                self.data.append("images[" + k + "][" + key + "]", value);
+            });
+            }
+        }
+
+        self.data.append("_method", "put");
+
+        //send Data with axios
+        axios
+            .post("products/" + this.product.id, self.data)
+            .then((response) => {
+            NProgress.done();
+            self.SubmitProcessing = false;
+            this.$router.push({ name: "index_products" });
+            this.makeToast(
+                "success",
+                this.$t("Successfully_Updated"),
+                this.$t("Success")
+            );
+            })
+            .catch((error) => {
+            NProgress.done();
+            self.SubmitProcessing = false;
+            if (error.errors.code && error.errors.code.length > 0) {
+                self.code_exist = error.errors.code[0];
+                this.makeToast("danger", error.errors.code[0], this.$t("Failed"));
+            } else if (
+                error.errors.variants &&
+                error.errors.variants.length > 0
+            ) {
+                this.makeToast(
+                "danger",
+                error.errors.variants[0],
+                this.$t("Failed")
+                );
+            } else {
+                this.makeToast("danger", this.$t("InvalidData"), this.$t("Failed"));
+            }
+            });
+        },
+    }, //end Methods
+
+    //-----------------------------Created function-------------------
+
+    created: function () {
+        this.GetElements();
+        this.imageArray = [];
+        this.images = [];
     },
-  }, //end Methods
-
-  //-----------------------------Created function-------------------
-
-  created: function () {
-    this.GetElements();
-    this.imageArray = [];
-    this.images = [];
-  },
-};
+    };
 </script>

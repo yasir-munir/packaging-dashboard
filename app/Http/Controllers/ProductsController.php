@@ -111,6 +111,11 @@ class ProductsController extends BaseController
 
                 $item['cost'] = '';
                 $item['price'] = '';
+                $item['width'] = '';
+                $item['paper_grams'] = '';
+                $item['paper_type'] = '';
+                $item['paper_shade'] = '';
+                $item['qty'] = '';
                 $item['unit'] = $product['unit']->ShortName;
 
                 foreach ($product_variant_data as $product_variant) {
@@ -118,6 +123,22 @@ class ProductsController extends BaseController
                     $item['cost'] .= '<br>';
                     $item['price'] .= number_format($product_variant->price, 2, '.', ',');
                     $item['price'] .= '<br>';
+                    $item['width'] .= $product_variant->width;
+                    $item['width'] .= '<br>';
+                    $item['paper_grams'] .= $product_variant->paper_grams;
+                    $item['paper_grams'] .= '<br>';
+                    $item['paper_type'] .= $product_variant->paper_type;
+                    $item['paper_type'] .= '<br>';
+                    $item['paper_shade'] .= $product_variant->paper_shade;
+                    $item['paper_shade'] .= '<br>';
+
+                    $product_warehouse_total_qty = product_warehouse::where('product_id', $product->id)
+                    ->where('product_variant_id', $product_variant->id)
+                    ->where('deleted_at', '=', null)
+                    ->sum('qte');
+
+                    $item['qty'] .= $product_warehouse_total_qty. ' ' . $product['unit']->ShortName;
+                    $item['qty'] .= '<br>';
                 }
 
                 $product_warehouse_total_qty = product_warehouse::where('product_id', $product->id)
@@ -180,6 +201,9 @@ class ProductsController extends BaseController
             'categories' => $categories,
             'brands' => $brands,
             'units' => $units,
+            'reelsize' => $reelsize,
+            'grams' => $grams,
+            'shades' => $shades,
         ]);
 
     }
@@ -232,6 +256,9 @@ class ProductsController extends BaseController
                         if ($variants) {
                             if ($request['listingtype']=='is_reel'){
                                 foreach ($variants as $variant) {
+                                    // $variant['text'] = implode('-', [$request['name'], $variant['paperGram']['value'], $variant['width']['value'], $variant['paperType']['value'], $variant['paperShade']['value']]);
+                                    // $variant['code'] = 'MC00-'.implode('-', [$request['name'], $variant['paperGram']['value'], $variant['width']['value'], $variant['paperType']['value'], $variant['paperShade']['value']]);
+
                                     if (!array_key_exists('text', $variant) || empty($variant['text'])) {
                                         $fail('Variant Name cannot be empty.');
                                         return;
@@ -337,8 +364,6 @@ class ProductsController extends BaseController
                             $fail('The variants data is invalid.');
                             return;
                         }
-
-
 
                         //check if variant name empty
                         $names = array_column($variants, 'text');
@@ -640,12 +665,12 @@ class ProductsController extends BaseController
                             $Product_variants_data[] = [
                                 'product_id' => $Product->id,
                                 'name' => $variant->text,
-                                'width' => $variant->width,
+                                'width' => $variant->width->label,
                                 'rct' => $variant->rct,
                                 'weight' => $variant->rct,
-                                'paper_grams' => $variant->paperGram,
-                                'paper_type' => $variant->paperType,
-                                'paper_shade' => $variant->paperShade,
+                                'paper_grams' => $variant->paperGram->label,
+                                'paper_type' => $variant->paperType->label,
+                                'paper_shade' => $variant->paperShade->label,
                                 'top' => $variant->top->value,
                                 'flute' => $variant->flute->value,
                                 'back' => $variant->back->value,
@@ -1081,10 +1106,10 @@ class ProductsController extends BaseController
             }
 
             // validate the request data
-            $validatedData = $request->validate($productRules, [
-                'code.unique' => 'Product code already used.',
-                'code.required' => 'This field is required',
-            ]);
+            // $validatedData = $request->validate($productRules, [
+            //     'code.unique' => 'Product code already used.',
+            //     'code.required' => 'This field is required',
+            // ]);
 
 
             \DB::transaction(function () use ($request, $id) {
@@ -1190,8 +1215,7 @@ class ProductsController extends BaseController
                                     ->update(['deleted_at' => Carbon::now()]);
                             }
                         }
-
-                        if ($request['listingtype']=='is_reel'){
+                        if ($request['listingType']=='is_reel'){
                             foreach ($request['variants'] as $key => $variant) {
                                 if (array_key_exists($var, $variant)) {
 
@@ -1202,9 +1226,13 @@ class ProductsController extends BaseController
                                     $ProductVariantDT->price = $variant['price'];
                                     $ProductVariantDT->width = $variant['width'];
                                     $ProductVariantDT->weight = $variant['weight'];
+                                    $ProductVariantDT->rct = $variant['weight'];
                                     $ProductVariantDT->paper_grams = $variant['paperGram'];
                                     $ProductVariantDT->paper_type = $variant['paperType'];
                                     $ProductVariantDT->paper_shade = $variant['paperShade'];
+                                    $ProductVariantDT->top = $variant['top'];
+                                    $ProductVariantDT->back = $variant['back'];
+                                    $ProductVariantDT->flute = $variant['flute'];
                                     $ProductVariantDT->cost = $variant['cost'];
                                     $ProductVariantDT->code = $variant['code'];
 
@@ -1213,11 +1241,16 @@ class ProductsController extends BaseController
                                     $ProductVariantUP['name'] = $variant['text'];
                                     $ProductVariantUP['width'] = $variant['width'];
                                     $ProductVariantUP['weight'] = $variant['weight'];
+                                    $ProductVariantUP['rct'] = $variant['weight'];
                                     $ProductVariantUP['paper_grams'] = $variant['paperGram'];
                                     $ProductVariantUP['paper_type'] = $variant['paperType'];
                                     $ProductVariantUP['paper_shade'] = $variant['paperShade'];
+                                    $ProductVariantUP['top'] = $variant['top'];
+                                    $ProductVariantUP['back'] = $variant['back'];
+                                    $ProductVariantUP['flute'] = $variant['flute'];
                                     $ProductVariantUP['price'] = $variant['price'];
                                     $ProductVariantUP['cost'] = $variant['cost'];
+
 
                                 } else {
                                     $ProductVariantDT = new ProductVariant;
@@ -1228,9 +1261,13 @@ class ProductsController extends BaseController
                                     $ProductVariantDT->name = $variant['text'];
                                     $ProductVariantDT->width = $variant['width'];
                                     $ProductVariantDT->weight = $variant['weight'];
+                                    $ProductVariantDT->rct = $variant['weight'];
                                     $ProductVariantDT->paper_grams = $variant['paperGram'];
                                     $ProductVariantDT->paper_type = $variant['paperType'];
                                     $ProductVariantDT->paper_shade = $variant['paperShade'];
+                                    $ProductVariantDT->top = $variant['top'];
+                                    $ProductVariantDT->back = $variant['back'];
+                                    $ProductVariantDT->flute = $variant['flute'];
                                     $ProductVariantDT->price = $variant['price'];
                                     $ProductVariantDT->cost = $variant['cost'];
 
@@ -1239,9 +1276,13 @@ class ProductsController extends BaseController
                                     $ProductVariantUP['name'] = $variant['text'];
                                     $ProductVariantUP['width'] = $variant['width'];
                                     $ProductVariantUP['weight'] = $variant['weight'];
+                                    $ProductVariantUP['rct'] = $variant['weight'];
                                     $ProductVariantUP['paper_grams'] = $variant['paperGram'];
                                     $ProductVariantUP['paper_type'] = $variant['paperType'];
                                     $ProductVariantUP['paper_shade'] = $variant['paperShade'];
+                                    $ProductVariantUP['top'] = $variant['top'];
+                                    $ProductVariantUP['back'] = $variant['back'];
+                                    $ProductVariantUP['flute'] = $variant['flute'];
                                     $ProductVariantUP['price'] = $variant['price'];
                                     $ProductVariantUP['cost'] = $variant['cost'];
                                     $ProductVariantUP['qty'] = 0.00;
@@ -1426,6 +1467,7 @@ class ProductsController extends BaseController
                                 }
                             }
                         }
+
                     } else {
                         $ProducttWarehouse = product_warehouse::where('product_id', $id)
                             ->update([
@@ -2184,6 +2226,9 @@ class ProductsController extends BaseController
                 $variant_item['dimension'] = $variant->dimension;
                 $variant_item['ply'] = $variant->ply;
                 $variant_item['crafting'] = $variant->crafting;
+                $variant_item['top'] = $variant->top;
+                $variant_item['flute'] = $variant->flute;
+                $variant_item['back'] = $variant->back;
                 $variant_item['paperGram'] = $variant->paper_grams;
                 $variant_item['paperType'] = $variant->paper_type;
                 $variant_item['paperShade'] = $variant->paper_shade;
@@ -2214,12 +2259,21 @@ class ProductsController extends BaseController
             ->where('base_unit', null)
             ->get();
 
+
+        $reelsize = ReelSize::where('deleted_at', null)->get(['id', 'name']);
+        $grams = Grams::where('deleted_at', null)->get(['id', 'name']);
+        $shades = Shade::where('deleted_at', null)->get(['id', 'name']);
+
+
         return response()->json([
             'product' => $data,
             'categories' => $categories,
             'brands' => $brands,
             'units' => $units,
             'units_sub' => $product_units,
+            'reelsize' => $reelsize,
+            'grams' => $grams,
+            'shades' => $shades,
         ]);
 
     }

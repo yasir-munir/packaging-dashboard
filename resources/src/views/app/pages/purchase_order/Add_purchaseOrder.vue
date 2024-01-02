@@ -26,7 +26,7 @@
                         :class="{ 'is-invalid': !!errors.length }"
                         :state="errors[0] ? false : valid ? true : null"
                         v-model="po.client_id"
-                        @input="Selected_customer"
+                        @input="Get_Box_Size(po.client_id)"
                         :reduce="(label) => label.value"
                         :placeholder="$t('Choose_Customer')"
                         :options="
@@ -186,26 +186,6 @@
                   </validation-provider>
                 </b-col>
 
-                <!-- Category -->
-                <!-- <b-col md="6" class="mb-2">
-                  <validation-provider name="category" :rules="{ required: true}">
-                    <b-form-group
-                      slot-scope="{ valid, errors }"
-                      :label="$t('Categorie') + ' ' + '*'"
-                    >
-                      <v-select
-                        :class="{'is-invalid': !!errors.length}"
-                        :state="errors[0] ? false : (valid ? true : null)"
-                        :reduce="label => label.value"
-                        :placeholder="$t('Choose_Category')"
-                        v-model="po.category_id"
-                        :options="categories.map(categories => ({label: categories.name, value: categories.id}))"
-                      />
-                      <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
-                    </b-form-group>
-                  </validation-provider>
-                </b-col> -->
-
                 <!-- Delivery Date -->
                 <b-col md="6" class="mb-2">
                   <validation-provider
@@ -244,196 +224,6 @@
 
             <b-card class="mt-3">
               <b-row>
-                <!-- Type  -->
-                <!-- <b-col md="6" class="mb-2">
-                  <validation-provider name="Type" :rules="{ required: true}">
-                    <b-form-group slot-scope="{ valid, errors }" :label="$t('type') + ' ' + '*'">
-                      <v-select
-                        :class="{'is-invalid': !!errors.length}"
-                        :state="errors[0] ? false : (valid ? true : null)"
-                        v-model="po.type"
-                        :reduce="label => label.value"
-                        :placeholder="$t('type')"
-                        :options="
-                            [
-                            {label: 'Standard Product', value: 'is_single'},
-                            {label: 'Variable Product', value: 'is_variant'},
-                            {label: 'Service Product', value: 'is_service'}
-                            ]"
-                      ></v-select>
-                      <v-select
-                        :class="{'is-invalid': !!errors.length}"
-                        :state="errors[0] ? false : (valid ? true : null)"
-                        v-model="po.type"
-                        :reduce="label => label.value"
-                        :placeholder="$t('type')"
-                        :options="
-                            [
-                            {label: 'Standard Product', value: 'is_single'},
-                            {label: 'Variable Product', value: 'is_variant'}
-                            ]"
-                      ></v-select>
-                      <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
-                    </b-form-group>
-                  </validation-provider>
-                </b-col> -->
-
-                <!-- Type  -->
-                <!-- <b-col md="6" class="mb-2">
-                    <validation-provider name="ListingType" :rules="{ required: true}">
-                      <b-form-group slot-scope="{ valid, errors }" :label="$t('listingType') + ' ' + '*'">
-                        <v-select
-                          :class="{'is-invalid': !!errors.length}"
-                          :state="errors[0] ? false : (valid ? true : null)"
-                          v-model="po.listingtype"
-                          :reduce="label => label.value"
-                          :placeholder="$t('listingType')"
-                          :options="
-                              [
-                              {label: 'Reel', value: 'is_reel'},
-                              {label: 'Roll', value: 'is_roll'},
-                              // {label: 'Carton', value: 'is_carton'}
-                              ]"
-                        ></v-select>
-                        <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
-                      </b-form-group>
-                    </validation-provider>
-                  </b-col> -->
-
-                <!-- Product Cost -->
-                <!-- <b-col md="6" class="mb-2" v-if="po.type == 'is_single'">
-                  <validation-provider
-                    name="Product Cost"
-                    :rules="{ required: true , regex: /^\d*\.?\d*$/}"
-                    v-slot="validationContext"
-                  >
-                    <b-form-group :label="$t('ProductCost') + ' ' + '*'">
-                      <b-form-input
-                        :state="getValidationState(validationContext)"
-                        aria-describedby="ProductCost-feedback"
-                        label="Cost"
-                        :placeholder="$t('Enter_Product_Cost')"
-                        v-model="po.cost"
-                      ></b-form-input>
-                      <b-form-invalid-feedback
-                        id="ProductCost-feedback"
-                      >{{ validationContext.errors[0] }}</b-form-invalid-feedback>
-                    </b-form-group>
-                  </validation-provider>
-                </b-col> -->
-
-                <!-- Product Price -->
-                <!-- <b-col
-                  md="6"
-                  class="mb-2"
-                  v-if="po.type == 'is_single' || po.type == 'is_service'"
-                >
-                  <validation-provider
-                    name="Product Price"
-                    :rules="{ required: true , regex: /^\d*\.?\d*$/}"
-                    v-slot="validationContext"
-                  >
-                    <b-form-group :label="$t('ProductPrice') + ' ' + '*'">
-                      <b-form-input
-                        :state="getValidationState(validationContext)"
-                        aria-describedby="ProductPrice-feedback"
-                        label="Price"
-                        :placeholder="$t('Enter_Product_Price')"
-                        v-model="po.price"
-                      ></b-form-input>
-
-                      <b-form-invalid-feedback
-                        id="ProductPrice-feedback"
-                      >{{ validationContext.errors[0] }}</b-form-invalid-feedback>
-                    </b-form-group>
-                  </validation-provider>
-                </b-col> -->
-
-                <!-- Unit Product -->
-                <!-- <b-col md="6" class="mb-2" v-if="po.type != 'is_service'">
-                  <validation-provider name="Unit Product" :rules="{ required: true}">
-                    <b-form-group
-                      slot-scope="{ valid, errors }"
-                      :label="$t('UnitProduct') + ' ' + '*'"
-                    >
-                      <v-select
-                        :class="{'is-invalid': !!errors.length}"
-                        :state="errors[0] ? false : (valid ? true : null)"
-                        v-model="po.unit_id"
-                        class="required"
-                        required
-                        @input="Selected_Unit"
-                        :placeholder="$t('Choose_Unit_Product')"
-                        :reduce="label => label.value"
-                        :options="units.map(units => ({label: units.name, value: units.id}))"
-                      />
-                      <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
-                    </b-form-group>
-                  </validation-provider>
-                </b-col> -->
-
-                <!-- Unit Sale -->
-                <!-- <b-col md="6" class="mb-2" v-if="po.type != 'is_service'">
-                  <validation-provider name="Unit Sale" :rules="{ required: true}">
-                    <b-form-group
-                      slot-scope="{ valid, errors }"
-                      :label="$t('UnitSale') + ' ' + '*'"
-                    >
-                      <v-select
-                        :class="{'is-invalid': !!errors.length}"
-                        :state="errors[0] ? false : (valid ? true : null)"
-                        v-model="po.unit_sale_id"
-                        :placeholder="$t('Choose_Unit_Sale')"
-                        :reduce="label => label.value"
-                        :options="units_sub.map(units_sub => ({label: units_sub.name, value: units_sub.id}))"
-                      />
-                      <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
-                    </b-form-group>
-                  </validation-provider>
-                </b-col> -->
-
-                <!-- Unit Purchase -->
-                <!-- <b-col md="6" class="mb-2" v-if="po.type != 'is_service'">
-                  <validation-provider name="Unit Purchase" :rules="{ required: true}">
-                    <b-form-group
-                      slot-scope="{ valid, errors }"
-                      :label="$t('UnitPurchase') + ' ' + '*'"
-                    >
-                      <v-select
-                        :class="{'is-invalid': !!errors.length}"
-                        :state="errors[0] ? false : (valid ? true : null)"
-                        v-model="po.unit_purchase_id"
-                        :placeholder="$t('Choose_Unit_Purchase')"
-                        :reduce="label => label.value"
-                        :options="units_sub.map(units_sub => ({label: units_sub.name, value: units_sub.id}))"
-                      />
-                      <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
-                    </b-form-group>
-                  </validation-provider>
-                </b-col> -->
-
-                <!-- Stock Alert -->
-                <!-- <b-col md="6" class="mb-2" v-if="po.type != 'is_service'">
-                  <validation-provider
-                    name="Stock Alert"
-                    :rules="{ regex: /^\d*\.?\d*$/}"
-                    v-slot="validationContext"
-                  >
-                    <b-form-group :label="$t('StockAlert')">
-                      <b-form-input
-                        :state="getValidationState(validationContext)"
-                        aria-describedby="StockAlert-feedback"
-                        label="Stock alert"
-                        :placeholder="$t('Enter_Stock_alert')"
-                        v-model="po.stock_alert"
-                      ></b-form-input>
-                      <b-form-invalid-feedback
-                        id="StockAlert-feedback"
-                      >{{ validationContext.errors[0] }}</b-form-invalid-feedback>
-                    </b-form-group>
-                  </validation-provider>
-                </b-col> -->
-
                 <div class="col-md-9 mb-3 mt-3">
                   <div class="d-flex">
                     <legend
@@ -445,17 +235,16 @@
                     </legend>
                   </div>
                   <div class="d-flex">
-                    <input
-                      style="height: 40px"
-                      placeholder="Enter the Size"
-                      type="text"
-                      name="variant"
-                      v-model="size"
-                      class="form-control"
+
+                    <v-select
+                        v-model="po.box_size_id"
+                        :placeholder="$t('Choose Box Size')"
+                        :reduce="label => label.value"
+                        :options="box_size.map(box_size => ({label: box_size.box_size, value: box_size.id}))"
                     />
                     <a
                       style="color: #ffff; margin-left: 10px"
-                      @click="add_variant(size)"
+                      @click="add_variant(po.box_size_id)"
                       class="ms-3 btn btn-md btn-primary"
                       >{{ $t("Add") }}</a
                     >
@@ -468,11 +257,12 @@
                       <thead class="bg-gray-300">
                         <tr>
                           <th scope="col">{{ $t("Carton Size") }}</th>
-                          <th scope="col">{{ $t("Material") }}</th>
+                          <th scope="col">{{ $t("Type") }}</th>
                           <th scope="col">{{ $t("Ply") }}</th>
+                          <th scope="col">{{ $t("Costing Cost") }}</th>
                           <th scope="col">{{ $t("Quantity") }}</th>
                           <th scope="col">{{ $t("Paper Type") }}</th>
-                          <th scope="col">{{ $t("Price") }}</th>
+                          <th scope="col">{{ $t("PO Price") }}</th>
                           <th scope="col"></th>
                         </tr>
                       </thead>
@@ -481,50 +271,38 @@
                           <td colspan="7">{{ $t("NodataAvailable") }}</td>
                         </tr>
                         <tr v-for="variant in variants">
-                          <td>
+                            <input
+                              required hidden
+                              class="form-control"
+                              v-model="variant.list_id"
+                            />
+                            <td>
                             <input
                               required
-                              class="form-control"
+                              class="form-control" disabled
                               v-model="variant.text"
                             />
                           </td>
                           <td>
-                            <!-- <input
+                            <input
                               required
-                              class="form-control"
-                              v-model="variant.material"
-                            /> -->
-                            <v-select
-                              v-model="variant.material"
-                              :options="[
-                                { label: 'BB+F 88/92', value: 'BB+F 88/92' },
-                                {
-                                  label: 'KBL160+F110/115',
-                                  value: 'KBL160+F110/115',
-                                },
-                                {
-                                  label: 'HP125+F110/115',
-                                  value: 'HP125+F110/115',
-                                },
-                              ]"
-                            ></v-select>
+                              class="form-control" disabled
+                              v-model="variant.type"
+                            />
                           </td>
                           <td>
-                            <!-- <input
+                            <input
                               required
-                              class="form-control"
+                              class="form-control" disabled
                               v-model="variant.ply"
-                            /> -->
-                            <v-select
-                              v-model="variant.ply"
-                              :options="[
-                                { label: '1', value: '1' },
-                                { label: '3', value: '3' },
-                                { label: '5', value: '5' },
-                                { label: '7', value: '7' },
-                                { label: '9', value: '9' },
-                              ]"
-                            ></v-select>
+                            />
+                          </td>
+                          <td>
+                            <input
+                              required
+                              class="form-control" disabled
+                              v-model="variant.cost"
+                            />
                           </td>
                           <td>
                             <input
@@ -534,11 +312,6 @@
                             />
                           </td>
                           <td>
-                            <!-- <input
-                              required
-                              class="form-control"
-                              v-model="variant.paperType"
-                            /> -->
                             <v-select
                               v-model="variant.paperType"
                               :options="[
@@ -554,61 +327,7 @@
                               class="form-control"
                               v-model="variant.price"
                             />
-                            <!-- <v-select
-                                v-model="variant.paperShade"
-                                :options="
-                                    [
-                                    {label: 'Natural', value: 'Natural'},
-                                    {label: 'Refish Craft', value: 'Refish Craft'},
-                                    {label: 'Yellow', value: 'Yellow'},
-                                    {label: 'White', value: 'White'}
-                                    ]"
-                                ></v-select> -->
                           </td>
-                          <!-- <td>
-                            // <input required class="form-control" v-model="variant.top">
-                            <v-select
-                              v-model="variant.top"
-                              :options="[
-                                { label: 'Yes', value: 'Yes' },
-                                { label: 'No', value: 'No' },
-                              ]"
-                            ></v-select>
-                          </td>
-                          <td>
-                            // <input required class="form-control" v-model="variant.flute">
-                            <v-select
-                              v-model="variant.flute"
-                              :options="[
-                                { label: 'Yes', value: 'Yes' },
-                                { label: 'No', value: 'No' },
-                              ]"
-                            ></v-select>
-                          </td>
-                          <td>
-                            // <input required class="form-control" v-model="variant.back">
-                            <v-select
-                              v-model="variant.back"
-                              :options="[
-                                { label: 'Yes', value: 'Yes' },
-                                { label: 'No', value: 'No' },
-                              ]"
-                            ></v-select>
-                          </td>
-                          <td>
-                            <input
-                              required
-                              class="form-control"
-                              v-model="variant.cost"
-                            />
-                          </td>
-                          <td>
-                            <input
-                              required
-                              class="form-control"
-                              v-model="variant.price"
-                            />
-                          </td> -->
                           <td>
                             <a
                               style="color: #ffff"
@@ -628,33 +347,7 @@
             </b-card>
 
             <b-card class="mt-3">
-              <!-- <b-row> -->
-              <!-- Product_Has_Imei_Serial_number -->
-              <!-- <b-col md="12 mb-2">
-                  <ValidationProvider rules vid="product" v-slot="x">
-                    <div class="form-check">
-                      <label class="checkbox checkbox-outline-primary">
-                        <input type="checkbox" v-model="po.is_imei">
-                        <h5>{{$t('Product_Has_Imei_Serial_number')}}</h5>
-                        <span class="checkmark"></span>
-                      </label>
-                    </div>
-                  </ValidationProvider>
-                </b-col> -->
 
-              <!-- This_Product_Not_For_Selling -->
-              <!-- <b-col md="12 mb-2">
-                  <ValidationProvider rules vid="product" v-slot="x">
-                    <div class="form-check">
-                      <label class="checkbox checkbox-outline-primary">
-                        <input type="checkbox" v-model="po.not_selling">
-                        <h5>{{$t('This_Product_Not_For_Selling')}}</h5>
-                        <span class="checkmark"></span>
-                      </label>
-                    </div>
-                  </ValidationProvider>
-                </b-col>
-              </b-row>-->
             </b-card>
           </b-col>
 
@@ -728,6 +421,7 @@ export default {
       SubmitProcessing: false,
       data: new FormData(),
       clients: [],
+      box_size: [],
       roles: {},
       variants: [],
       po: {
@@ -783,20 +477,29 @@ export default {
     },
 
     add_variant(tag) {
+        console.log(tag);
+        const box_index = this.box_size.findIndex((box_size) => box_size.id === tag);
+        console.log(box_index);
       if (
         this.variants.length > 0 &&
-        this.variants.some((variant) => variant.text === tag)
+        this.variants.some((variant) => variant.list_id === tag)
       ) {
         this.makeToast(
           "warning",
-          this.$t("VariantDuplicate"),
+          this.$t("Already in the list"),
           this.$t("Warning")
         );
       } else {
         if (this.tag != "") {
           var variant_tag = {
             var_id: this.variants.length + 1, // generate unique ID
-            text: tag,
+            list_id: tag,
+            text: this.box_size[box_index].box_size,
+            // update The fileds
+            ply: this.box_size[box_index].ply,
+            type: this.box_size[box_index].name,
+            cost: this.box_size[box_index].final_box_price
+
           };
           this.variants.push(variant_tag);
           this.text = "";
@@ -872,6 +575,16 @@ export default {
       axios
         .get("get_sub_units_by_base?id=" + value)
         .then(({ data }) => (this.units_sub = data));
+    },
+
+    //---------------------- Get Sub Units with Unit id ------------------------------\\
+
+    Get_Box_Size(value) {
+        // console.log(value);
+        this.box_size.length = 0;
+      axios
+        .get("get_box_by_customer?id=" + value)
+        .then(({ data }) => (this.box_size = data));
     },
 
     //---------------------- Event Select Unit Product ------------------------------\\

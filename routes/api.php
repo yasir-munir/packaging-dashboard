@@ -219,6 +219,18 @@ Route::middleware(['auth:api', 'Is_Active'])->group(function () {
     Route::post('purchases_delete_by_selection', 'PurchaseOrderController@delete_by_selection');
     Route::get('get_Products_by_purchase/{id}', 'PurchaseOrderController@get_Products_by_purchase');
 
+    //------------------------------- COSTING --------------------------\\
+    //------------------------------------------------------------------\\
+
+    Route::resource('costing', 'CostingController');
+    Route::get('get_payments_by_purchase/{id}', 'CostingController@Get_Payments');
+    Route::get('get_costing_detail/{id}', 'CostingController@get_costing_detail');
+    Route::post('purchase_send_email', 'CostingController@Send_Email');
+    Route::post('purchase_send_sms', 'CostingController@Send_SMS');
+    Route::get('get_box_by_customer', 'CostingController@Get_Box_Size_By_Cust_Id');
+    Route::post('purchases_delete_by_selection', 'CostingController@delete_by_selection');
+    Route::get('get_Products_by_purchase/{id}', 'CostingController@get_Products_by_purchase');
+
     //------------------------------- PRODUCTS --------------------------\\
     //------------------------------------------------------------------\\
 

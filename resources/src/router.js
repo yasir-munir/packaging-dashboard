@@ -199,6 +199,51 @@ const routes = [
                 ]
             },
 
+
+            //Costing
+            {
+                path: "/app/costing",
+                component: () =>
+                    import(
+                        /* webpackChunkName: "costing" */ "./views/app/pages/costing"
+                    ),
+                redirect: "app/costing/list",
+                children: [
+                    {
+                        name: "index_costing",
+                        path: "list",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "index_costing" */ "./views/app/pages/costing/index_costing"
+                            )
+                    },
+                    {
+                        path: "store",
+                        name: "store_costing",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "store_costing" */ "./views/app/pages/costing/Add_costing"
+                            )
+                    },
+                    {
+                        path: "edit/:id",
+                        name: "edit_costing",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "edit_costing" */ "./views/app/pages/costing/Edit_costing"
+                            )
+                    },
+                    {
+                        path: "detail/:id",
+                        name: "detail_costing",
+                        component: () =>
+                            import(
+                                /* webpackChunkName: "detail_costing" */ "./views/app/pages/costing/Detail_costing"
+                            )
+                    }
+                ]
+            },
+
             //Adjustement
             {
                 path: "/app/adjustments",

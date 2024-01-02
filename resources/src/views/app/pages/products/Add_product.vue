@@ -6,7 +6,7 @@
     <validation-observer ref="Create_Product" v-if="!isLoading">
       <b-form @submit.prevent="Submit_Product" enctype="multipart/form-data">
         <b-row>
-          <b-col md="10" class="mb-2">
+          <b-col md="12" class="mb-2">
             <b-card class="mt-3">
               <b-row>
                 <!-- Name -->
@@ -112,7 +112,7 @@
                 </b-col>
 
                 <!-- Brand  -->
-                <b-col md="6" class="mb-2">
+                <!-- <b-col md="6" class="mb-2">
                   <b-form-group :label="$t('Brand')">
                     <v-select
                       :placeholder="$t('Choose_Brand')"
@@ -121,7 +121,7 @@
                       :options="brands.map(brands => ({label: brands.name, value: brands.id}))"
                     />
                   </b-form-group>
-                </b-col>
+                </b-col> -->
 
                 <!-- Order Tax -->
                 <b-col md="6" class="mb-2">
@@ -401,7 +401,7 @@
                 </div>
 
                 <div class="col-md-12 mb-2" v-if="product.type == 'is_variant' && product.listingtype == 'is_reel'" >
-                  <div class="table-responsive">
+                  <div class="table">
                     <table class="table table-hover table-sm">
                       <thead class="bg-gray-300">
                         <tr>
@@ -432,38 +432,32 @@
                             <input required  class="form-control" v-model="variant.text">
                           </td>
                           <td>
-                            <input required class="form-control" v-model="variant.paperGram">
-                            <!-- <v-select
+                            <v-select
                                 v-model="variant.paperGram"
-                                :options="
-                                    [
-                                    {label: '90', value: '90'},
-                                    {label: '115', value: '115'},
-                                    {label: '125', value: '125'}
-                                    ]"
-                                ></v-select> -->
+                                :options="grams.map(grams => ({label: grams.name, value: grams.id}))"
+                                ></v-select>
                           </td>
                           <td>
-                            <input required class="form-control" v-model="variant.width">
+                            <!-- <input required class="form-control" v-model="variant.width"> -->
+                            <v-select
+                                v-model="variant.width"
+                                :options="reelsize.map(reelsize => ({label: reelsize.name, value: reelsize.id}))"
+                            ></v-select>
                           </td>
                           <td>
                             <input required class="form-control" v-model="variant.rct">
                           </td>
                           <td>
-                            <input required class="form-control" v-model="variant.paperType">
+                            <v-select
+                                v-model="variant.paperType"
+                                :options="brands.map(brands => ({label: brands.name, value: brands.id}))"
+                            ></v-select>
                           </td>
                           <td>
-                            <input required class="form-control" v-model="variant.paperShade">
-                            <!-- <v-select
+                            <v-select
                                 v-model="variant.paperShade"
-                                :options="
-                                    [
-                                    {label: 'Natural', value: 'Natural'},
-                                    {label: 'Refish Craft', value: 'Refish Craft'},
-                                    {label: 'Yellow', value: 'Yellow'},
-                                    {label: 'White', value: 'White'}
-                                    ]"
-                                ></v-select> -->
+                                :options="shades.map(shades => ({label: shades.name, value: shades.id}))"
+                            ></v-select>
                           </td>
                           <td>
                             <!-- <input required class="form-control" v-model="variant.top"> -->
@@ -471,8 +465,8 @@
                                 v-model="variant.top"
                                 :options="
                                     [
-                                    {label: 'Yes', value: 'Yes'},
-                                    {label: 'No', value: 'No'},
+                                        {label: 'Yes', value: 'Yes'},
+                                        {label: 'No', value: 'No'},
                                     ]"
                                 ></v-select>
                           </td>
@@ -482,8 +476,8 @@
                                 v-model="variant.flute"
                                 :options="
                                     [
-                                    {label: 'Yes', value: 'Yes'},
-                                    {label: 'No', value: 'No'},
+                                        {label: 'Yes', value: 'Yes'},
+                                        {label: 'No', value: 'No'},
                                     ]"
                                 ></v-select>
                           </td>
@@ -493,8 +487,8 @@
                                 v-model="variant.back"
                                 :options="
                                     [
-                                    {label: 'Yes', value: 'Yes'},
-                                    {label: 'No', value: 'No'},
+                                        {label: 'Yes', value: 'Yes'},
+                                        {label: 'No', value: 'No'},
                                     ]"
                                 ></v-select>
                           </td>
@@ -519,7 +513,7 @@
                     </table>
                   </div>
                 </div>
-                <!-- <div class="col-md-12 mb-2" v-if="product.type == 'is_variant' && product.listingtype == 'is_roll'" >
+                <div class="col-md-12 mb-2" v-if="product.type == 'is_variant' && product.listingtype == 'is_roll'" >
                     <div class="table-responsive">
                       <table class="table table-hover table-sm">
                         <thead class="bg-gray-300">
@@ -646,7 +640,7 @@
                         </tbody>
                       </table>
                     </div>
-                  </div> -->
+                  </div>
               </b-row>
             </b-card>
 
@@ -666,7 +660,7 @@
                 </b-col> -->
 
                 <!-- This_Product_Not_For_Selling -->
-                <b-col md="12 mb-2">
+                <!-- <b-col md="12 mb-2">
                   <ValidationProvider rules vid="product" v-slot="x">
                     <div class="form-check">
                       <label class="checkbox checkbox-outline-primary">
@@ -676,14 +670,14 @@
                       </label>
                     </div>
                   </ValidationProvider>
-                </b-col>
+                </b-col> -->
               </b-row>
             </b-card>
           </b-col>
 
-          <b-col md="2">
+          <!-- <b-col md="2"> -->
             <!-- upload-multiple-image -->
-            <b-card>
+            <!-- <b-card>
               <div class="card-header">
                 <h5>{{$t('MultipleImage')}}</h5>
               </div>
@@ -713,7 +707,7 @@
                 </b-row>
               </div>
             </b-card>
-          </b-col>
+          </b-col> -->
           <b-col md="12" class="mt-3">
             <b-button variant="primary" type="submit" :disabled="SubmitProcessing"><i class="i-Yes me-2 font-weight-bold"></i> {{$t('submit')}}</b-button>
             <div v-once class="typo__p" v-if="SubmitProcessing">
@@ -750,6 +744,9 @@ export default {
       units: [],
       units_sub: [],
       brands: [],
+      reelsize: [],
+      grams: [],
+      shades: [],
       roles: {},
       variants: [],
       product: {
@@ -818,7 +815,7 @@ export default {
     },
 
 
-
+    //  Verifying the Tag and generating the Variant code automatically
     add_variant(tag) {
       if (
         this.variants.length > 0 &&
@@ -833,10 +830,16 @@ export default {
           if(this.tag != ''){
             var variant_tag = {
               var_id: this.variants.length + 1, // generate unique ID
-              text: tag
+              text: tag,
+              code: 'MC0'+Math.floor(
+                    Math.pow(10, 7) +
+                    Math.random() *
+                        (Math.pow(10, 8) - Math.pow(10, 7) - 1)
+                    )
             };
             this.variants.push(variant_tag);
             this.tag = "";
+
           }else{
 
             this.makeToast(
@@ -897,6 +900,9 @@ export default {
           this.categories = response.data.categories;
           this.brands = response.data.brands;
           this.units = response.data.units;
+          this.reelsize = response.data.reelsize;
+          this.grams = response.data.grams;
+          this.shades = response.data.shades;
           this.isLoading = false;
         })
         .catch(response => {

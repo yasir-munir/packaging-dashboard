@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <breadcumb :page="$t('All Purchase Orders')" :folder="$t('Purchase Order')"/>
+    <breadcumb :page="$t('All Sales Orders')" :folder="$t('Sale Order')"/>
     <div v-if="isLoading" class="loading_page spinner spinner-primary mr-3"></div>
     <div v-else>
       <vue-good-table
@@ -85,7 +85,7 @@
               v-if="currentUserPermissions && currentUserPermissions.includes('products_edit')"
               v-b-tooltip.hover
               title="Edit"
-              :to="{ name:'edit_purchase_order', params: { id: props.row.id } }"
+              :to="{ name:'Edit_purchase_order', params: { id: props.row.id } }"
             >
               <i class="i-Edit text-25 text-success"></i>
             </router-link>
@@ -390,8 +390,8 @@ export default {
           thClass: "text-left"
         },
         {
-          label: this.$t("Material"),
-          field: "material",
+          label: this.$t("Type"),
+          field: "category_id",
           // type: "decimal",
           html: true,
           tdClass: "text-left",

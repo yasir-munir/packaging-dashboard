@@ -103,117 +103,6 @@
           </b-card>
         </b-col>
       </b-row>
-
-      <b-row>
-        <!-- Stock Alert -->
-        <div class="col-md-8">
-          <div class="card mb-30">
-            <div class="card-body p-2">
-              <h5 class="card-title border-bottom p-3 mb-2">{{$t('StockAlert')}}</h5>
-
-              <vue-good-table
-                :columns="columns_stock"
-                styleClass="order-table vgt-table mb-3"
-                row-style-class="text-left"
-                :rows="stock_alerts"
-              >
-                <template slot="table-row" slot-scope="props">
-                  <div v-if="props.column.field == 'stock_alert'">
-                    <span class="badge badge-outline-danger">{{props.row.stock_alert}}</span>
-                  </div>
-                </template>
-              </vue-good-table>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card mb-30">
-            <div class="card-body p-3">
-              <h5
-                class="card-title border-bottom p-3 mb-2"
-              >{{$t('Top_Selling_Products')}} ({{CurrentMonth}})</h5>
-
-              <vue-good-table
-                :columns="columns_products"
-                styleClass="order-table vgt-table"
-                row-style-class="text-left"
-                :rows="products"
-              >
-                <template slot="table-row" slot-scope="props">
-                  <div v-if="props.column.field == 'total'">
-                    <span>{{currentUser.currency}} {{formatNumber(props.row.total ,2)}}</span>
-                  </div>
-                </template>
-              </vue-good-table>
-            </div>
-          </div>
-        </div>
-      </b-row>
-
-      <b-row>
-        <b-col lg="8" md="12" sm="12">
-          <b-card class="mb-30">
-            <h4 class="card-title m-0">{{$t('Payment_Sent_Received')}}</h4>
-            <div class="chart-wrapper">
-              <v-chart :options="echartPayment" :autoresize="true"></v-chart>
-            </div>
-          </b-card>
-        </b-col>
-        <b-col col lg="4" md="12" sm="12">
-          <b-card class="mb-30">
-            <h4 class="card-title m-0">{{$t('TopCustomers')}} ({{CurrentMonth}})</h4>
-            <div class="chart-wrapper">
-              <v-chart :options="echartCustomer" :autoresize="true"></v-chart>
-            </div>
-          </b-card>
-        </b-col>
-      </b-row>
-
-      <!-- Last Sales -->
-      <b-row>
-        <div class="col-md-12">
-          <div class="card mb-30">
-            <div class="card-body p-0">
-              <h5 class="card-title border-bottom p-3 mb-2">{{$t('Recent_Sales')}}</h5>
-
-              <vue-good-table
-                v-if="!loading"
-                :columns="columns_sales"
-                styleClass="order-table vgt-table"
-                row-style-class="text-left"
-                :rows="sales"
-              >
-                <template slot="table-row" slot-scope="props">
-                  <div v-if="props.column.field == 'statut'">
-                    <span
-                      v-if="props.row.statut == 'completed'"
-                      class="badge badge-outline-success"
-                    >{{$t('complete')}}</span>
-                    <span
-                      v-else-if="props.row.statut == 'pending'"
-                      class="badge badge-outline-info"
-                    >{{$t('Pending')}}</span>
-                    <span v-else class="badge badge-outline-warning">{{$t('Ordered')}}</span>
-                  </div>
-
-                  <div v-else-if="props.column.field == 'payment_status'">
-                    <span
-                      v-if="props.row.payment_status == 'paid'"
-                      class="badge badge-outline-success"
-                    >{{$t('Paid')}}</span>
-                    <span
-                      v-else-if="props.row.payment_status == 'partial'"
-                      class="badge badge-outline-primary"
-                    >{{$t('partial')}}</span>
-                    <span v-else class="badge badge-outline-warning">{{$t('Unpaid')}}</span>
-                  </div>
-                </template>
-              </vue-good-table>
-            </div>
-          </div>
-        </div>
-      </b-row>
     </div>
 
     <div v-else>
@@ -221,7 +110,7 @@
     </div>
 
   </div>
-  
+
   <!-- ============ Body content End ============= -->
 </template>
 <script>

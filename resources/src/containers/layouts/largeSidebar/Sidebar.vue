@@ -62,6 +62,23 @@
             </a>
             <div class="triangle"></div>
           </li>
+          <!-- Costing -->
+          <li
+          v-show="currentUserPermissions && (currentUserPermissions.includes('Purchases_view')
+                      || currentUserPermissions.includes('Purchases_add'))"
+          @mouseenter="toggleSubMenu"
+          class="nav-item"
+          :class="{ active: selectedParentMenu == 'costing' }"
+          data-item="costing"
+          :data-submenu="true"
+        >
+          <a class="nav-item-hold" href="#">
+            <i class="nav-icon i-Receipt"></i>
+            <span class="nav-text">{{$t('Costing')}}</span>
+          </a>
+          <div class="square"></div>
+        </li>
+        <!-- End Costing  -->
           <li
             v-show="currentUserPermissions
               && (currentUserPermissions.includes('adjustment_view')
@@ -452,6 +469,31 @@
             <router-link tag="a" class to="/app/adjustments/list">
               <i class="nav-icon i-Files"></i>
               <span class="item-name">{{$t('ListAdjustments')}}</span>
+            </router-link>
+          </li>
+        </ul>
+
+        <ul
+          class="childNav d-none"
+          data-parent="costing"
+          :class="{ 'd-block': selectedParentMenu == 'costing' }"
+        >
+          <li
+            class="nav-item"
+            v-if="currentUserPermissions && currentUserPermissions.includes('Purchases_add')"
+          >
+            <router-link tag="a" class to="/app/costing/store">
+              <i class="nav-icon i-Add-File"></i>
+              <span class="item-name">{{$t('Add Costing')}}</span>
+            </router-link>
+          </li>
+          <li
+            class="nav-item"
+            v-if="currentUserPermissions && currentUserPermissions.includes('Purchases_view')"
+          >
+            <router-link tag="a" class to="/app/costing/list">
+              <i class="nav-icon i-Files"></i>
+              <span class="item-name">{{$t('List Costing')}}</span>
             </router-link>
           </li>
         </ul>
