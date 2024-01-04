@@ -864,7 +864,7 @@ export default {
   },
   data() {
     return {
-    size: "",
+      size: "",
       len: 8,
       change: false,
       isLoading: true,
@@ -1038,10 +1038,11 @@ export default {
     GetElements() {
       let id = this.$route.params.id;
       axios
-        .get(`products/${id}/edit`)
+        .get(`costing/${id}/edit`)
         .then((response) => {
-          this.product = response.data.product;
-          this.variants = response.data.product.ProductVariant;
+          this.costing = response.data.costing;
+        //   this.product = response.data.product;
+          this.variants = response.data.costing.costing_details;
           this.images = response.data.product.images;
           this.categories = response.data.categories;
           this.brands = response.data.brands;

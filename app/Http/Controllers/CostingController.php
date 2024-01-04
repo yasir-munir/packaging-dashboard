@@ -291,26 +291,99 @@ class CostingController extends Controller
         //
         $this->authorizeForUser($request->user('api'), 'create', Sale::class);
 
-            $cost = Costing::where('deleted_at', '=', null)->findOrFail($id);
+        $costing = Costing::join('clients', 'costings.client_id', '=', 'clients.id')
+            ->select('costings.*', 'clients.name')
+            ->where('costings.deleted_at', '=', null)
+            ->findOrFail($id);
 
-            $item['id'] = $cost->id;
-            $item['box_size'] = $cost->box_size;
-            $item['cust_name'] = $cost->name;
-            $item['box_type'] = $cost->box_type;
-            $item['ply'] = $cost->ply;
-            $item['order_date'] = $cost->date;
-            $item['final_box_price'] = $cost->final_box_price;
-            $item['is_active'] = $cost->is_active? "Active":'Inactive';
+            $item['id'] = $costing->id;
+            $item['box_size'] = $costing->box_size;
+            $item['cust_name'] = $costing->name;
+            $item['box_type'] = $costing->box_type;
+            $category = Category::where('id', $costing->box_type)->select(['name'])
+                        ->where('deleted_at', '=', null)
+                        ->first();
+            $item['box_type_name'] = $category->name;
+            $item['ply'] = $costing->ply;
+            $item['order_date'] = $costing->date;
+            $item['final_box_price'] = $costing->final_box_price;
+            $item['is_active'] = $costing->is_active? "Active":'Inactive';
+            $item['measurement'] = $costing->measurement;
+            $item['quantity'] = $costing->quantity;
+            $item['shade'] = $costing->shade;
+            $shade = Shade::where('id', $costing->shade)->select(['name'])
+                        ->where('deleted_at', '=', null)
+                        ->first();
+            $item['shade_name'] = $shade->name;
+            $item['paper_type'] = $costing->paper_type;
+            $brand = Brand::where('id', $costing->paper_type)->select(['name'])
+                        ->where('deleted_at', '=', null)
+                        ->first();
+            $item['paper_type_name'] = $brand->name;
+            $item['length_cm'] = $costing->length_cm;
+            $item['width_cm'] = $costing->width_cm;
+            $item['height_cm'] = $costing->height_cm;
+            $item['length_inch'] = $costing->length_inch;
+            $item['width_inch'] = $costing->width_inch;
+            $item['height_inch'] = $costing->height_inch;
+            $item['sheet_length'] = $costing->sheet_length;
+            $item['sheet_width'] = $costing->sheet_width;
+            $item['sheet_count'] = $costing->sheet_count;
+            $item['roll_one_side'] = $costing->roll_one_side;
+            $item['roll_two_side'] = $costing->roll_two_side;
+            $item['total_craft'] = $costing->total_craft;
+            $item['total_folding_nali'] = $costing->total_folding_nali;
+            $item['total_folding'] = $costing->total_folding;
+            $item['total_craft_q'] = $costing->total_craft_q;
+            $item['total_folding_nali_q'] = $costing->total_folding_nali_q;
+            $item['total_folding_q'] = $costing->total_folding_q;
+            $item['total_grams'] = $costing->total_grams;
+            $item['total_bs'] = $costing->total_bs;
+            $item['total_weight'] = $costing->total_weight;
+            $item['carrogation_cost'] = $costing->carrogation_cost;
+            $item['waste'] = $costing->waste;
+            $item['total_cost'] = $costing->total_cost;
+            $item['conversion_per_kg'] = $costing->conversion_per_kg;
+            $item['printing'] = $costing->printing;
+            $item['lamination'] = $costing->lamination;
+            $item['profit'] = $costing->profit;
+            $item['transport'] = $costing->transport;
 
-            $categoty_name = Category::where('id', $cost->box_type)->where('deleted_at', null)->get(['name']);
-            $item['box_type_name'] = $categoty_name[0]['name'];
+            $costing_data = CostingDetail::where('costing_id', $costing->id)
+                ->where('deleted_at', '=', null)
+                ->get();
 
-            $data[] = $item;
+            foreach ($costing_data as $cost) {
+
+                $costPly['ply_no'] = $cost->ply_no;
+                $costPly['paper_type'] = $cost->paper_type;
+                $costPly['layer_paper_id'] = $cost->paper_id; // fetch paper details
+                $paper_product = ProductVariant::where('id', $cost->paper_id)->select(['name'])
+                        ->where('deleted_at', '=', null)
+                        ->first();
+                $costPly['paper_name'] = $paper_product['name']; // fetch paper details
+                $costPly['paper_bf'] = $cost->paper_bf;
+                $costPly['paper_rate'] = $cost->paper_rate;
+                $costPly['paper_grams'] = $cost->paper_grams;
+                $costPly['paper_flute_factor'] = $cost->paper_flute_factor;
+                $costPly['paper_weight'] = $cost->paper_weight;
+                $costPly['paper_approx'] = $cost->paper_approx;
+                $costPly['paper_cost'] = $cost->paper_cost;
+
+                $item['costing_details'][] = $costPly;
+
+            }
 
 
+        $data[] = $item;
 
-        $clients = Client::where('deleted_at', '=', null)->get(['id', 'name']);
-        $categories = Category::where('deleted_at', null)->get(['id', 'name']);
+        $stripe_key = config('app.STRIPE_KEY');
+        $brands = Brand::where('deleted_at', null)->get(['id', 'name']);
+        $units = Unit::where('deleted_at', null)->where('base_unit', null)->get();
+        $reelsize = ReelSize::where('deleted_at', null)->get(['id', 'name']);
+        $grams = Grams::where('deleted_at', null)->get(['id', 'name']);
+        $shades = Shade::where('deleted_at', null)->get(['id', 'name']);
+        $brands = Brand::where('deleted_at', null)->get(['id', 'name']);
         $papers = Product::join('product_variants', 'products.id', 'product_variants.product_id')
                     ->where('products.deleted_at', null)
                     ->where('products.listing_type', 'is_reel')
@@ -318,9 +391,20 @@ class CostingController extends Controller
                     ->where('products.is_active', 1)
                     ->get();
 
+
+        $clients = Client::where('deleted_at', '=', null)->get(['id', 'name']);
+        $categories = Category::where('deleted_at', null)->get(['id', 'name']);
+
         return response()->json([
+            'costing' => $data[0],
+            'stripe_key' => $stripe_key,
             'clients' => $clients,
             'categories' => $categories,
+            'types' => $brands,
+            'units' => $units,
+            'reelsize' => $reelsize,
+            'grams' => $grams,
+            'shades' => $shades,
             'papers' => $papers,
         ]);
 
