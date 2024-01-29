@@ -26,7 +26,6 @@
                           :class="{ 'is-invalid': !!errors.length }"
                           :state="errors[0] ? false : valid ? true : null"
                           v-model="costing.client_id"
-                          @input="Selected_customer"
                           :reduce="(label) => label.value"
                           :placeholder="$t('Choose_Customer')"
                           :options="
@@ -620,6 +619,7 @@
                             <td>
                               <v-select
                                 v-model="variant.layer"
+                                :reduce="(label) => label.value"
                                 :key="index"
                                 :placeholder="$t('Choose Layer')"
                                 @input="updatePapers(index)"
@@ -736,17 +736,17 @@
                         </tr>
                         <tr>
                           <td class="bold">{{ $t("Craft") }}</td>
-                          <td><span>{{ costing.total_craft.toFixed(2) }}</span></td>
+                          <td><span>{{ costing.total_craft.toFixed(3) }}</span></td>
                           <td class="font-weight-bold">{{ costing.total_craft_q.toFixed(2) }}</td>
                         </tr>
                         <tr>
                           <td class="bold">{{ $t("Folding Nali") }}</td>
-                          <td><span>{{ costing.total_folding_nali.toFixed(2) }}</span></td>
+                          <td><span>{{ costing.total_folding_nali.toFixed(3) }}</span></td>
                           <td class="font-weight-bold">{{ costing.total_folding_nali_q.toFixed(2) }}</td>
                         </tr>
                         <tr>
                           <td class="bold">{{ $t("Folding") }}</td>
-                          <td><span>{{ costing.total_folding.toFixed(2) }}</span></td>
+                          <td><span>{{ costing.total_folding.toFixed(3) }}</span></td>
                           <td class="font-weight-bold">{{ costing.total_folding_q.toFixed(2) }}</td>
                         </tr>
                       </tbody>
@@ -763,57 +763,57 @@
                       <tr>
                           <td class="bold">{{ $t("Total Grams") }}</td>
                           <td></td>
-                          <td class="text-right"><span>{{ costing.total_grams.toFixed(2) }}</span></td>
+                          <td class="text-right"><span>{{ costing.total_grams }}</span></td>
                         </tr>
                         <tr>
                           <td class="bold">{{ $t("Total BS") }}</td>
                           <td></td>
-                          <td class="text-right"><span>{{ costing.total_bs.toFixed(2) }}</span></td>
+                          <td class="text-right"><span>{{ costing.total_bs }}</span></td>
                         </tr>
                         <tr>
                           <td class="bold">{{ $t("Total Weight") }}</td>
                           <td></td>
-                          <td class="text-right"><span>{{ costing.total_weight.toFixed(2) }}</span></td>
+                          <td class="text-right"><span>{{ costing.total_weight }}</span></td>
                         </tr>
                         <tr>
                           <td class="bold">{{ $t("Carrogation Cost") }}</td>
-                          <td><input required class="form-control" type="number" v-model="costing.carrogation_cost_percent" value="5.00" size="4" @input="totalRateUpdate()"/></td>
-                          <td class="text-right"><span>{{ costing.carrogation_cost.toFixed(2) }}</span></td>
+                          <td><input required class="form-control" type="number" v-model="costing.carrogation_cost_percent" value="5.00" size="4" @change="totalRateUpdate()"/></td>
+                          <td class="text-right"><span>{{ costing.carrogation_cost }}</span></td>
                         </tr>
                         <tr>
                           <td class="bold">{{ $t("Waste") }}</td>
-                          <td><input required class="form-control" type="number" v-model="costing.waste_percent" value="1" size="4" @input="totalRateUpdate()"/></td>
-                          <td class="text-right"><span>{{ costing.waste.toFixed(2) }}</span></td>
+                          <td><input required class="form-control" type="number" v-model="costing.waste_percent" value="1" size="4" @change="totalRateUpdate()"/></td>
+                          <td class="text-right"><span>{{ costing.waste }}</span></td>
                         </tr>
                         <tr>
                           <td class="bold">{{ $t("Raw Material Cost") }}</td>
                           <td></td>
-                          <td class="text-right"><span>{{ costing.total_cost.toFixed(2) }}</span></td>
+                          <td class="text-right"><span>{{ costing.total_cost }}</span></td>
                         </tr>
                         <tr>
                           <td class="bold">{{ $t("Conversion Rs/KG") }}</td>
-                                <td><input required class="form-control" type="number" v-model="costing.conversion_per_kg_percent" value="10.00" size="4" @input="totalRateUpdate()" /></td>
-                          <td class="text-right"><span>{{ costing.conversion_per_kg.toFixed(2) }}</span></td>
+                                <td><input required class="form-control" type="number" v-model="costing.conversion_per_kg_percent" value="10.00" size="4" @change="totalRateUpdate()" /></td>
+                          <td class="text-right"><span>{{ costing.conversion_per_kg }}</span></td>
                         </tr>
                         <tr>
                           <td class="bold">{{ $t("Printing") }}</td>
-                          <td><input required class="form-control" type="number" v-model="costing.printing_percent" value="2.00" size="4" @input="totalRateUpdate()"/></td>
-                          <td class="text-right"><span>{{ costing.printing.toFixed(2) }}</span></td>
+                          <td><input required class="form-control" type="number" v-model="costing.printing_percent" value="2.00" size="4" @change="totalRateUpdate()"/></td>
+                          <td class="text-right"><span>{{ costing.printing }}</span></td>
                         </tr>
                         <tr>
                           <td class="bold">{{ $t("Lamination") }}</td>
-                          <td><input required class="form-control" type="number" v-model="costing.lamination_percent" value="5.00" size="4" @input="totalRateUpdate()"/></td>
-                          <td class="text-right"><span>{{ costing.lamination.toFixed(2) }}</span></td>
+                          <td><input required class="form-control" type="number" v-model="costing.lamination_percent" value="5.00" size="4" @change="totalRateUpdate()"/></td>
+                          <td class="text-right"><span>{{ costing.lamination }}</span></td>
                         </tr>
                         <tr>
                           <td class="bold">{{ $t("Profit %") }}</td>
-                          <td><input required class="form-control" type="number" v-model="costing.profit_percent" value="10.00" size="4" @input="totalRateUpdate()"/></td>
-                          <td class="text-right"><span>{{ costing.profit.toFixed(2) }}</span></td>
+                          <td><input required class="form-control" type="number" v-model="costing.profit_percent" value="10.00" size="4" @change="totalRateUpdate()"/></td>
+                          <td class="text-right"><span>{{ costing.profit }}</span></td>
                         </tr>
                         <tr>
                           <td class="bold">{{ $t("Transport") }}</td>
-                          <td><input required class="form-control" type="number" v-model="costing.transport_percent" value="10.00" size="4" @input="totalRateUpdate()"/></td>
-                          <td class="text-right"><span>{{ costing.transport.toFixed(2) }}</span></td>
+                          <td><input required class="form-control" type="number" v-model="costing.transport_percent" value="10.00" size="4" @change="totalRateUpdate()"/></td>
+                          <td class="text-right"><span>{{ costing.transport }}</span></td>
                         </tr>
                         <tr>
                           <td>
@@ -824,7 +824,7 @@
                           <td></td>
                           <td class="text-right">
                             <span class="font-weight-bold">{{
-                              costing.final_box_price.toFixed(2)
+                              costing.final_box_price
                             }}</span>
                           </td>
                         </tr>
@@ -860,7 +860,7 @@ import NProgress from "nprogress";
 
 export default {
   metaInfo: {
-    title: "Edit Product",
+    title: "Edit Costing",
   },
   data() {
     return {
@@ -916,7 +916,6 @@ export default {
         transport: 2,
         carrogation_cost_percent: 5,
         waste_percent: 1,
-        profit_percent: 0,
         raw_material_cost_percent: 0, // Total Cost
         conversion_per_kg_percent: 10,
         printing_percent: 2,
@@ -937,10 +936,159 @@ export default {
   },
 
   methods: {
+    // Conversion Formula
+    conversionFormula() {
+      // Remove spaces from the input value
+      const trimmedValue = (this.costing.box_size.trim()).replace(/\s/g, '');
+      console.log(trimmedValue);
+
+      // Split the input value using case-insensitive x/X
+      const numbers = trimmedValue.split(/x/i);
+
+      this.costing.box_length_cm = (numbers[0] * 2.54).toFixed(2);
+      this.costing.box_width_cm = (numbers[1] * 2.54).toFixed(2);
+      this.costing.box_height_cm = (numbers[2] * 2.54).toFixed(2);
+      this.costing.box_length_inch = numbers[0];
+      this.costing.box_width_inch = numbers[1];
+      this.costing.box_height_inch = numbers[2];
+      this.costing.sheet_length = (
+        (parseFloat(this.costing.box_length_inch) +
+          parseFloat(this.costing.box_width_inch)) *
+          2 +
+        2
+      ).toFixed(2);
+      this.costing.sheet_width = Math.ceil(
+        parseFloat(this.costing.box_width_inch) +
+          parseFloat(this.costing.box_height_inch)
+      ).toFixed(2);
+      this.costing.sheet_count = (2400 / this.costing.sheet_length).toFixed(2);
+      this.costing.roll_one_side = (
+        this.costing.quantity / this.costing.sheet_count
+      ).toFixed(2);
+      this.costing.roll_two_side = (2 * this.costing.roll_one_side).toFixed(2);
+    },
+
+    updateRates(index) {
+      console.log("Index: " + index);
+      console.log(this.variants[index].layer);
+      console.log(this.variants[index].paper);
+      var paperInd = this.papers.findIndex(
+        (paper) => paper.id === this.variants[index].paper
+      );
+      console.log(paperInd);
+
+      this.variants[index].gram = this.papers[paperInd].paper_grams;
+      this.variants[index].rate = this.papers[paperInd].price;
+      this.variants[index].bf = this.papers[paperInd].width;
+      var calcWeight = parseFloat(
+        (this.costing.sheet_length *
+          this.costing.sheet_width *
+          1 *
+          this.variants[index].gram *
+          this.variants[index].flute_factor) /
+          1550 /
+          1000
+      ).toFixed(4);
+      var calcWeight2 = parseFloat(
+        (this.costing.sheet_length *
+          this.costing.sheet_width *
+          1 *
+          this.variants[index].gram *
+          this.variants[index].flute_factor) /
+          1550 /
+          1000
+      ).toFixed(3);
+      this.variants[index].weight = calcWeight;
+      this.variants[index].approx = calcWeight2;
+      this.variants[index].cost = (this.variants[index].rate * this.variants[index].approx).toFixed(3);
+
+      console.log(this.costing.total_craft);
+      this.layersSum(calcWeight);
+      this.costing.total_grams += parseFloat(calcWeight2);
+    //   this.costing.total_cost += parseFloat(this.variants[index].cost);
+      this.totalCostSum();
+      this.totalRateUpdate();
+    },
+
+    //Function to sumup the layer's cost
+    totalCostSum(){
+        console.log("Total Cost Sumup");
+        this.costing.total_cost = 0;
+        var layerSize = this.variants.length;
+
+        for (var i=0; i<layerSize; i++){
+            this.costing.total_cost += parseFloat(this.variants[i].cost);
+        }
+
+    },
+    //Function to sumup the layer's cost
+    layersSum(calcWeight){
+        console.log("Layer Sumup");
+        var total_craft_temp = 0;
+        var total_craft_q_temp = 0;
+        var total_folding_nali_temp = 0;
+        var total_folding_nali_q_temp = 0;
+        var total_folding_temp = 0;
+        var total_folding_q_temp = 0;
+        var layerSize = this.variants.length;
+        for (var i=0; i<layerSize; i++){
+            if (this.variants[i].layer=='Craft'){
+                total_craft_temp += parseFloat(calcWeight);
+                total_craft_q_temp += parseFloat(calcWeight*this.costing.quantity);
+            } else if (this.variants[i].layer=='Folding Nali'){
+                total_folding_nali_temp += parseFloat(calcWeight);
+                total_folding_nali_q_temp += parseFloat(calcWeight*this.costing.quantity);
+            } else if (this.variants[i].layer=='Folding'){
+                total_folding_temp += parseFloat(calcWeight);
+                total_folding_q_temp += parseFloat(calcWeight*this.costing.quantity);
+            }
+        }
+        this.costing.total_craft = total_craft_temp;
+        this.costing.total_craft_q = total_craft_q_temp;
+        this.costing.total_folding_nali = total_folding_nali_temp;
+        this.costing.total_folding_nali_q = total_folding_nali_q_temp;
+        this.costing.total_folding = total_folding_temp;
+        this.costing.total_folding_q  = total_folding_q_temp;
+    },
+
+
+    // Function to Sumup the Box Specificiation & Cost
+    totalRateUpdate(){
+        console.log("Total Rate Update");
+        this.costing.carrogation_cost = (parseFloat(this.costing.carrogation_cost_percent)).toFixed(2);
+        this.costing.raw_material_cost = (parseFloat(this.costing.total_cost)).toFixed(2);
+        this.costing.waste = ((parseFloat(this.costing.total_cost) * parseFloat(this.costing.waste_percent))/100).toFixed(2);
+        this.costing.conversion_per_kg = ((parseFloat(this.costing.total_cost) * parseFloat(this.costing.conversion_per_kg_percent))/100).toFixed(2);
+        this.costing.printing = ((parseFloat(this.costing.total_cost) * parseFloat(this.costing.printing_percent))/100).toFixed(2);
+        this.costing.lamination = ((parseFloat(this.costing.total_cost * parseFloat(this.costing.lamination_percent))/100)).toFixed(2);
+        this.costing.profit = ((parseFloat(this.costing.total_cost) * parseFloat(this.costing.profit_percent))/100).toFixed(2);
+        this.costing.transport = ((parseFloat(this.costing.total_cost) * parseFloat(this.costing.transport_percent))/100).toFixed(2);
+        this.costing.total_weight = (parseFloat(this.costing.total_craft_q)+parseFloat(this.costing.total_folding_nali_q)+parseFloat(this.costing.total_folding_q)).toFixed(2);
+        this.costing.final_box_price = (parseFloat(this.costing.carrogation_cost)+parseFloat(this.costing.waste)+parseFloat(this.costing.raw_material_cost)+parseFloat(this.costing.conversion_per_kg)+parseFloat(this.costing.printing)+parseFloat(this.costing.lamination)+parseFloat(this.costing.profit)+parseFloat(this.costing.transport)+parseFloat(this.costing.total_grams)).toFixed(2);
+    },
+
+    updatePapers(index)
+    {
+      console.log("Update Papers");
+      // this.variants.some((variant) => variant.ply_no === tag)
+      console.log("Index: " + index);
+
+      const variant2 = this.variants[index].layer;
+      console.log("YES " + variant2);
+
+      //   this.variants[index].flute_factor = 1.33;
+      if (variant2 == "Folding Nali") {
+        this.variants[index].flute_factor = 1.33;
+      } else {
+        this.variants[index].flute_factor = 1;
+      }
+      // update the cost
+      this.updateRates(index);
+    },
     //------ Generate code
     generateNumber() {
       this.code_exist = "";
-      this.product.code = Math.floor(
+      this.costing.code = Math.floor(
         Math.pow(10, 7) +
           Math.random() * (Math.pow(10, 8) - Math.pow(10, 7) - 1)
       );
@@ -948,7 +1096,7 @@ export default {
 
     //------------- Submit Validation Update Product
     Submit_Product() {
-      this.$refs.Edit_Product.validate().then((success) => {
+      this.$refs.Edit_Costing.validate().then((success) => {
         if (!success) {
           this.makeToast(
             "danger",
@@ -956,7 +1104,7 @@ export default {
             this.$t("Failed")
           );
         } else {
-          if (this.product.type == "is_variant" && this.variants.length <= 0) {
+          if (this.costing.type == "is_variant" && this.variants.length <= 0) {
             this.makeToast(
               "danger",
               "The variants array is required.",
@@ -967,6 +1115,86 @@ export default {
           }
         }
       });
+    },
+
+    add_variant(tag) {
+      if (
+        this.variants.length > 0 &&
+        this.variants.some((variant) => variant.ply_no === tag)
+      ) {
+        this.makeToast(
+          "warning",
+          this.$t("Required Ply layers are already implemented"),
+          this.$t("Warning")
+        );
+      } else {
+        if (this.tag != "") {
+          if (tag == 3) {
+            var typeLayer = ["Craft", "Folding Nali", "Craft"];
+            var factor = [1, 1.33, 1];
+          } else if (tag == 5) {
+            var typeLayer = [
+              "Craft",
+              "Folding Nali",
+              "Folding",
+              "Folding Nali",
+              "Craft",
+            ];
+            var factor = [1, 1.33, 1, 1.33, 1];
+          } else if (tag == 7) {
+            var typeLayer = [
+              "Craft",
+              "Folding Nali",
+              "Folding",
+              "Folding Nali",
+              "Folding",
+              "Folding Nali",
+              "Craft",
+            ];
+            var factor = [1, 1.33, 1, 1.33, 1, 1.33, 1];
+          } else if (tag == 9) {
+            var typeLayer = [
+              "Craft",
+              "Folding Nali",
+              "Folding",
+              "Folding Nali",
+              "Folding",
+              "Folding Nali",
+              "Folding",
+              "Folding Nali",
+              "Craft",
+            ];
+            var factor = [1, 1.33, 1, 1.33, 1, 1.33, 1, 1.33, 1];
+          } else {
+            var typeLayer = ["Craft"];
+            var factor = [1];
+          }
+          console.log(tag);
+          for (var i = 0; i < tag; i++) {
+            console.log(i);
+            var variant_tag = {
+              var_id: this.variants.length + i, // generate unique ID
+              ply_no: i + 1,
+              layer: typeLayer[i],
+              flute_factor: factor[i],
+              gram: 0,
+              bf: 0,
+              rate: 0,
+              weight: 0,
+              approx: 0,
+              cost: 0,
+            };
+            this.variants.push(variant_tag);
+            this.ply_no = "";
+          }
+        } else {
+          this.makeToast(
+            "warning",
+            "Please enter the size",
+            this.$t("Warning")
+          );
+        }
+      }
     },
 
     //------ Validation state fields
@@ -983,33 +1211,6 @@ export default {
       });
     },
 
-    add_variant(tag) {
-      if (
-        this.variants.length > 0 &&
-        this.variants.some((variant) => variant.text === tag)
-      ) {
-        this.makeToast(
-          "warning",
-          this.$t("VariantDuplicate"),
-          this.$t("Warning")
-        );
-      } else {
-        if (this.tag != "") {
-          var variant_tag = {
-            var_id: this.variants.length + 1, // generate unique ID
-            text: tag,
-          };
-          this.variants.push(variant_tag);
-          this.tag = "";
-        } else {
-          this.makeToast(
-            "warning",
-            "Please Enter the Variant",
-            this.$t("Warning")
-          );
-        }
-      }
-    },
     //-----------------------------------Delete variant------------------------------\\
     delete_variant(var_id) {
       for (var i = 0; i < this.variants.length; i++) {
@@ -1041,15 +1242,15 @@ export default {
         .get(`costing/${id}/edit`)
         .then((response) => {
           this.costing = response.data.costing;
-        //   this.product = response.data.product;
+          this.clients = response.data.clients;
           this.variants = response.data.costing.costing_details;
-          this.images = response.data.product.images;
           this.categories = response.data.categories;
-          this.brands = response.data.brands;
+          this.types = response.data.types;
           this.units = response.data.units;
-          this.units_sub = response.data.units_sub;
-          this.Subcategories = response.data.Subcategories;
-
+          this.reelsize = response.data.reelsize;
+          this.grams = response.data.grams;
+          this.shades = response.data.shades;
+          this.papers = response.data.papers;
           this.isLoading = false;
         })
         .catch((response) => {
@@ -1069,8 +1270,8 @@ export default {
     //---------------------- Event Select Unit Product ------------------------------\\
     Selected_Unit(value) {
       this.units_sub = [];
-      this.product.unit_sale_id = "";
-      this.product.unit_purchase_id = "";
+      this.costing.unit_sale_id = "";
+      this.costing.unit_purchase_id = "";
       this.Get_Units_SubBase(value);
     },
 
@@ -1082,14 +1283,8 @@ export default {
       self.data = new FormData();
       self.SubmitProcessing = true;
 
-      if (self.product.type == "is_variant" && self.variants.length > 0) {
-        self.product.is_variant = true;
-      } else {
-        self.product.is_variant = false;
-      }
-
       // append objet product
-      Object.entries(self.product).forEach(([key, value]) => {
+      Object.entries(self.costing).forEach(([key, value]) => {
         self.data.append(key, value);
       });
 
@@ -1102,24 +1297,15 @@ export default {
         }
       }
 
-      //append array images
-      if (self.images.length > 0) {
-        for (var k = 0; k < self.images.length; k++) {
-          Object.entries(self.images[k]).forEach(([key, value]) => {
-            self.data.append("images[" + k + "][" + key + "]", value);
-          });
-        }
-      }
-
       self.data.append("_method", "put");
 
       //send Data with axios
       axios
-        .post("products/" + this.product.id, self.data)
+        .post("costing/" + this.costing.id, self.data)
         .then((response) => {
           NProgress.done();
           self.SubmitProcessing = false;
-          this.$router.push({ name: "index_products" });
+          this.$router.push({ name: "index_costing" });
           this.makeToast(
             "success",
             this.$t("Successfully_Updated"),

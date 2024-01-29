@@ -1103,7 +1103,7 @@ export default {
       ) {
         this.makeToast(
           "warning",
-          this.$t("VariantDuplicate"),
+          this.$t("Required Ply layers are already implemented"),
           this.$t("Warning")
         );
       } else {

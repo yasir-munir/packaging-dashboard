@@ -52,11 +52,11 @@
                  <!-- Product -->
                 <b-col md="12" class="mb-5">
                   <h6>{{$t('ProductName')}}</h6>
-                 
+
                   <div id="autocomplete" class="autocomplete">
-                    <input 
+                    <input
                      :placeholder="$t('Scan_Search_Product_by_Code_Name')"
-                       @input='e => search_input = e.target.value' 
+                       @input='e => search_input = e.target.value'
                       @keyup="search(search_input)"
                       @focus="handleFocus"
                       @blur="handleBlur"
@@ -67,7 +67,7 @@
                     </ul>
                 </div>
                 </b-col>
-                
+
                 <!-- Details product  -->
                 <b-col md="12">
                   <div class="table-responsive">
@@ -231,7 +231,7 @@ export default {
       this.focused = false
     },
 
-    
+
     // Search Products
     search(){
 

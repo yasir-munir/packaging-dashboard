@@ -298,8 +298,9 @@ class CostingController extends Controller
 
             $item['id'] = $costing->id;
             $item['box_size'] = $costing->box_size;
+            $item['client_id'] = $costing->client_id;
             $item['cust_name'] = $costing->name;
-            $item['box_type'] = $costing->box_type;
+            $item['category_id'] = $costing->box_type;
             $category = Category::where('id', $costing->box_type)->select(['name'])
                         ->where('deleted_at', '=', null)
                         ->first();
@@ -307,7 +308,7 @@ class CostingController extends Controller
             $item['ply'] = $costing->ply;
             $item['order_date'] = $costing->date;
             $item['final_box_price'] = $costing->final_box_price;
-            $item['is_active'] = $costing->is_active? "Active":'Inactive';
+            $item['active'] = $costing->is_active? true:false;
             $item['measurement'] = $costing->measurement;
             $item['quantity'] = $costing->quantity;
             $item['shade'] = $costing->shade;
@@ -315,17 +316,17 @@ class CostingController extends Controller
                         ->where('deleted_at', '=', null)
                         ->first();
             $item['shade_name'] = $shade->name;
-            $item['paper_type'] = $costing->paper_type;
+            $item['type'] = $costing->paper_type;
             $brand = Brand::where('id', $costing->paper_type)->select(['name'])
                         ->where('deleted_at', '=', null)
                         ->first();
             $item['paper_type_name'] = $brand->name;
-            $item['length_cm'] = $costing->length_cm;
-            $item['width_cm'] = $costing->width_cm;
-            $item['height_cm'] = $costing->height_cm;
-            $item['length_inch'] = $costing->length_inch;
-            $item['width_inch'] = $costing->width_inch;
-            $item['height_inch'] = $costing->height_inch;
+            $item['box_length_cm'] = $costing->length_cm;
+            $item['box_width_cm'] = $costing->width_cm;
+            $item['box_height_cm'] = $costing->height_cm;
+            $item['box_length_inch'] = $costing->length_inch;
+            $item['box_width_inch'] = $costing->width_inch;
+            $item['box_height_inch'] = $costing->height_inch;
             $item['sheet_length'] = $costing->sheet_length;
             $item['sheet_width'] = $costing->sheet_width;
             $item['sheet_count'] = $costing->sheet_count;
@@ -348,6 +349,14 @@ class CostingController extends Controller
             $item['lamination'] = $costing->lamination;
             $item['profit'] = $costing->profit;
             $item['transport'] = $costing->transport;
+            $item['carrogation_cost_percent'] = 5;
+            $item['waste_percent'] = 1;
+            $item['raw_material_cost_percent'] = 0; // Total Cost
+            $item['conversion_per_kg_percent'] = 10;
+            $item['printing_percent'] = 2;
+            $item['lamination_percent'] = 5;
+            $item['transport_percent'] = 2;
+            $item['profit_percent'] = 10;
 
             $costing_data = CostingDetail::where('costing_id', $costing->id)
                 ->where('deleted_at', '=', null)
@@ -355,20 +364,21 @@ class CostingController extends Controller
 
             foreach ($costing_data as $cost) {
 
+                $costPly['id'] = $cost->id;
                 $costPly['ply_no'] = $cost->ply_no;
-                $costPly['paper_type'] = $cost->paper_type;
-                $costPly['layer_paper_id'] = $cost->paper_id; // fetch paper details
+                $costPly['layer'] = $cost->paper_type;
+                $costPly['paper'] = $cost->paper_id; // fetch paper details
                 $paper_product = ProductVariant::where('id', $cost->paper_id)->select(['name'])
                         ->where('deleted_at', '=', null)
                         ->first();
                 $costPly['paper_name'] = $paper_product['name']; // fetch paper details
-                $costPly['paper_bf'] = $cost->paper_bf;
-                $costPly['paper_rate'] = $cost->paper_rate;
-                $costPly['paper_grams'] = $cost->paper_grams;
-                $costPly['paper_flute_factor'] = $cost->paper_flute_factor;
-                $costPly['paper_weight'] = $cost->paper_weight;
-                $costPly['paper_approx'] = $cost->paper_approx;
-                $costPly['paper_cost'] = $cost->paper_cost;
+                $costPly['bf'] = $cost->paper_bf;
+                $costPly['rate'] = $cost->paper_rate;
+                $costPly['gram'] = $cost->paper_grams;
+                $costPly['flute_factor'] = $cost->paper_flute_factor;
+                $costPly['weight'] = $cost->paper_weight;
+                $costPly['approx'] = $cost->paper_approx;
+                $costPly['cost'] = $cost->paper_cost;
 
                 $item['costing_details'][] = $costPly;
 
@@ -378,7 +388,6 @@ class CostingController extends Controller
         $data[] = $item;
 
         $stripe_key = config('app.STRIPE_KEY');
-        $brands = Brand::where('deleted_at', null)->get(['id', 'name']);
         $units = Unit::where('deleted_at', null)->where('base_unit', null)->get();
         $reelsize = ReelSize::where('deleted_at', null)->get(['id', 'name']);
         $grams = Grams::where('deleted_at', null)->get(['id', 'name']);
@@ -417,9 +426,165 @@ class CostingController extends Controller
      * @param  \App\Models\Costing  $purchaseOrder
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Costing $purchaseOrder)
+    public function update(Request $request, $id)
     {
         //
+        request()->validate([
+            'client_id' => 'required',
+        ]);
+
+        \DB::transaction(function () use ($request, $id) {
+
+            $costing = Costing::where('id', $id)
+                    ->where('deleted_at', '=', null)
+                    ->first();
+
+            $costing->date = $request['order_date'];
+            $costing->client_id = $request['client_id'];
+            $costing->box_size = $request['box_size'];
+            $costing->measurement = $request['measurement'];
+            $costing->quantity = $request['quantity'];
+            $costing->box_type = $request['category_id'];
+            $costing->shade = $request['shade'];
+            $costing->paper_type = $request['type'];
+            $costing->ply = $request['ply'];
+            $costing->length_cm = $request['box_length_cm'];
+            $costing->width_cm = $request['box_width_cm'];
+            $costing->height_cm = $request['box_height_cm'];
+            $costing->length_inch = $request['box_length_inch'];
+            $costing->width_inch = $request['box_width_inch'];
+            $costing->height_inch = $request['box_height_inch'];
+            $costing->sheet_length = $request['sheet_length'];
+            $costing->sheet_width = $request['sheet_width'];
+            $costing->sheet_count = $request['sheet_count'];
+            $costing->roll_one_side = $request['roll_one_side'];
+            $costing->roll_two_side = $request['roll_two_side'];
+            $costing->total_craft = $request['total_craft'];
+            $costing->total_folding_nali = $request['total_folding_nali'];
+            $costing->total_folding = $request['total_folding'];
+            $costing->total_craft_q = $request['total_craft_q'];
+            $costing->total_folding_nali_q = $request['total_folding_nali_q'];
+            $costing->total_folding_q = $request['total_folding_q'];
+            $costing->total_grams = $request['total_grams'];
+            $costing->total_bs = $request['total_bs'];
+            $costing->total_weight = $request['total_weight'];
+            $costing->carrogation_cost = $request['carrogation_cost'];
+            $costing->waste = $request['waste'];
+            $costing->total_cost = $request['total_cost'];
+            $costing->conversion_per_kg = $request['conversion_per_kg'];
+            $costing->printing = $request['printing'];
+            $costing->lamination = $request['lamination'];
+            $costing->profit = $request['profit'];
+            $costing->transport = $request['transport'];
+            $costing->final_box_price = $request['final_box_price'];
+            $costing->is_active = $request['active']=='true'?1:0;
+            $costing->updated_at = Carbon::now();
+            $costing->user_id = Auth::user()->id;
+            $costing->save();
+
+
+            // Store Variants Product
+            $costingDetails = CostingDetail::where('costing_id', $costing->id)
+                    ->where('deleted_at', '=', null)
+                    ->get();
+
+            if ($costingDetails->isNotEmpty()) {
+                $new_variants_id = [];
+                $var = 'id';
+
+                foreach ($request['variants'] as $new_id) {
+                    if (array_key_exists($var, $new_id)) {
+                        $new_variants_id[] = $new_id['id'];
+                    } else {
+                        $new_variants_id[] = 0;
+                    }
+                }
+
+                foreach ($costingDetails as $key => $value) {
+                    $old_variants_id[] = $value->id;
+
+                    // Delete Variant
+                    if (!in_array($old_variants_id[$key], $new_variants_id)) {
+                        $costingPly = CostingDetail::findOrFail($value->id);
+                        $costingPly->deleted_at = Carbon::now();
+                        $costingPly->save();
+                    }
+                }
+                foreach ($request['variants'] as $key => $variant) {
+                    if (array_key_exists($var, $variant)) {
+
+                        $ProductVariantDT = new CostingDetail;
+                        //-- Field Required
+                        $ProductVariantDT->costing_id = $costing->id;
+                        $ProductVariantDT->date = $request->order_date;
+                        $ProductVariantDT->ply_no = $variant['ply_no'];
+                        $ProductVariantDT->paper_type = $variant['layer'];
+                        $ProductVariantDT->paper_id = $variant['paper'];
+                        $ProductVariantDT->paper_bf = $variant['bf'];
+                        $ProductVariantDT->paper_rate = $variant['rate'];
+                        $ProductVariantDT->paper_grams = $variant['gram'];
+                        $ProductVariantDT->paper_flute_factor = $variant['flute_factor'];
+                        $ProductVariantDT->paper_weight = $variant['weight'];
+                        $ProductVariantDT->paper_approx = $variant['approx'];
+                        $ProductVariantDT->paper_cost = $variant['cost'];
+                        $ProductVariantDT->updated_at = Carbon::now();
+
+                        $ProductVariantUP['costing_id'] = $costing->id;
+                        $ProductVariantUP['date'] = $request->order_date;
+                        $ProductVariantUP['ply_no'] = $variant['ply_no'];
+                        $ProductVariantUP['paper_type'] = $variant['layer'];
+                        $ProductVariantUP['paper_id'] = $variant['paper'];
+                        $ProductVariantUP['paper_bf'] = $variant['bf'];
+                        $ProductVariantUP['paper_rate'] = $variant['rate'];
+                        $ProductVariantUP['paper_grams'] = $variant['gram'];
+                        $ProductVariantUP['paper_flute_factor'] = $variant['flute_factor'];
+                        $ProductVariantUP['paper_weight'] = $variant['weight'];
+                        $ProductVariantUP['paper_approx'] = $variant['approx'];
+                        $ProductVariantUP['paper_cost'] = $variant['cost'];
+                        $ProductVariantUP['updated_at'] = Carbon::now();
+                    } else {
+                        $ProductVariantDT = new CostingDetail;
+
+                        //-- Field Required
+                        $ProductVariantDT->costing_id = $id;
+                        $ProductVariantDT->date = $request->order_date;
+                        $ProductVariantDT->ply_no = $variant['ply_no'];
+                        $ProductVariantDT->paper_type = $variant['layer'];
+                        $ProductVariantDT->paper_id = $variant['paper'];
+                        $ProductVariantDT->paper_bf = $variant['bf'];
+                        $ProductVariantDT->paper_rate = $variant['rate'];
+                        $ProductVariantDT->paper_grams = $variant['gram'];
+                        $ProductVariantDT->paper_flute_factor = $variant['flute_factor'];
+                        $ProductVariantDT->paper_weight = $variant['weight'];
+                        $ProductVariantDT->paper_approx = $variant['approx'];
+                        $ProductVariantDT->paper_cost = $variant['cost'];
+
+                        $ProductVariantUP['costing_id'] = $id;
+                        $ProductVariantUP['date'] = $request->order_date;
+                        $ProductVariantUP['ply_no'] = $variant['ply_no'];
+                        $ProductVariantUP['paper_type'] = $variant['layer'];
+                        $ProductVariantUP['paper_id'] = $variant['paper'];
+                        $ProductVariantUP['paper_bf'] = $variant['bf'];
+                        $ProductVariantUP['paper_rate'] = $variant['rate'];
+                        $ProductVariantUP['paper_grams'] = $variant['gram'];
+                        $ProductVariantUP['paper_flute_factor'] = $variant['flute_factor'];
+                        $ProductVariantUP['paper_weight'] = $variant['weight'];
+                        $ProductVariantUP['paper_approx'] = $variant['approx'];
+                        $ProductVariantUP['paper_cost'] = $variant['cost'];
+
+                    }
+
+                    if (!in_array($new_variants_id[$key], $old_variants_id)) {
+                        $ProductVariantDT->save();
+                    } else {
+                        CostingDetail::where('id', $variant['id'])->update($ProductVariantUP);
+                    }
+                }
+            }
+
+        }, 10);
+
+        return response()->json(['success' => true, 'message' => 'Costing Updated !!']);
     }
 
     /**
